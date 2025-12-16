@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = request.headers.get("authorization");
@@ -19,7 +19,8 @@ export async function GET(
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    const subcontractorId = params.id;
+    const { id } = await params;
+    const subcontractorId = id;
 
     // Fetch photos for this subcontractor (verify it belongs to user's job)
     const { data: photos, error } = await supabaseAdmin
