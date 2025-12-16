@@ -106,37 +106,37 @@ export default function DashboardPage() {
             <h2>Your Project Portal</h2>
             <div className="nav-grid">
               <a href="/dashboard/photos" className="nav-card">
-                <div className="nav-icon">📸</div>
+                <div className="nav-icon" style={{backgroundColor: '#567A8D'}}></div>
                 <h3>Project Photos</h3>
                 <p>View your project</p>
               </a>
 
               <a href="/dashboard/quotes" className="nav-card">
-                <div className="nav-icon">📄</div>
+                <div className="nav-icon" style={{backgroundColor: '#A45941'}}></div>
                 <h3>Proposals</h3>
                 <p>View your project's proposal</p>
               </a>
 
               <a href="/dashboard/subcontractors" className="nav-card">
-                <div className="nav-icon">👷</div>
+                <div className="nav-icon" style={{backgroundColor: '#712A18'}}></div>
                 <h3>Licensed Professionals</h3>
                 <p>View your qualified trades</p>
               </a>
 
               <a href="/dashboard/payments" className="nav-card">
-                <div className="nav-icon">💳</div>
+                <div className="nav-icon" style={{backgroundColor: '#454547'}}></div>
                 <h3>Account Overview</h3>
                 <p>Manage payments and view payment schedule</p>
               </a>
 
               <a href="/dashboard/documents" className="nav-card">
-                <div className="nav-icon">📋</div>
+                <div className="nav-icon" style={{backgroundColor: '#567A8D'}}></div>
                 <h3>Documents</h3>
                 <p>Access transactions and project records</p>
               </a>
 
               <a href="/dashboard/timeline" className="nav-card">
-                <div className="nav-icon">📅</div>
+                <div className="nav-icon" style={{backgroundColor: '#A45941'}}></div>
                 <h3>Project Timeline</h3>
                 <p>View project milestones and schedule</p>
               </a>

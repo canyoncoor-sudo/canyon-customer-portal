@@ -161,7 +161,9 @@
 }
 
 .nav-icon {
-  font-size: 48px;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-md);
   margin-bottom: var(--spacing-md);
 }
 
