@@ -28,7 +28,8 @@ export async function POST(req: NextRequest) {
       token,
       job: {
         id: result.job.id,
-        job_name: result.job.job_name,
+        customer_name: result.job.customer_name,
+        job_address: result.job.job_address,
         status: result.job.status,
       },
     });
