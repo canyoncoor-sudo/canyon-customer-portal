@@ -1,0 +1,268 @@
+/* Timeline Page Styles */
+.timeline-page {
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+/* Project Overview */
+.project-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.overview-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.overview-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--spacing-sm);
+}
+
+.overview-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.overview-value.status {
+  display: flex;
+  justify-content: center;
+}
+
+.days-remaining {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  margin-top: var(--spacing-xs);
+}
+
+/* Progress Section */
+.progress-section {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--spacing-xl);
+}
+
+.progress-bar {
+  height: 20px;
+  background: var(--color-background);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: var(--spacing-md);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-cornflower));
+  transition: width 1s ease;
+  border-radius: var(--radius-sm);
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+/* Timeline */
+.timeline {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 1px solid var(--color-border);
+}
+
+.timeline-item {
+  display: flex;
+  gap: var(--spacing-lg);
+  position: relative;
+}
+
+.timeline-item:not(:last-child) {
+  margin-bottom: var(--spacing-xl);
+}
+
+.timeline-marker {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.marker-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--color-background);
+  border: 3px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  z-index: 2;
+  transition: all var(--transition-base);
+}
+
+.timeline-item.completed .marker-icon {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.timeline-item.pending .marker-icon {
+  border-color: var(--color-red-clay);
+}
+
+.marker-line {
+  width: 3px;
+  flex: 1;
+  background: var(--color-border);
+  margin-top: var(--spacing-sm);
+  min-height: 60px;
+}
+
+.timeline-item.completed .marker-line {
+  background: var(--color-accent);
+}
+
+.timeline-content {
+  flex: 1;
+  padding-bottom: var(--spacing-lg);
+}
+
+.timeline-date {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--spacing-sm);
+}
+
+.timeline-card {
+  background: var(--color-background);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
+}
+
+.timeline-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-accent);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--color-text);
+  flex: 1;
+}
+
+.event-type-badge {
+  background: rgba(86, 122, 141, 0.15);
+  color: var(--color-accent);
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.card-description {
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.completion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: rgba(86, 122, 141, 0.15);
+  color: var(--color-accent);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background: rgba(86, 122, 141, 0.15);
+  color: var(--color-accent);
+}
+
+.status-pending {
+  background: rgba(164, 89, 65, 0.15);
+  color: var(--color-red-clay);
+}
+
+.status-completed {
+  background: rgba(107, 148, 163, 0.15);
+  color: var(--color-cornflower);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .project-overview {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .timeline {
+    padding: var(--spacing-lg);
+  }
+
+  .timeline-item {
+    gap: var(--spacing-md);
+  }
+
+  .marker-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .overview-value {
+    font-size: 18px;
+  }
+}

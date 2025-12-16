@@ -168,3 +168,4 @@ CREATE POLICY "Customers see own documents" ON documents
 
 -- Admin policies (using service_role key can bypass RLS)
 -- You'll use service_role key when adding data as admin
+-

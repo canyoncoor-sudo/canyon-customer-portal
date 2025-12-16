@@ -108,31 +108,31 @@ export default function DashboardPage() {
               <a href="/dashboard/photos" className="nav-card">
                 <div className="nav-icon">📸</div>
                 <h3>Project Photos</h3>
-                <p>View photos organized by area (Kitchen, Roof, etc.)</p>
+                <p>View your project</p>
               </a>
 
               <a href="/dashboard/quotes" className="nav-card">
                 <div className="nav-icon">📄</div>
-                <h3>Quotes & Bids</h3>
-                <p>Review and accept project quotes</p>
+                <h3>Proposals</h3>
+                <p>View your project's proposal</p>
               </a>
 
               <a href="/dashboard/subcontractors" className="nav-card">
                 <div className="nav-icon">👷</div>
-                <h3>Subcontractors</h3>
-                <p>View contractor information and their work</p>
+                <h3>Licensed Professionals</h3>
+                <p>View your qualified trades</p>
               </a>
 
               <a href="/dashboard/payments" className="nav-card">
                 <div className="nav-icon">💳</div>
-                <h3>Payments</h3>
+                <h3>Account Overview</h3>
                 <p>Manage payments and view payment schedule</p>
               </a>
 
               <a href="/dashboard/documents" className="nav-card">
                 <div className="nav-icon">📋</div>
                 <h3>Documents</h3>
-                <p>Access contracts, permits, and invoices</p>
+                <p>Access transactions and project records</p>
               </a>
 
               <a href="/dashboard/timeline" className="nav-card">
