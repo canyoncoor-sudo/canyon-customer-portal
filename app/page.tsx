@@ -20,8 +20,12 @@ export default function Home() {
 
     localStorage.setItem("portal_token", data.token);
     localStorage.setItem("portal_job", JSON.stringify(data.job));
-    setJob(data.job);
-    setStatus("✓ Access Granted");
+    setStatus("✓ Access Granted - Redirecting...");
+    
+    // Redirect to dashboard after 500ms
+    setTimeout(() => {
+      window.location.href = "/dashboard";
+    }, 500);
   };
 
   return (
