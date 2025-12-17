@@ -1,0 +1,261 @@
+.admin-dashboard {
+  min-height: 100vh;
+  background: var(--color-ecru);
+}
+
+.admin-header {
+  background: white;
+  border-bottom: 1px solid #e5e5e5;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.admin-header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-header h1 {
+  font-size: 24px;
+  color: var(--color-espresso);
+  margin: 0;
+}
+
+.logout-btn {
+  padding: 8px 20px;
+  background: var(--color-charcoal);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: var(--color-espresso);
+}
+
+.admin-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.dashboard-header h2 {
+  font-size: 28px;
+  color: var(--color-espresso);
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.btn-primary {
+  padding: 12px 24px;
+  background: var(--color-rust);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--color-espresso);
+}
+
+.btn-secondary {
+  padding: 12px 24px;
+  background: white;
+  color: var(--color-sky-slate);
+  border: 2px solid var(--color-sky-slate);
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--color-sky-slate);
+  color: white;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  background: white;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.filter-tabs button {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  color: var(--color-charcoal);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+
+.filter-tabs button:hover {
+  background: var(--color-ecru);
+}
+
+.filter-tabs button.active {
+  background: var(--color-rust);
+  color: white;
+}
+
+.projects-table-container {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.projects-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.projects-table thead {
+  background: var(--color-ecru);
+}
+
+.projects-table th {
+  padding: var(--spacing-md) var(--spacing-lg);
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.projects-table td {
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--color-ecru);
+}
+
+.projects-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-completed {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.type-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.type-proposal {
+  background: var(--color-cornflower);
+  color: white;
+}
+
+.type-active {
+  background: var(--color-rust);
+  color: white;
+}
+
+.expired {
+  color: #c33;
+  font-weight: 600;
+}
+
+.action-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.btn-edit, .btn-view {
+  padding: 6px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-edit {
+  background: var(--color-sky-slate);
+  color: white;
+}
+
+.btn-edit:hover {
+  background: var(--color-cornflower);
+}
+
+.btn-view {
+  background: var(--color-ecru);
+  color: var(--color-charcoal);
+  border: 1px solid #ddd;
+}
+
+.btn-view:hover {
+  background: #e5e5e5;
+}
+
+.empty-state {
+  padding: var(--spacing-xxl);
+  text-align: center;
+}
+
+.empty-state p {
+  color: var(--color-charcoal);
+  font-size: 18px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.admin-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--color-charcoal);
+}

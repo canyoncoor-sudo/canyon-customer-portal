@@ -1,0 +1,372 @@
+.admin-professionals {
+  min-height: 100vh;
+  background: var(--color-ecru);
+}
+
+.professionals-header {
+  background: white;
+  border-bottom: 2px solid var(--color-rust);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-content h1 {
+  font-size: 28px;
+  color: var(--color-espresso);
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.back-btn {
+  padding: 8px 16px;
+  background: white;
+  border: 2px solid var(--color-charcoal);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: var(--color-ecru);
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  background: var(--color-rust);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--color-espresso);
+}
+
+.btn-secondary {
+  padding: 8px 16px;
+  background: white;
+  color: var(--color-sky-slate);
+  border: 2px solid var(--color-sky-slate);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--color-sky-slate);
+  color: white;
+}
+
+.professionals-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+.view-tabs {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  background: white;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.view-tabs button {
+  flex: 1;
+  padding: 12px 24px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-tabs button:hover {
+  background: var(--color-ecru);
+}
+
+.view-tabs button.active {
+  background: var(--color-rust);
+  color: white;
+}
+
+.trade-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.trade-card {
+  background: white;
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.trade-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.trade-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--spacing-lg);
+  background: var(--color-sky-slate);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 800;
+}
+
+.trade-card h3 {
+  font-size: 20px;
+  color: var(--color-espresso);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.trade-count {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.list-header {
+  background: white;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.list-header h2 {
+  font-size: 24px;
+  color: var(--color-espresso);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.list-header p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.professionals-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.professional-card {
+  background: white;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.professional-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--color-ecru);
+}
+
+.card-header h3 {
+  font-size: 18px;
+  color: var(--color-espresso);
+  margin: 0;
+  flex: 1;
+}
+
+.trade-badge {
+  padding: 4px 12px;
+  background: var(--color-sky-slate);
+  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.card-body {
+  flex: 1;
+}
+
+.card-body p {
+  font-size: 14px;
+  color: var(--color-charcoal);
+  margin: 6px 0;
+}
+
+.card-body strong {
+  color: #666;
+  font-weight: 600;
+}
+
+.card-footer {
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-ecru);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--spacing-xxl);
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.empty-state p {
+  font-size: 16px;
+  color: #666;
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.admin-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 18px;
+  color: var(--color-charcoal);
+}
+
+/* Action Buttons */
+.btn-edit,
+.btn-delete {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-edit {
+  background: #567A8D;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #456470;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  background: #C44536;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #A03527;
+  transform: translateY(-1px);
+}
+
+.card-footer {
+  display: flex;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #E0E0E0;
+}
+
+.card-footer button {
+  flex: 1;
+}
+
+/* Edit and Delete Action Buttons */
+.btn-edit,
+.btn-delete {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-edit {
+  background: #567A8D;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #456470;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  background: #C44536;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #A03527;
+  transform: translateY(-1px);
+}
+
+.card-footer {
+  display: flex;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #E0E0E0;
+  margin-top: 12px;
+}
+
+.card-footer button {
+  flex: 1;
+}

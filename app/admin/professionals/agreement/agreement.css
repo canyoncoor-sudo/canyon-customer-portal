@@ -1,0 +1,302 @@
+.agreement-container {
+  min-height: 100vh;
+  background: #F0F0EE;
+  padding: 24px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.agreement-header {
+  max-width: 900px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-btn {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #261312;
+}
+
+.back-btn:hover {
+  background: #f5f5f5;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-save, .btn-print {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-save {
+  background: #567A8D;
+  color: white;
+}
+
+.btn-print {
+  background: #712A18;
+  color: white;
+}
+
+.agreement-document {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  padding: 60px 80px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+.doc-header {
+  text-align: center;
+  border-bottom: 3px solid #712A18;
+  padding-bottom: 30px;
+  margin-bottom: 40px;
+}
+
+.doc-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #261312;
+  margin: 0 0 10px;
+  letter-spacing: 1px;
+}
+
+.doc-subtitle {
+  font-size: 16px;
+  color: #567A8D;
+  font-weight: 600;
+  margin: 0 0 20px;
+}
+
+.agreement-date {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.agreement-date label {
+  font-weight: 700;
+  color: #261312;
+}
+
+.date-input {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.agreement-section {
+  margin-bottom: 40px;
+}
+
+.agreement-section h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #712A18;
+  border-bottom: 2px solid #F0F0EE;
+  padding-bottom: 10px;
+  margin: 0 0 25px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.party-info {
+  background: #F0F0EE;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.party-info h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #261312;
+  margin: 0 0 15px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  font-size: 14px;
+}
+
+.info-grid div {
+  display: flex;
+  gap: 8px;
+}
+
+.info-grid.editable {
+  grid-template-columns: 1fr;
+}
+
+.info-grid.editable div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-grid.editable label {
+  font-weight: 600;
+  color: #454547;
+  font-size: 13px;
+}
+
+.info-grid.editable input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+}
+
+.terms-content h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #454547;
+  margin: 25px 0 12px;
+}
+
+.terms-content p {
+  line-height: 1.8;
+  color: #261312;
+  margin: 0 0 15px;
+  text-align: justify;
+}
+
+.terms-content ul {
+  margin: 10px 0 20px 0;
+  padding-left: 25px;
+}
+
+.terms-content li {
+  line-height: 1.8;
+  margin-bottom: 8px;
+  color: #261312;
+}
+
+.signatures-section {
+  margin-top: 50px;
+}
+
+.signature-intro {
+  text-align: center;
+  font-style: italic;
+  color: #454547;
+  margin-bottom: 30px;
+}
+
+.signature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  margin-top: 30px;
+}
+
+.signature-block {
+  border: 2px solid #F0F0EE;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.signature-block h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #261312;
+  margin: 0 0 15px;
+  text-align: center;
+}
+
+.signature-field {
+  border-bottom: 2px solid #261312;
+  margin-bottom: 15px;
+  min-height: 60px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.signature-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: 'Brush Script MT', cursive;
+  font-size: 24px;
+  padding: 5px;
+  color: #261312;
+}
+
+.signature-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.signature-details div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.signature-details label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #454547;
+}
+
+.signature-details input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.doc-footer {
+  margin-top: 50px;
+  padding-top: 20px;
+  border-top: 2px solid #F0F0EE;
+  text-align: center;
+  font-size: 12px;
+  color: #454547;
+  font-style: italic;
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .agreement-container {
+    padding: 0;
+    background: white;
+  }
+  
+  .agreement-document {
+    box-shadow: none;
+    padding: 40px;
+  }
+  
+  .info-grid.editable input,
+  .signature-input,
+  .signature-details input,
+  .date-input {
+    border: none;
+    border-bottom: 1px solid #ddd;
+  }
+}

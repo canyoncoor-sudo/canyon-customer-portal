@@ -1,0 +1,454 @@
+.proposal-builder {
+  min-height: 100vh;
+  background: var(--color-ecru);
+  padding: var(--spacing-xl);
+}
+
+.proposal-header {
+  max-width: 900px;
+  margin: 0 auto var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.back-btn {
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-charcoal);
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: var(--color-ecru);
+}
+
+.proposal-header h1 {
+  font-size: 28px;
+  color: var(--color-espresso);
+  margin: 0;
+}
+
+.proposal-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.proposal-container form {
+  padding: var(--spacing-xxl);
+}
+
+.proposal-doc-header {
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+  border-bottom: 3px solid var(--color-rust);
+  margin-bottom: var(--spacing-xxl);
+}
+
+.company-logo {
+  display: inline-block;
+}
+
+.company-name {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--color-espresso);
+  line-height: 1;
+}
+
+.company-suffix {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 8px;
+  color: var(--color-rust);
+  margin-top: 4px;
+}
+
+.proposal-section {
+  margin-bottom: var(--spacing-xxl);
+}
+
+.proposal-section h3 {
+  font-size: 20px;
+  color: var(--color-espresso);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-ecru);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-field label {
+  font-weight: 600;
+  color: var(--color-charcoal);
+  font-size: 14px;
+}
+
+.form-field input {
+  padding: 12px;
+  border: 2px solid var(--color-ecru);
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.form-field input:focus {
+  outline: none;
+  border-color: var(--color-sky-slate);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.add-item-btn {
+  padding: 8px 16px;
+  background: var(--color-sky-slate);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-item-btn:hover {
+  background: var(--color-cornflower);
+}
+
+.line-items-table {
+  margin-bottom: var(--spacing-lg);
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 180px 1fr 140px 40px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-ecru);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-charcoal);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.line-item-row {
+  display: grid;
+  grid-template-columns: 180px 1fr 140px 40px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-ecru);
+  align-items: start;
+}
+
+.line-item-row:hover {
+  background: #fafafa;
+}
+
+.scope-input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--color-ecru);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.scope-input:focus {
+  outline: none;
+  border-color: var(--color-sky-slate);
+}
+
+.col-description textarea {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--color-ecru);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.col-description textarea:focus {
+  outline: none;
+  border-color: var(--color-sky-slate);
+}
+
+.col-cost input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--color-ecru);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: right;
+  transition: border-color 0.2s;
+}
+
+.col-cost input:focus {
+  outline: none;
+  border-color: var(--color-sky-slate);
+}
+
+.remove-btn {
+  width: 32px;
+  height: 32px;
+  background: #fee;
+  color: #c33;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.remove-btn:hover {
+  background: #fcc;
+}
+
+.total-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--color-rust);
+  color: white;
+  border-radius: var(--radius-md);
+  margin-top: var(--spacing-md);
+}
+
+.total-label {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.total-amount {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.company-signature-section {
+  background: var(--color-ecru);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-md);
+  border-top: 2px solid var(--color-rust);
+}
+
+.company-signature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xxl);
+  align-items: start;
+}
+
+.company-details h4 {
+  font-size: 18px;
+  color: var(--color-espresso);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.company-details p {
+  margin: 6px 0;
+  color: var(--color-charcoal);
+  font-size: 14px;
+}
+
+.signature-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.signature-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.signature-label {
+  font-weight: 600;
+  color: var(--color-charcoal);
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.signature-input {
+  padding: 16px;
+  border: 2px solid var(--color-charcoal);
+  border-radius: var(--radius-sm);
+  font-size: 24px;
+  font-family: 'Brush Script MT', cursive, 'Dancing Script', cursive, sans-serif;
+  font-style: italic;
+  background: white;
+  transition: border-color 0.2s;
+  min-height: 60px;
+}
+
+.signature-input::placeholder {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  color: #aaa;
+}
+
+.signature-input:focus {
+  outline: none;
+  border-color: var(--color-sky-slate);
+  background: #fafafa;
+}
+
+.signature-date-field {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.signature-date-field label {
+  font-weight: 600;
+  color: var(--color-charcoal);
+  font-size: 13px;
+}
+
+.date-input-small {
+  padding: 6px 10px;
+  border: 2px solid var(--color-ecru);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  cursor: pointer;
+  background: white;
+}
+
+.date-input-small:focus {
+  outline: none;
+  border-color: var(--color-sky-slate);
+}
+
+.lien-notice {
+  background: #fffef5;
+  border: 2px solid var(--color-rust);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.lien-notice h4 {
+  font-size: 16px;
+  color: var(--color-espresso);
+  margin: 0 0 var(--spacing-xs) 0;
+  text-align: center;
+}
+
+.notice-subtitle {
+  text-align: center;
+  font-style: italic;
+  color: #666;
+  margin-bottom: var(--spacing-lg);
+}
+
+.lien-notice p {
+  margin: var(--spacing-md) 0;
+  color: var(--color-charcoal);
+}
+
+.lien-notice ol {
+  margin: var(--spacing-md) 0;
+  padding-left: var(--spacing-lg);
+}
+
+.lien-notice li {
+  margin: var(--spacing-sm) 0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xxl);
+  padding-top: var(--spacing-xl);
+  border-top: 2px solid var(--color-ecru);
+}
+
+.btn-cancel {
+  padding: 12px 32px;
+  background: white;
+  border: 2px solid var(--color-charcoal);
+  color: var(--color-charcoal);
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background: var(--color-ecru);
+}
+
+.btn-submit {
+  padding: 12px 32px;
+  background: var(--color-rust);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: var(--color-espresso);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media print {
+  .proposal-header,
+  .back-btn,
+  .add-item-btn,
+  .remove-btn,
+  .form-actions {
+    display: none;
+  }
+
+  .proposal-builder {
+    padding: 0;
+  }
+
+  .proposal-container {
+    box-shadow: none;
+  }
+}
