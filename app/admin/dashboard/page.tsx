@@ -90,6 +90,13 @@ export default function AdminDashboard() {
           <h2>Customer Projects</h2>
           <div className="header-actions">
             <button 
+              onClick={() => router.push('/admin/access-codes')}
+              className="btn-primary"
+              style={{ background: '#A45941' }}
+            >
+              🔑 Access Codes
+            </button>
+            <button 
               onClick={() => router.push('/admin/proposals/new')}
               className="btn-primary"
             >
