@@ -118,32 +118,13 @@ export default function AdminDashboard() {
           </button>
           <button 
             onClick={() => router.push('/admin/jobs')}
-            className="btn-jobs"
-            style={{
-              marginLeft: 'auto',
-              background: '#712A18',
-              color: 'white',
-              border: 'none',
-              padding: '8px 16px',
-              borderRadius: '8px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
+            className="nav-button"
           >
             All Jobs
           </button>
           <button 
             onClick={() => router.push('/admin/professionals')}
-            className="btn-professionals"
-            style={{
-              background: '#567A8D',
-              color: 'white',
-              border: 'none',
-              padding: '8px 16px',
-              borderRadius: '8px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
+            className="nav-button"
           >
             Licensed Professionals
           </button>

@@ -259,3 +259,27 @@
   font-size: 18px;
   color: var(--color-charcoal);
 }
+
+/* Navigation buttons - same style as filter tabs */
+.nav-button {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  color: var(--color-charcoal);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+
+.nav-button:hover {
+  background: var(--color-ecru);
+}
+
+.nav-button:active,
+.nav-button:focus {
+  background: var(--color-rust);
+  color: white;
+  outline: none;
+}
