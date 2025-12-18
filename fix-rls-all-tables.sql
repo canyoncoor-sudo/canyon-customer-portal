@@ -1,6 +1,6 @@
 -- Canyon Customer Portal - Enable RLS on All Public Tables
 -- Run this in your Supabase SQL Editor
--- This script is safe to run multiple times
+-- This script is safe to run multiple times and only affects existing tables
 
 -- ============================================
 -- STEP 1: Check current RLS status
@@ -14,264 +14,110 @@ WHERE schemaname = 'public'
 ORDER BY tablename;
 
 -- ============================================
--- STEP 2: Enable RLS on all tables
+-- STEP 2: Enable RLS and Create Policies
 -- ============================================
 
--- Core Tables
-ALTER TABLE public.portal_jobs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.job_items ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.subcontractors ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
-
--- Additional Job-Related Tables
-ALTER TABLE IF EXISTS public.job_bid ENABLE ROW LEVEL SECURITY;
-ALTER TABLE IF EXISTS public.job_note ENABLE ROW LEVEL SECURITY;
-ALTER TABLE IF EXISTS public.job_change_order ENABLE ROW LEVEL SECURITY;
-ALTER TABLE IF EXISTS public.job_permit ENABLE ROW LEVEL SECURITY;
-ALTER TABLE IF EXISTS public.job_subcontractors ENABLE ROW LEVEL SECURITY;
-ALTER TABLE IF EXISTS public.job_files ENABLE ROW LEVEL SECURITY;
-ALTER TABLE IF EXISTS public.job_access ENABLE ROW LEVEL SECURITY;
-
--- Proposal Tables
-ALTER TABLE IF EXISTS public.proposals ENABLE ROW LEVEL SECURITY;
-ALTER TABLE IF EXISTS public.proposal_line_items ENABLE ROW LEVEL SECURITY;
-
--- Bids Table
-ALTER TABLE IF EXISTS public.bids ENABLE ROW LEVEL SECURITY;
-
--- ============================================
--- STEP 3: Drop existing policies (safe approach)
--- ============================================
-
--- Portal Jobs
-DROP POLICY IF EXISTS "portal_jobs_public_select" ON public.portal_jobs;
-DROP POLICY IF EXISTS "portal_jobs_service_write" ON public.portal_jobs;
-
--- Job Items
-DROP POLICY IF EXISTS "job_items_public_select" ON public.job_items;
-DROP POLICY IF EXISTS "job_items_service_write" ON public.job_items;
-
--- Subcontractors
-DROP POLICY IF EXISTS "subcontractors_service_only" ON public.subcontractors;
-
--- Admin Users
-DROP POLICY IF EXISTS "admin_users_service_only" ON public.admin_users;
-
--- Job Bid
-DROP POLICY IF EXISTS "job_bid_public_select" ON public.job_bid;
-DROP POLICY IF EXISTS "job_bid_service_write" ON public.job_bid;
-
--- Job Note
-DROP POLICY IF EXISTS "job_note_public_select" ON public.job_note;
-DROP POLICY IF EXISTS "job_note_service_write" ON public.job_note;
-
--- Job Change Order
-DROP POLICY IF EXISTS "job_change_order_public_select" ON public.job_change_order;
-DROP POLICY IF EXISTS "job_change_order_service_write" ON public.job_change_order;
-
--- Job Permit
-DROP POLICY IF EXISTS "job_permit_public_select" ON public.job_permit;
-DROP POLICY IF EXISTS "job_permit_service_write" ON public.job_permit;
-
--- Job Subcontractors
-DROP POLICY IF EXISTS "job_subcontractors_public_select" ON public.job_subcontractors;
-DROP POLICY IF EXISTS "job_subcontractors_service_write" ON public.job_subcontractors;
-
--- Job Files
-DROP POLICY IF EXISTS "job_files_public_select" ON public.job_files;
-DROP POLICY IF EXISTS "job_files_service_write" ON public.job_files;
-
--- Job Access
-DROP POLICY IF EXISTS "job_access_public_select" ON public.job_access;
-DROP POLICY IF EXISTS "job_access_service_write" ON public.job_access;
-
--- Proposals
-DROP POLICY IF EXISTS "proposals_public_select" ON public.proposals;
-DROP POLICY IF EXISTS "proposals_service_write" ON public.proposals;
-
--- Proposal Line Items
-DROP POLICY IF EXISTS "proposal_line_items_public_select" ON public.proposal_line_items;
-DROP POLICY IF EXISTS "proposal_line_items_service_write" ON public.proposal_line_items;
-
--- Bids
-DROP POLICY IF EXISTS "bids_public_select" ON public.bids;
-DROP POLICY IF EXISTS "bids_service_write" ON public.bids;
-
--- ============================================
--- STEP 4: Create RLS Policies (fresh start)
--- ============================================
-
--- PORTAL_JOBS
-CREATE POLICY "portal_jobs_public_select" ON public.portal_jobs
-  FOR SELECT TO anon, authenticated USING (true);
-
-CREATE POLICY "portal_jobs_service_write" ON public.portal_jobs
-  FOR ALL TO service_role USING (true) WITH CHECK (true);
-
--- JOB_ITEMS
-CREATE POLICY "job_items_public_select" ON public.job_items
-  FOR SELECT TO anon, authenticated USING (true);
-
-CREATE POLICY "job_items_service_write" ON public.job_items
-  FOR ALL TO service_role USING (true) WITH CHECK (true);
-
--- SUBCONTRACTORS
-CREATE POLICY "subcontractors_service_only" ON public.subcontractors
-  FOR ALL TO service_role USING (true) WITH CHECK (true);
-
--- ADMIN_USERS
-CREATE POLICY "admin_users_service_only" ON public.admin_users
-  FOR ALL TO service_role USING (true) WITH CHECK (true);
-
--- JOB_BID
+-- This comprehensive DO block handles everything safely
 DO $$ 
+DECLARE
+  table_name text;
+  table_list text[] := ARRAY[
+    'portal_jobs', 'job_items', 'subcontractors', 'admin_users',
+    'job_bid', 'job_note', 'job_change_order', 'job_permit',
+    'job_subcontractors', 'job_files', 'job_access',
+    'proposals', 'proposal_line_items', 'bids'
+  ];
+  admin_only_tables text[] := ARRAY['subcontractors', 'admin_users'];
 BEGIN
-  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_bid') THEN
-    EXECUTE 'CREATE POLICY "job_bid_public_select" ON public.job_bid FOR SELECT TO anon, authenticated USING (true)';
-    EXECUTE 'CREATE POLICY "job_bid_service_write" ON public.job_bid FOR ALL TO service_role USING (true) WITH CHECK (true)';
-  END IF;
-END $$;
-
--- JOB_NOTE
-DO $$ 
-BEGIN
-  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_note') THEN
-    EXECUTE 'CREATE POLICY "job_note_public_select" ON public.job_note FOR SELECT TO anon, authenticated USING (true)';
-    EXECUTE 'CREATE POLICY "job_note_service_write" ON public.job_note FOR ALL TO service_role USING (true) WITH CHECK (true)';
-  END IF;
-END $$;
-
--- JOB_CHANGE_ORDER
-DO $$ 
-BEGIN
-  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_change_order') THEN
-    EXECUTE 'CREATE POLICY "job_change_order_public_select" ON public.job_change_order FOR SELECT TO anon, authenticated USING (true)';
-    EXECUTE 'CREATE POLICY "job_change_order_service_write" ON public.job_change_order FOR ALL TO service_role USING (true) WITH CHECK (true)';
-  END IF;
-END $$;
-
--- JOB_PERMIT
-DO $$ 
-BEGIN
-  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_permit') THEN
-    EXECUTE 'CREATE POLICY "job_permit_public_select" ON public.job_permit FOR SELECT TO anon, authenticated USING (true)';
-    EXECUTE 'CREATE POLICY "job_permit_service_write" ON public.job_permit FOR ALL TO service_role USING (true) WITH CHECK (true)';
-  END IF;
-END $$;
-
--- JOB_SUBCONTRACTORS
-DO $$ 
-BEGIN
-  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_subcontractors') THEN
-    EXECUTE 'CREATE POLICY "job_subcontractors_public_select" ON public.job_subcontractors FOR SELECT TO anon, authenticated USING (true)';
-    EXECUTE 'CREATE POLICY "job_subcontractors_service_write" ON public.job_subcontractors FOR ALL TO service_role USING (true) WITH CHECK (true)';
-  END IF;
-END $$;
-
--- JOB_FILES
-DO $$ 
-BEGIN
-  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_files') THEN
-    EXECUTE 'CREATE POLICY "job_files_public_select" ON public.job_files FOR SELECT TO anon, authenticated USING (true)';
-    EXECUTE 'CREATE POLICY "job_files_service_write" ON public.job_files FOR ALL TO service_role USING (true) WITH CHECK (true)';
-  END IF;
-END $$;
-
--- JOB_ACCESS
-DO $$ 
-BEGIN
-  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_access') THEN
-    EXECUTE 'CREATE POLICY "job_access_public_select" ON public.job_access FOR SELECT TO anon, authenticated USING (true)';
-    EXECUTE 'CREATE POLICY "job_access_service_write" ON public.job_access FOR ALL TO service_role USING (true) WITH CHECK (true)';
-  END IF;
-END $$;
-
--- PROPOSALS
-DO $$ 
-BEGIN
-  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'proposals') THEN
-    EXECUTE 'CREATE POLICY "proposals_public_select" ON public.proposals FOR SELECT TO anon, authenticated USING (true)';
-    EXECUTE 'CREATE POLICY "proposals_service_write" ON public.proposals FOR ALL TO service_role USING (true) WITH CHECK (true)';
-  END IF;
-END $$;
-
--- PROPOSAL_LINE_ITEMS
-DO $$ 
-BEGIN
-  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'proposal_line_items') THEN
-    EXECUTE 'CREATE POLICY "proposal_line_items_public_select" ON public.proposal_line_items FOR SELECT TO anon, authenticated USING (true)';
-    EXECUTE 'CREATE POLICY "proposal_line_items_service_write" ON public.proposal_line_items FOR ALL TO service_role USING (true) WITH CHECK (true)';
-  END IF;
-END $$;
-
--- BIDS
-DO $$ 
-BEGIN
-  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'bids') THEN
-    EXECUTE 'CREATE POLICY "bids_public_select" ON public.bids FOR SELECT TO anon, authenticated USING (true)';
-    EXECUTE 'CREATE POLICY "bids_service_write" ON public.bids FOR ALL TO service_role USING (true) WITH CHECK (true)';
-  END IF;
+  FOREACH table_name IN ARRAY table_list
+  LOOP
+    -- Check if table exists
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = table_name) THEN
+      -- Enable RLS
+      EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', table_name);
+      
+      -- Drop existing policies
+      EXECUTE format('DROP POLICY IF EXISTS "%s_public_select" ON public.%I', table_name, table_name);
+      EXECUTE format('DROP POLICY IF EXISTS "%s_service_write" ON public.%I', table_name, table_name);
+      EXECUTE format('DROP POLICY IF EXISTS "%s_service_only" ON public.%I', table_name, table_name);
+      
+      -- Create new policies based on table type
+      IF table_name = ANY(admin_only_tables) THEN
+        -- Admin-only tables: service_role only
+        EXECUTE format('CREATE POLICY "%s_service_only" ON public.%I FOR ALL TO service_role USING (true) WITH CHECK (true)', table_name, table_name);
+        RAISE NOTICE '✅ Secured table: % (admin-only)', table_name;
+      ELSE
+        -- Public readable tables: anon/authenticated can SELECT, service_role can do all
+        EXECUTE format('CREATE POLICY "%s_public_select" ON public.%I FOR SELECT TO anon, authenticated USING (true)', table_name, table_name);
+        EXECUTE format('CREATE POLICY "%s_service_write" ON public.%I FOR ALL TO service_role USING (true) WITH CHECK (true)', table_name, table_name);
+        RAISE NOTICE '✅ Secured table: % (public read)', table_name;
+      END IF;
+    ELSE
+      RAISE NOTICE '⏭️  Skipped: % (table does not exist)', table_name;
+    END IF;
+  END LOOP;
 END $$;
 
 -- ============================================
--- STEP 5: Create indexes for performance
+-- STEP 3: Create indexes for performance
 -- ============================================
-CREATE INDEX IF NOT EXISTS idx_portal_jobs_address ON public.portal_jobs(job_address);
-CREATE INDEX IF NOT EXISTS idx_job_items_job_id ON public.job_items(job_id);
-CREATE INDEX IF NOT EXISTS idx_subcontractors_job_id ON public.subcontractors(job_id);
-CREATE INDEX IF NOT EXISTS idx_admin_users_email ON public.admin_users(email);
-
--- Additional indexes for optional tables
-DO $$ BEGIN
+DO $$ 
+BEGIN
+  -- Core indexes
+  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'portal_jobs') THEN
+    CREATE INDEX IF NOT EXISTS idx_portal_jobs_address ON public.portal_jobs(job_address);
+  END IF;
+  
+  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_items') THEN
+    CREATE INDEX IF NOT EXISTS idx_job_items_job_id ON public.job_items(job_id);
+  END IF;
+  
+  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'subcontractors') THEN
+    CREATE INDEX IF NOT EXISTS idx_subcontractors_job_id ON public.subcontractors(job_id);
+  END IF;
+  
+  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'admin_users') THEN
+    CREATE INDEX IF NOT EXISTS idx_admin_users_email ON public.admin_users(email);
+  END IF;
+  
+  -- Optional table indexes
   IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_bid') THEN
     CREATE INDEX IF NOT EXISTS idx_job_bid_job_id ON public.job_bid(job_id);
   END IF;
-END $$;
-
-DO $$ BEGIN
+  
   IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_note') THEN
     CREATE INDEX IF NOT EXISTS idx_job_note_job_id ON public.job_note(job_id);
   END IF;
-END $$;
-
-DO $$ BEGIN
+  
   IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_change_order') THEN
     CREATE INDEX IF NOT EXISTS idx_job_change_order_job_id ON public.job_change_order(job_id);
   END IF;
-END $$;
-
-DO $$ BEGIN
+  
   IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_permit') THEN
     CREATE INDEX IF NOT EXISTS idx_job_permit_job_id ON public.job_permit(job_id);
   END IF;
-END $$;
-
-DO $$ BEGIN
+  
   IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_subcontractors') THEN
     CREATE INDEX IF NOT EXISTS idx_job_subcontractors_job_id ON public.job_subcontractors(job_id);
   END IF;
-END $$;
-
-DO $$ BEGIN
+  
   IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_files') THEN
     CREATE INDEX IF NOT EXISTS idx_job_files_job_id ON public.job_files(job_id);
   END IF;
-END $$;
-
-DO $$ BEGIN
+  
   IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'job_access') THEN
     CREATE INDEX IF NOT EXISTS idx_job_access_job_id ON public.job_access(job_id);
   END IF;
-END $$;
-
-DO $$ BEGIN
+  
   IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'proposal_line_items') THEN
     CREATE INDEX IF NOT EXISTS idx_proposal_line_items_proposal_id ON public.proposal_line_items(proposal_id);
   END IF;
+  
+  RAISE NOTICE '✅ Performance indexes created';
 END $$;
 
 -- ============================================
--- STEP 6: Verify RLS is enabled
+-- STEP 4: Verify RLS is enabled
 -- ============================================
 SELECT 
   schemaname,
@@ -287,6 +133,12 @@ ORDER BY tablename;
 -- ============================================
 DO $$ 
 BEGIN
-  RAISE NOTICE '✅ RLS enabled and policies created for all tables!';
-  RAISE NOTICE '✅ Your database is now production-ready and secure!';
+  RAISE NOTICE '';
+  RAISE NOTICE '========================================';
+  RAISE NOTICE '✅ RLS SECURITY SETUP COMPLETE!';
+  RAISE NOTICE '========================================';
+  RAISE NOTICE 'Your database is now production-ready!';
+  RAISE NOTICE 'All tables have Row Level Security enabled.';
+  RAISE NOTICE 'Check the results above to verify.';
+  RAISE NOTICE '========================================';
 END $$;
