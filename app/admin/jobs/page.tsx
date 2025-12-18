@@ -60,8 +60,7 @@ export default function AdminJobs() {
   };
 
   const handleAddJob = () => {
-    // TODO: Navigate to add job page
-    alert('Add job functionality coming soon');
+    router.push('/admin/jobs/new');
   };
 
   const handleViewJob = (jobId: string) => {
