@@ -94,13 +94,7 @@ export default function AdminDashboard() {
               className="btn-primary"
               style={{ background: '#A45941' }}
             >
-              🔑 Access Codes
-            </button>
-            <button 
-              onClick={() => router.push('/admin/proposals/new')}
-              className="btn-primary"
-            >
-              + New Proposal
+              Access Codes
             </button>
           </div>
         </div>

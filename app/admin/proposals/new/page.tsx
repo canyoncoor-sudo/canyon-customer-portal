@@ -9,6 +9,9 @@ export default function NewProposal() {
   const [formData, setFormData] = useState({
     customer_name: '',
     project_address: '',
+    city: '',
+    state: '',
+    zip_code: '',
     email: '',
     phone: '',
     project_description: '',
