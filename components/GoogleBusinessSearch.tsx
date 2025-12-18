@@ -24,7 +24,7 @@ export default function GoogleBusinessSearch({ onBusinessSelect, disabled = fals
   const [error, setError] = useState('');
   const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
   
-  const searchTimeoutRef = useRef<NodeJS.Timeout>();
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const autocompleteServiceRef = useRef<google.maps.places.AutocompleteService | null>(null);
   const placesServiceRef = useRef<google.maps.places.PlacesService | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
