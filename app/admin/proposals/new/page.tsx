@@ -7,7 +7,8 @@ import './new-proposal.css';
 export default function NewProposal() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    customer_name: '',
+    first_name: '',
+    last_name: '',
     project_address: '',
     city: '',
     state: '',
@@ -62,7 +63,7 @@ export default function NewProposal() {
       const data = await res.json();
       
       // Show success message with access code
-      alert(`✅ Proposal created successfully!\n\nCustomer Access:\nAddress: ${formData.project_address}\nCode: ${formData.access_code}\n\nShare these credentials with your customer.`);
+      alert(`✅ Proposal created successfully!\n\nCustomer: ${formData.first_name} ${formData.last_name}\n\nCustomer Access:\nAddress: ${formData.project_address}\nCode: ${formData.access_code}\n\nShare these credentials with your customer.`);
       
       // Store the job ID and redirect to dashboard to see the new proposal
       router.push('/admin/dashboard');
@@ -99,14 +100,82 @@ export default function NewProposal() {
             <h2>Customer Information</h2>
             <div className="form-grid">
               <div className="form-field">
-                <label htmlFor="customer_name">Customer Name *</label>
+                <label htmlFor="first_name">First Name *</label>
                 <input
                   type="text"
-                  id="customer_name"
-                  name="customer_name"
-                  value={formData.customer_name}
+                  id="first_name"
+                  name="first_name"
+                  value={formData.first_name}
                   onChange={handleChange}
-                  placeholder="John Smith"
+                  placeholder="John"
+                  required
+                />
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="last_name">Last Name *</label>
+                <input
+                  type="text"
+                  id="last_name"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleChange}
+                  placeholder="Smith"
+                  required
+                />
+              </div>
+
+              <div className="form-field full-width">
+                <label htmlFor="project_address">Street Address *</label>
+                <input
+                  type="text"
+                  id="project_address"
+                  name="project_address"
+                  value={formData.project_address}
+                  onChange={handleChange}
+                  placeholder="123 Main Street"
+                  required
+                />
+                <small>This will be used as the customer's login username</small>
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="city">City *</label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  placeholder="Portland"
+                  required
+                />
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="state">State *</label>
+                <input
+                  type="text"
+                  id="state"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  placeholder="OR"
+                  maxLength={2}
+                  required
+                />
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="zip_code">ZIP Code *</label>
+                <input
+                  type="text"
+                  id="zip_code"
+                  name="zip_code"
+                  value={formData.zip_code}
+                  onChange={handleChange}
+                  placeholder="97201"
+                  maxLength={10}
                   required
                 />
               </div>
@@ -135,20 +204,6 @@ export default function NewProposal() {
                   placeholder="customer@example.com"
                   required
                 />
-              </div>
-
-              <div className="form-field full-width">
-                <label htmlFor="project_address">Project Address *</label>
-                <input
-                  type="text"
-                  id="project_address"
-                  name="project_address"
-                  value={formData.project_address}
-                  onChange={handleChange}
-                  placeholder="123 Main Street, Portland, OR 97201"
-                  required
-                />
-                <small>This will be used as the customer's login username</small>
               </div>
             </div>
           </div>

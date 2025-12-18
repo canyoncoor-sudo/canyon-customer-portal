@@ -88,15 +88,7 @@ export default function AdminDashboard() {
       <div className="admin-content">
         <div className="dashboard-header">
           <h2>Customer Projects</h2>
-          <div className="header-actions">
-            <button 
-              onClick={() => router.push('/admin/access-codes')}
-              className="btn-primary"
-              style={{ background: '#A45941' }}
-            >
-              Access Codes
-            </button>
-          </div>
+
         </div>
 
         <div className="filter-tabs">

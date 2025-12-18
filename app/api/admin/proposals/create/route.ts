@@ -19,8 +19,12 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { 
-      customer_name, 
-      project_address, 
+      first_name,
+      last_name,
+      project_address,
+      city,
+      state,
+      zip_code,
       email, 
       phone, 
       project_description, 
@@ -28,8 +32,11 @@ export async function POST(req: NextRequest) {
       expiration_days 
     } = body;
 
+    // Combine first and last name
+    const customer_name = `${first_name} ${last_name}`;
+
     // Validate required fields
-    if (!customer_name || !project_address || !email || !phone || !access_code) {
+    if (!first_name || !last_name || !project_address || !city || !state || !zip_code || !email || !phone || !access_code) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -45,6 +52,9 @@ export async function POST(req: NextRequest) {
       .from('portal_jobs')
       .insert({
         job_address: project_address,
+        job_city: city,
+        job_state: state,
+        job_zip: zip_code,
         customer_name,
         customer_email: email,
         customer_phone: phone,
