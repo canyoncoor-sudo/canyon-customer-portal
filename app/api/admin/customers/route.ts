@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,10 +15,12 @@ export async function GET(request: NextRequest) {
     }
 
     const token = authHeader.split(' ')[1];
-    const secret = process.env.ADMIN_JWT_SECRET || 'your-secret-key';
+    const secret = new TextEncoder().encode(
+      process.env.ADMIN_JWT_SECRET || 'your-secret-key'
+    );
     
     try {
-      jwt.verify(token, secret);
+      await jwtVerify(token, secret);
     } catch (err) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
@@ -27,7 +29,7 @@ export async function GET(request: NextRequest) {
       .from('portal_jobs')
       .select('id, customer_name, job_address, access_code_hash')
       .order('created_at', { ascending: false });
-
+    
     if (error) {
       console.error('Database error:', error);
       return NextResponse.json({ error: 'Failed to fetch customers' }, { status: 500 });
