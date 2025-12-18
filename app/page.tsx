@@ -87,22 +87,22 @@ export default function Home() {
         <div style={{ background: "white", borderRadius: 16, padding: 18, border: "1px solid rgba(38,19,18,.10)", marginTop: 14 }}>
           <h2 style={{ marginTop: 0 }}>Login</h2>
 
-          <label style={{ fontWeight: 800 }}>Project Address</label>
+          <label style={{ fontWeight: 800 }}>Email or Project Address</label>
           <input
             value={field1}
             onChange={(e) => setField1(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="123 Main St"
+            placeholder="projects@canyonconstructioninc.com or 123 Main St"
             style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid rgba(38,19,18,.2)", margin: "6px 0 12px" }}
           />
 
-          <label style={{ fontWeight: 800 }}>Access Code</label>
+          <label style={{ fontWeight: 800 }}>Password or Access Code</label>
           <input
             type="password"
             value={field2}
             onChange={(e) => setField2(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="CANYON-XXXX"
+            placeholder="Enter password or CANYON-XXXX"
             style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid rgba(38,19,18,.2)", margin: "6px 0 12px" }}
           />
 
