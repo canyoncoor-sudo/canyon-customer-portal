@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import './agreement.css';
 
-export default function SubcontractorAgreement() {
+function AgreementContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const professionalId = searchParams.get('id');
@@ -39,6 +39,7 @@ export default function SubcontractorAgreement() {
       });
       const data = await res.json();
       const prof = data.professionals?.find((p: any) => p.id === professionalId);
+      
       if (prof) {
         setProfessional({
           company_name: prof.company_name || '',
@@ -78,28 +79,30 @@ export default function SubcontractorAgreement() {
         {/* Header */}
         <div className="doc-header">
           <h1>SUBCONTRACTOR WORK AGREEMENT</h1>
-          <p className="doc-subtitle">Independent Contractor Collaboration Agreement</p>
+          <div className="doc-subtitle">Between Canyon Construction Inc. and {professional.company_name || 'Subcontractor'}</div>
           <div className="agreement-date">
             <label>Agreement Date:</label>
             <input 
               type="date" 
-              value={agreementDate} 
-              onChange={(e) => setAgreementDate(e.target.value)}
               className="date-input"
+              value={agreementDate}
+              onChange={(e) => setAgreementDate(e.target.value)}
             />
           </div>
         </div>
 
         {/* Parties Section */}
-        <section className="agreement-section">
-          <h2>PARTIES TO THIS AGREEMENT</h2>
+        <div className="agreement-section">
+          <h2>Parties to this Agreement</h2>
           
           <div className="party-info">
             <h3>General Contractor</h3>
             <div className="info-grid">
-              <div><strong>Company:</strong> Canyon Construction Inc</div>
-              <div><strong>CCB #:</strong> 256596</div>
-              <div><strong>Email:</strong> spencer@canyonconstructioninc.com</div>
+              <div><strong>Company:</strong> Canyon Construction Inc.</div>
+              <div><strong>CCB#:</strong> 123456</div>
+              <div><strong>Address:</strong> Portland, OR</div>
+              <div><strong>Phone:</strong> (503) 555-0100</div>
+              <div><strong>Email:</strong> info@canyonconstructioninc.com</div>
             </div>
           </div>
 
@@ -107,147 +110,158 @@ export default function SubcontractorAgreement() {
             <h3>Subcontractor</h3>
             <div className="info-grid editable">
               <div>
-                <label>Company Name:</label>
+                <label>Company Name</label>
                 <input 
                   type="text" 
                   value={professional.company_name}
                   onChange={(e) => setProfessional({...professional, company_name: e.target.value})}
-                  placeholder="Enter company name"
                 />
               </div>
               <div>
-                <label>Contact Person:</label>
+                <label>Contact Name</label>
                 <input 
                   type="text" 
                   value={professional.contact_name}
                   onChange={(e) => setProfessional({...professional, contact_name: e.target.value})}
-                  placeholder="Enter contact name"
                 />
               </div>
               <div>
-                <label>Trade/Specialty:</label>
+                <label>Trade</label>
                 <input 
                   type="text" 
                   value={professional.trade}
                   onChange={(e) => setProfessional({...professional, trade: e.target.value})}
-                  placeholder="Enter trade"
                 />
               </div>
               <div>
-                <label>License Number:</label>
+                <label>CCB Number</label>
                 <input 
                   type="text" 
                   value={professional.ccb_number}
                   onChange={(e) => setProfessional({...professional, ccb_number: e.target.value})}
-                  placeholder="CCB/LCB Number"
                 />
               </div>
               <div>
-                <label>Phone:</label>
+                <label>Phone</label>
                 <input 
-                  type="tel" 
+                  type="text" 
                   value={professional.phone}
                   onChange={(e) => setProfessional({...professional, phone: e.target.value})}
-                  placeholder="Phone number"
                 />
               </div>
               <div>
-                <label>Email:</label>
+                <label>Email</label>
                 <input 
-                  type="email" 
+                  type="text" 
                   value={professional.email}
                   onChange={(e) => setProfessional({...professional, email: e.target.value})}
-                  placeholder="Email address"
+                />
+              </div>
+              <div>
+                <label>Address</label>
+                <input 
+                  type="text" 
+                  value={professional.address}
+                  onChange={(e) => setProfessional({...professional, address: e.target.value})}
                 />
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* Terms Section */}
-        <section className="agreement-section">
-          <h2>TERMS OF COLLABORATION</h2>
-          
+        {/* Terms and Conditions */}
+        <div className="agreement-section">
+          <h2>Terms and Conditions</h2>
           <div className="terms-content">
-            <h3>1. Scope of Work & Professional Responsibility</h3>
-            <p>Subcontractor agrees to perform all work within their designated trade and specialty in a professional, workmanlike manner, adhering to all applicable building codes, industry standards, and best practices. Subcontractor maintains full responsibility for the quality, safety, and completion of their scope of work.</p>
+            <h3>1. Scope of Work</h3>
+            <p>
+              The Subcontractor agrees to furnish all labor, materials, equipment, and services necessary to complete the work 
+              as described in the specifications and plans provided by Canyon Construction Inc. The work shall be performed 
+              in a professional and workmanlike manner in accordance with industry standards.
+            </p>
 
-            <h3>2. Permits & Regulatory Compliance</h3>
-            <p>Subcontractor is solely responsible for obtaining, paying for, and maintaining all permits, licenses, and inspections required for their specific trade and scope of work. This includes, but is not limited to, trade-specific permits, specialty licenses, and any regulatory approvals necessary to perform the contracted services.</p>
-
-            <h3>3. Professional Conduct & Customer Relations</h3>
-            <p>Subcontractor agrees to:</p>
+            <h3>2. Payment Terms</h3>
+            <p>
+              Payment shall be made according to the following schedule:
+            </p>
             <ul>
-              <li>Treat the customer's property with respect and care at all times</li>
-              <li>Maintain a clean and organized work area, removing debris daily</li>
-              <li>Communicate professionally and courteously with the property owner</li>
-              <li>Arrive punctually for scheduled work and provide advance notice of any delays</li>
-              <li>Dress appropriately and maintain professional appearance on job sites</li>
-              <li>Respect the customer's privacy and property boundaries</li>
+              <li>Progress payments shall be made monthly based on percentage of work completed</li>
+              <li>Final payment shall be made within 30 days of project completion and acceptance</li>
+              <li>All invoices must include detailed breakdown of work completed</li>
+              <li>Retainage of 10% may be held until final completion and approval</li>
             </ul>
 
-            <h3>4. Insurance & Licensing Requirements</h3>
-            <p>Subcontractor shall provide Canyon Construction Inc with current documentation of:</p>
+            <h3>3. Insurance and Licensing</h3>
+            <p>
+              The Subcontractor warrants that they maintain current and valid:
+            </p>
             <ul>
-              <li><strong>Valid contractor's license</strong> (CCB, LCB, or applicable state license)</li>
-              <li><strong>General liability insurance</strong> with minimum coverage as required by Oregon state law</li>
-              <li><strong>Workers' compensation insurance</strong> (if employing others)</li>
-              <li><strong>Performance bond</strong> (when applicable for project size/scope)</li>
-            </ul>
-            <p>These documents must be provided before commencing work and kept current throughout the project duration.</p>
-
-            <h3>5. Independent Contractor Relationship</h3>
-            <p>Both parties acknowledge and agree that this is an independent contractor relationship. Subcontractor is not an employee, partner, or joint venture with Canyon Construction Inc. Each party maintains their own business operations, insurance, taxes, and legal obligations.</p>
-
-            <h3>6. Quality Standards & Warranty</h3>
-            <p>Subcontractor warrants that all work will be performed in accordance with industry standards and will be free from defects in workmanship and materials. Subcontractor agrees to correct any deficiencies in their work at no additional cost to Canyon Construction Inc or the property owner.</p>
-
-            <h3>7. Communication & Coordination</h3>
-            <p>Subcontractor agrees to maintain open communication with Canyon Construction Inc regarding:</p>
-            <ul>
-              <li>Project schedule and timeline updates</li>
-              <li>Material needs and procurement</li>
-              <li>Any job site issues or concerns</li>
-              <li>Changes to scope or unforeseen conditions</li>
-              <li>Completion status and final inspection readiness</li>
+              <li>State contractor's license (CCB) in good standing</li>
+              <li>General liability insurance with minimum coverage of $1,000,000</li>
+              <li>Workers' compensation insurance as required by law</li>
+              <li>Vehicle insurance for all vehicles used on project sites</li>
             </ul>
 
-            <h3>8. Safety & Job Site Requirements</h3>
-            <p>Subcontractor shall comply with all OSHA safety requirements and maintain a safe working environment. This includes proper use of personal protective equipment, safe operation of tools and equipment, and adherence to Canyon Construction Inc's job site safety protocols.</p>
+            <h3>4. Schedule and Completion</h3>
+            <p>
+              The Subcontractor agrees to complete the work in accordance with the project schedule provided by Canyon 
+              Construction Inc. Any delays must be communicated immediately. Time is of the essence in this agreement.
+            </p>
 
-            <h3>9. Mutual Success & Partnership</h3>
-            <p>This agreement represents a collaborative partnership where both parties work together toward successful project completion. By maintaining high standards of professionalism, quality workmanship, and customer service, we build lasting business relationships and positive reputations in our community.</p>
+            <h3>5. Safety and Compliance</h3>
+            <p>
+              The Subcontractor shall comply with all applicable federal, state, and local laws, regulations, and ordinances, 
+              including but not limited to OSHA safety requirements. The Subcontractor is responsible for maintaining a safe 
+              work environment for their employees and others on the job site.
+            </p>
+
+            <h3>6. Warranty</h3>
+            <p>
+              The Subcontractor warrants that all work performed and materials provided shall be free from defects for a 
+              period of one (1) year from the date of completion. The Subcontractor agrees to promptly correct any defective 
+              work at no additional cost to Canyon Construction Inc.
+            </p>
+
+            <h3>7. Termination</h3>
+            <p>
+              Either party may terminate this agreement with written notice if the other party fails to fulfill their 
+              obligations. Canyon Construction Inc. reserves the right to terminate this agreement immediately for cause, 
+              including but not limited to safety violations, poor workmanship, or failure to maintain required insurance.
+            </p>
           </div>
-        </section>
+        </div>
 
         {/* Signatures Section */}
-        <section className="agreement-section signatures-section">
-          <h2>AGREEMENT & SIGNATURES</h2>
-          <p className="signature-intro">By signing below, both parties acknowledge they have read, understood, and agree to abide by the terms outlined in this Subcontractor Work Agreement.</p>
+        <div className="agreement-section signatures-section">
+          <h2>Agreement and Signatures</h2>
+          <p className="signature-intro">
+            By signing below, both parties acknowledge that they have read, understood, and agree to be bound by all 
+            terms and conditions of this Subcontractor Work Agreement.
+          </p>
 
           <div className="signature-grid">
             <div className="signature-block">
               <h4>Subcontractor Signature</h4>
               <div className="signature-field">
-                <input
-                  type="text"
+                <input 
+                  type="text" 
+                  className="signature-input"
                   value={subcontractorSignature}
                   onChange={(e) => setSubcontractorSignature(e.target.value)}
-                  placeholder="Type or sign here"
-                  className="signature-input"
+                  placeholder="Sign here"
                 />
               </div>
               <div className="signature-details">
                 <div>
-                  <label>Printed Name:</label>
-                  <input 
-                    type="text" 
-                    value={professional.contact_name}
-                    onChange={(e) => setProfessional({...professional, contact_name: e.target.value})}
-                  />
+                  <label>Printed Name</label>
+                  <input type="text" value={professional.contact_name} readOnly />
                 </div>
                 <div>
-                  <label>Date:</label>
+                  <label>Title</label>
+                  <input type="text" placeholder="Owner / Authorized Representative" />
+                </div>
+                <div>
+                  <label>Date</label>
                   <input 
                     type="date" 
                     value={subcontractorSignatureDate}
@@ -258,23 +272,27 @@ export default function SubcontractorAgreement() {
             </div>
 
             <div className="signature-block">
-              <h4>Canyon Construction Inc</h4>
+              <h4>Canyon Construction Inc.</h4>
               <div className="signature-field">
-                <input
-                  type="text"
+                <input 
+                  type="text" 
+                  className="signature-input"
                   value={canyonSignature}
                   onChange={(e) => setCanyonSignature(e.target.value)}
-                  placeholder="Type or sign here"
-                  className="signature-input"
+                  placeholder="Sign here"
                 />
               </div>
               <div className="signature-details">
                 <div>
-                  <label>Printed Name:</label>
+                  <label>Printed Name</label>
                   <input type="text" placeholder="Authorized Representative" />
                 </div>
                 <div>
-                  <label>Date:</label>
+                  <label>Title</label>
+                  <input type="text" placeholder="Project Manager" />
+                </div>
+                <div>
+                  <label>Date</label>
                   <input 
                     type="date" 
                     value={canyonSignatureDate}
@@ -284,13 +302,21 @@ export default function SubcontractorAgreement() {
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Footer */}
         <div className="doc-footer">
-          <p>This agreement is executed between independent contractors for the purpose of establishing professional standards and mutual expectations for collaborative construction projects.</p>
+          This agreement is legally binding. Both parties should retain a copy for their records.
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SubcontractorAgreement() {
+  return (
+    <Suspense fallback={<div style={{padding: '24px'}}>Loading agreement...</div>}>
+      <AgreementContent />
+    </Suspense>
   );
 }
