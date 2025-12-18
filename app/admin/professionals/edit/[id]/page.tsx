@@ -338,6 +338,34 @@ export default function EditProfessional() {
                   + Add Another Phone Number
                 </button>
               </div>
+
+              <div className="form-field full-width">
+                <label htmlFor="address">Address</label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  placeholder="123 Main St, Portland, OR 97201"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="form-section">
+            <h2>Additional Information</h2>
+            <div className="form-field">
+              <label htmlFor="notes">Notes</label>
+              <textarea
+                id="notes"
+                name="notes"
+                value={formData.notes}
+                onChange={handleChange}
+                placeholder="Any additional notes about this professional..."
+                rows={4}
+                style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', fontFamily: 'inherit' }}
+              />
             </div>
           </div>
 
