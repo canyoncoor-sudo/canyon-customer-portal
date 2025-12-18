@@ -263,3 +263,4 @@ export default function GoogleBusinessSearch({ onBusinessSelect, disabled = fals
     </div>
   );
 }
+// TypeScript types fixed for Google Maps API
