@@ -13,6 +13,13 @@ interface Professional {
   phone: string;
   email: string;
   created_at: string;
+  google_place_id?: string;
+  google_business_name?: string;
+  google_rating?: number;
+  google_total_reviews?: number;
+  google_maps_url?: string;
+  google_profile_photo_url?: string;
+  is_google_verified?: boolean;
 }
 
 interface ProfessionalGroup {
@@ -215,6 +222,45 @@ export default function AdminProfessionals() {
                     <span className="trade-badge">{pro.trade}</span>
                   </div>
                   <div className="card-body">
+                    {pro.is_google_verified && (
+                      <div style={{
+                        background: '#D4EDDA',
+                        border: '1px solid #28A745',
+                        borderRadius: '6px',
+                        padding: '8px 10px',
+                        marginBottom: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '13px',
+                      }}>
+                        <span>✅</span>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: 600, color: '#155724' }}>Google Verified</div>
+                          {pro.google_rating && (
+                            <div style={{ fontSize: '12px', color: '#155724' }}>
+                              ⭐ {pro.google_rating.toFixed(1)} ({pro.google_total_reviews} reviews)
+                            </div>
+                          )}
+                        </div>
+                        {pro.google_maps_url && (
+                          <a 
+                            href={pro.google_maps_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                              fontSize: '12px',
+                              color: '#155724',
+                              textDecoration: 'underline',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            View on Google
+                          </a>
+                        )}
+                      </div>
+                    )}
                     <p><strong>CCB:</strong> {pro.ccb_number}</p>
                     <p><strong>Contact:</strong> {pro.contact_name}</p>
                     <p><strong>Phone:</strong> {pro.phone}</p>

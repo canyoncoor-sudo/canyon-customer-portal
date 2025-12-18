@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import GoogleBusinessSearch from '@/components/GoogleBusinessSearch';
 import './new-professional.css';
 
 export default function NewProfessional() {
@@ -14,12 +15,49 @@ export default function NewProfessional() {
     phone: '',
     email: '',
     address: '',
-    notes: ''
+    notes: '',
+    // Google fields
+    google_place_id: '',
+    google_business_name: '',
+    google_rating: null as number | null,
+    google_total_reviews: null as number | null,
+    google_maps_url: '',
+    google_profile_photo_url: '',
+    google_last_synced: '',
+    is_google_verified: false,
   });
   const [officePhone, setOfficePhone] = useState('');
   const [mobilePhone, setMobilePhone] = useState('');
   const [additionalPhones, setAdditionalPhones] = useState<Array<{ name: string; title: string; phone: string }>>([]);
   const [loading, setLoading] = useState(false);
+  const [useManualEntry, setUseManualEntry] = useState(false);
+
+  const handleGoogleBusinessSelect = (businessData: any) => {
+    // Auto-populate form with Google data
+    setFormData(prev => ({
+      ...prev,
+      company_name: businessData.company_name || prev.company_name,
+      address: businessData.address || prev.address,
+      email: prev.email, // Keep existing since Google doesn't provide
+      trade: businessData.trade || prev.trade,
+      google_place_id: businessData.google_place_id || '',
+      google_business_name: businessData.google_business_name || '',
+      google_rating: businessData.google_rating || null,
+      google_total_reviews: businessData.google_total_reviews || null,
+      google_maps_url: businessData.google_maps_url || '',
+      google_profile_photo_url: businessData.google_profile_photo_url || '',
+      google_last_synced: businessData.google_last_synced || '',
+      is_google_verified: businessData.is_google_verified || false,
+    }));
+
+    // Set phone if provided
+    if (businessData.phone) {
+      setOfficePhone(businessData.phone);
+    }
+
+    // Show success message
+    alert('✅ Business information loaded from Google! You can edit any fields before saving.');
+  };
 
   const addPhoneNumber = () => {
     setAdditionalPhones([...additionalPhones, { name: '', title: '', phone: '' }]);
@@ -60,7 +98,16 @@ export default function NewProfessional() {
           phone: officePhone || mobilePhone || formData.phone,
           email: formData.email,
           address: formData.address,
-          notes: formData.notes
+          notes: formData.notes,
+          // Include Google fields
+          google_place_id: formData.google_place_id || null,
+          google_business_name: formData.google_business_name || null,
+          google_rating: formData.google_rating,
+          google_total_reviews: formData.google_total_reviews,
+          google_maps_url: formData.google_maps_url || null,
+          google_profile_photo_url: formData.google_profile_photo_url || null,
+          google_last_synced: formData.google_last_synced || null,
+          is_google_verified: formData.is_google_verified,
         }),
       });
 
@@ -104,6 +151,66 @@ export default function NewProfessional() {
 
       <div className="professional-content">
         <form onSubmit={handleSubmit} className="professional-form">
+          
+          {/* Google Business Search Section */}
+          {!useManualEntry && (
+            <GoogleBusinessSearch 
+              onBusinessSelect={handleGoogleBusinessSelect}
+              disabled={loading}
+            />
+          )}
+
+          {/* Toggle for manual entry */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <button
+              type="button"
+              onClick={() => setUseManualEntry(!useManualEntry)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#567A8D',
+                fontWeight: 600,
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                fontSize: '14px',
+              }}
+            >
+              {useManualEntry ? '🔍 Search Google Business Instead' : '✏️ Enter Information Manually'}
+            </button>
+          </div>
+
+          {/* Show Google verification badge if linked */}
+          {formData.is_google_verified && (
+            <div style={{
+              background: '#D4EDDA',
+              border: '1px solid #28A745',
+              borderRadius: '8px',
+              padding: '12px',
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+            }}>
+              <span style={{ fontSize: '24px' }}>✅</span>
+              <div>
+                <div style={{ fontWeight: 700, color: '#155724' }}>Linked to Google Business</div>
+                <div style={{ fontSize: '13px', color: '#155724' }}>
+                  {formData.google_business_name} • Rating: {formData.google_rating?.toFixed(1)} ⭐ ({formData.google_total_reviews} reviews)
+                </div>
+                {formData.google_maps_url && (
+                  <a 
+                    href={formData.google_maps_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{ fontSize: '13px', color: '#155724', textDecoration: 'underline' }}
+                  >
+                    View on Google Maps →
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="form-section">
             <h2>Company Information</h2>
             <div className="form-grid">
@@ -188,7 +295,8 @@ export default function NewProfessional() {
                 <label htmlFor="officePhone">Office Phone *</label>
                 <input
                   type="tel"
-                  id="officePhone" required
+                  id="officePhone"
+                  required
                   value={officePhone}
                   onChange={(e) => setOfficePhone(e.target.value)}
                   placeholder="(503) 555-0100"

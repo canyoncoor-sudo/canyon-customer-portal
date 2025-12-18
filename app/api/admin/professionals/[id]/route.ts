@@ -58,25 +58,56 @@ export async function PUT(
 
     const { id } = await params;
     const body = await req.json();
-    const { company_name, trade, ccb_number, contact_name, phone, email, address, notes } = body;
+    const { 
+      company_name, 
+      trade, 
+      ccb_number, 
+      contact_name, 
+      phone, 
+      email, 
+      address, 
+      notes,
+      // Google fields
+      google_place_id,
+      google_business_name,
+      google_rating,
+      google_total_reviews,
+      google_maps_url,
+      google_profile_photo_url,
+      google_last_synced,
+      is_google_verified
+    } = body;
 
     // Validate required fields
     if (!company_name || !trade || !ccb_number || !contact_name || !phone || !email) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    // Prepare update data
+    const updateData: any = {
+      company_name,
+      trade,
+      ccb_number,
+      contact_name,
+      phone,
+      email,
+      address,
+      notes
+    };
+
+    // Add Google fields if provided
+    if (google_place_id !== undefined) updateData.google_place_id = google_place_id;
+    if (google_business_name !== undefined) updateData.google_business_name = google_business_name;
+    if (google_rating !== undefined) updateData.google_rating = google_rating;
+    if (google_total_reviews !== undefined) updateData.google_total_reviews = google_total_reviews;
+    if (google_maps_url !== undefined) updateData.google_maps_url = google_maps_url;
+    if (google_profile_photo_url !== undefined) updateData.google_profile_photo_url = google_profile_photo_url;
+    if (google_last_synced !== undefined) updateData.google_last_synced = google_last_synced;
+    if (is_google_verified !== undefined) updateData.is_google_verified = is_google_verified;
+
     const { data: professional, error } = await supabaseAdmin
       .from('subcontractors')
-      .update({
-        company_name,
-        trade,
-        ccb_number,
-        contact_name,
-        phone,
-        email,
-        address,
-        notes
-      })
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();
