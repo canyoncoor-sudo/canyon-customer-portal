@@ -3,14 +3,14 @@
 
 -- Add Google-related columns
 ALTER TABLE public.subcontractors
-ADD COLUMN IF NOT EXISTS google_place_id TEXT UNIQUE,
-ADD COLUMN IF NOT EXISTS google_business_name TEXT,
-ADD COLUMN IF NOT EXISTS google_rating NUMERIC(2,1),
-ADD COLUMN IF NOT EXISTS google_total_reviews INTEGER,
-ADD COLUMN IF NOT EXISTS google_maps_url TEXT,
-ADD COLUMN IF NOT EXISTS google_profile_photo_url TEXT,
-ADD COLUMN IF NOT EXISTS google_last_synced TIMESTAMP WITH TIME ZONE,
-ADD COLUMN IF NOT EXISTS is_google_verified BOOLEAN DEFAULT false;
+  ADD COLUMN IF NOT EXISTS google_place_id TEXT UNIQUE,
+  ADD COLUMN IF NOT EXISTS google_business_name TEXT,
+  ADD COLUMN IF NOT EXISTS google_rating NUMERIC(2,1),
+  ADD COLUMN IF NOT EXISTS google_total_reviews INTEGER,
+  ADD COLUMN IF NOT EXISTS google_maps_url TEXT,
+  ADD COLUMN IF NOT EXISTS google_profile_photo_url TEXT,
+  ADD COLUMN IF NOT EXISTS google_last_synced TIMESTAMP WITH TIME ZONE,
+  ADD COLUMN IF NOT EXISTS is_google_verified BOOLEAN DEFAULT false;
 
 -- Create index on google_place_id for faster lookups
 CREATE INDEX IF NOT EXISTS idx_subcontractors_google_place_id 

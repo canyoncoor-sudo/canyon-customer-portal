@@ -215,19 +215,18 @@ export default function NewProfessional() {
             <h2>Company Information</h2>
             <div className="form-grid">
               <div className="form-field">
-                <label htmlFor="company_name">Company Name *</label>
+                <label htmlFor="company_name">Company Name </label>
                 <input
                   type="text"
                   id="company_name"
                   name="company_name"
                   value={formData.company_name}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
               <div className="form-field">
-                <label htmlFor="trade">Trade *</label>
+                <label htmlFor="trade">Trade </label>
                 <input
                   type="text"
                   id="trade"
@@ -236,7 +235,6 @@ export default function NewProfessional() {
                   value={formData.trade}
                   onChange={handleChange}
                   placeholder="Type or select a trade..."
-                  required
                 />
                 <datalist id="trade-options">
                   <option value="Cabinets" />
@@ -262,7 +260,7 @@ export default function NewProfessional() {
               </div>
 
               <div className="form-field">
-                <label htmlFor="ccb_number">License Number (CCB/LCB) *</label>
+                <label htmlFor="ccb_number">License Number (CCB/LCB) </label>
                 <input
                   type="text"
                   id="ccb_number"
@@ -270,7 +268,6 @@ export default function NewProfessional() {
                   value={formData.ccb_number}
                   onChange={handleChange}
                   placeholder="e.g., CCB 123456 or LCB 789"
-                  required
                 />
               </div>
             </div>
@@ -280,23 +277,21 @@ export default function NewProfessional() {
             <h2>Contact Information</h2>
             <div className="form-grid">
               <div className="form-field">
-                <label htmlFor="contact_name">Contact Name *</label>
+                <label htmlFor="contact_name">Contact Name </label>
                 <input
                   type="text"
                   id="contact_name"
                   name="contact_name"
                   value={formData.contact_name}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
               <div className="form-field">
-                <label htmlFor="officePhone">Office Phone *</label>
+                <label htmlFor="officePhone">Office Phone </label>
                 <input
                   type="tel"
                   id="officePhone"
-                  required
                   value={officePhone}
                   onChange={(e) => setOfficePhone(e.target.value)}
                   placeholder="(503) 555-0100"
@@ -315,7 +310,7 @@ export default function NewProfessional() {
               </div>
 
               <div className="form-field">
-                <label htmlFor="email">Email *</label>
+                <label htmlFor="email">Email </label>
                 <input
                   type="email"
                   id="email"
@@ -323,7 +318,6 @@ export default function NewProfessional() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="contact@company.com"
-                  required
                 />
               </div>
 
