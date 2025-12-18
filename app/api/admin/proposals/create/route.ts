@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdminToken } from '@/lib/verify-admin-token';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export async function POST(req: NextRequest) {
   try {
