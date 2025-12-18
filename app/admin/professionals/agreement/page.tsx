@@ -60,9 +60,53 @@ function AgreementContent() {
     window.print();
   };
 
-  const handleSave = () => {
-    // TODO: Implement save to database
-    alert('Agreement saved! (Backend endpoint needed)');
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        alert('Please login again');
+        router.push('/');
+        return;
+      }
+
+      const agreementData = {
+        professional_id: professionalId,
+        agreement_date: agreementDate,
+        subcontractor_signature: subcontractorSignature,
+        subcontractor_signature_date: subcontractorSignatureDate,
+        subcontractor_printed_name: professional.contact_name,
+        canyon_signature: canyonSignature,
+        canyon_signature_date: canyonSignatureDate,
+        canyon_printed_name: 'Canyon Construction Inc.'
+      };
+
+      const res = await fetch('/api/admin/agreements/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(agreementData)
+      });
+
+      if (res.status === 401) {
+        localStorage.removeItem('admin_token');
+        alert('Session expired. Please login again.');
+        router.push('/');
+        return;
+      }
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to save agreement');
+      }
+
+      alert('✅ Agreement saved successfully!');
+    } catch (error: any) {
+      console.error('Error saving agreement:', error);
+      alert('Failed to save agreement: ' + (error.message || 'Unknown error'));
+    }
   };
 
   return (
