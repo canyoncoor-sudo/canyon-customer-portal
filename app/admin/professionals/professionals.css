@@ -370,3 +370,205 @@
 .card-footer button {
   flex: 1;
 }
+
+/* Professional Detail View */
+.professional-detail {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #F0F0EE;
+  margin-bottom: 30px;
+}
+
+.header-left {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.profile-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid #F0F0EE;
+}
+
+.detail-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #261312;
+  margin: 0 0 8px;
+}
+
+.detail-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.trade-badge {
+  background: #567A8D;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.google-verified {
+  background: #d4edda;
+  color: #155724;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.google-rating {
+  text-align: right;
+}
+
+.rating-stars {
+  font-size: 24px;
+  font-weight: 700;
+  color: #261312;
+  margin-bottom: 4px;
+}
+
+.rating-count {
+  font-size: 13px;
+  color: #454547;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.detail-section {
+  background: #F0F0EE;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.detail-section.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-section h2 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #261312;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(38, 19, 18, 0.1);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row label {
+  font-weight: 700;
+  color: #454547;
+  font-size: 14px;
+}
+
+.info-row span {
+  color: #261312;
+  font-size: 14px;
+}
+
+.link {
+  color: #567A8D;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.notes-text {
+  color: #261312;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.detail-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #F0F0EE;
+  text-align: center;
+}
+
+.created-date {
+  color: #454547;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.btn-agreement {
+  background: #A45941;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-agreement:hover {
+  background: #8a4a37;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.btn-delete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Make table rows clickable */
+.professionals-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.professionals-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.action-buttons button {
+  margin-right: 8px;
+}

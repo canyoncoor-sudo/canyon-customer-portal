@@ -117,11 +117,11 @@ export default function AdminDashboard() {
             Closed ({projects.filter(p => !p.is_active).length})
           </button>
           <button 
-            onClick={() => router.push('/admin/agreements')}
-            className="btn-agreements"
+            onClick={() => router.push('/admin/jobs')}
+            className="btn-jobs"
             style={{
               marginLeft: 'auto',
-              background: '#A45941',
+              background: '#712A18',
               color: 'white',
               border: 'none',
               padding: '8px 16px',
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
               cursor: 'pointer'
             }}
           >
-            Contractor Agreements
+            All Jobs
           </button>
           <button 
             onClick={() => router.push('/admin/professionals')}
