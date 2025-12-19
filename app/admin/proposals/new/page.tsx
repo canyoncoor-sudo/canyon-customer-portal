@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import './new-proposal.css';
 
-export default function NewProposal() {
+function NewProposalForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
@@ -352,5 +352,13 @@ export default function NewProposal() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function NewProposal() {
+  return (
+    <Suspense fallback={<div style={{ padding: '60px', textAlign: 'center' }}>Loading...</div>}>
+      <NewProposalForm />
+    </Suspense>
   );
 }
