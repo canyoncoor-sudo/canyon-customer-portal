@@ -117,10 +117,10 @@ export default function AdminDashboard() {
             Closed ({projects.filter(p => !p.is_active).length})
           </button>
           <button 
-            onClick={() => router.push('/admin/jobs')}
+            onClick={() => router.push('/admin/documents')}
             className="nav-button"
           >
-            All Jobs
+            📄 Documents
           </button>
           <button 
             onClick={() => router.push('/admin/professionals')}
