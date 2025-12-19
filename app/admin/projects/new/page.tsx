@@ -142,13 +142,20 @@ function ProposalForm() {
     e.preventDefault();
     setLoading(true);
 
+    // Validate jobId is present
+    if (!jobId) {
+      alert('Error: Job ID is missing. Please try again from the job preview page.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const token = localStorage.getItem('admin_token');
       
       // Build full address for submission
       const fullAddress = `${customerAddress}, ${customerCity}, ${customerState} ${customerZip}`;
       
-      const res = await fetch('/api/admin/proposals/create', {
+      const res = await fetch(`/api/admin/jobs/${jobId}/proposal`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
