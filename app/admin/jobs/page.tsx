@@ -161,7 +161,7 @@ export default function AdminJobs() {
                         onClick={() => handleViewJob(job.id)}
                         className="btn-view"
                       >
-                        View
+                        Preview
                       </button>
                     </td>
                   </tr>

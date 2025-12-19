@@ -48,7 +48,7 @@ export default function JobPreview() {
     try {
       const token = localStorage.getItem('admin_token');
       if (!token) {
-        router.push('/admin');
+        router.push('/admin/dashboard');
         return;
       }
 
@@ -60,7 +60,7 @@ export default function JobPreview() {
 
       if (res.status === 401) {
         localStorage.removeItem('admin_token');
-        router.push('/admin');
+        router.push('/admin/dashboard');
         return;
       }
 
