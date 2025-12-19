@@ -106,6 +106,10 @@ export default function JobPreview() {
     router.push(`/admin/jobs/${jobId}/edit`);
   };
 
+  const handleSendProposal = () => {
+    router.push(`/admin/jobs/${jobId}/send-proposal`);
+  };
+
   if (loading) {
     return (
       <div className="job-preview-container">
@@ -131,6 +135,9 @@ export default function JobPreview() {
         <div className="header-actions">
           <button onClick={handleEdit} className="btn-edit">
             Edit Job
+          </button>
+          <button onClick={handleSendProposal} className="btn-send-email">
+            📧 Send Proposal Email
           </button>
           <button onClick={handleCreateProposal} className="btn-create-proposal">
             Create Proposal
