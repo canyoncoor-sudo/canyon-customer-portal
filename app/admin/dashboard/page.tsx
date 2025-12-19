@@ -171,7 +171,7 @@ export default function AdminDashboard() {
                     <div className="action-buttons">
                       <button 
                         className="btn-view"
-                        onClick={() => window.open(`/dashboard?preview=${project.id}`, '_blank')}
+                        onClick={() => router.push(`/admin/jobs/${project.id}`)}
                       >
                         Preview
                       </button>
