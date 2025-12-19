@@ -105,6 +105,7 @@ export default function EditJob() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [availableZips, setAvailableZips] = useState<string[]>([]);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const oregonCities = Object.keys(OREGON_CITIES_ZIP).sort();
 
@@ -177,52 +178,82 @@ export default function EditJob() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setSaveError(null);
 
+    console.log('🔄 Starting job update...');
+    
     try {
       const token = localStorage.getItem('admin_token');
       
+      if (!token) {
+        setSaveError('Admin token not found. Please log in again.');
+        setSaving(false);
+        return;
+      }
+
+      const payload = {
+        // Portal jobs fields
+        customer_name: customerName,
+        customer_email: customerEmail,
+        customer_phone: customerPhone,
+        job_address: jobAddress,
+        status: status,
+        // Job intakes fields
+        intake: {
+          customer_secondary_phone: customerSecondaryPhone,
+          job_city: jobCity,
+          job_state: jobState,
+          job_zip: jobZip,
+          project_type: projectType,
+          work_description: workDescription,
+          estimated_budget: estimatedBudget,
+          timeline: timeline,
+          first_meeting_datetime: firstMeetingDatetime || null,
+          meeting_notes: meetingNotes,
+          lead_source: leadSource,
+          priority: priority,
+          internal_notes: internalNotes,
+        },
+      };
+
+      console.log('📤 Sending payload:', payload);
+
       const res = await fetch(`/api/admin/jobs/${jobId}/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          // Portal jobs fields
-          customer_name: customerName,
-          customer_email: customerEmail,
-          customer_phone: customerPhone,
-          job_address: jobAddress,
-          status: status,
-          
-          // Job intakes fields
-          intake: {
-            customer_secondary_phone: customerSecondaryPhone,
-            job_city: jobCity,
-            job_state: jobState,
-            job_zip: jobZip,
-            project_type: projectType,
-            work_description: workDescription,
-            estimated_budget: estimatedBudget,
-            timeline: timeline,
-            first_meeting_datetime: firstMeetingDatetime || null,
-            meeting_notes: meetingNotes,
-            lead_source: leadSource,
-            priority: priority,
-            internal_notes: internalNotes,
-          },
-        }),
+        body: JSON.stringify(payload),
       });
 
+      console.log('📥 Response status:', res.status);
+
       if (!res.ok) {
-        throw new Error('Failed to update job');
+        let errorMsg = `Failed to update job (${res.status} ${res.statusText})`;
+        try {
+          const data = await res.json();
+          console.error('❌ Error response:', data);
+          if (data.error) errorMsg = data.error;
+          if (data.details) {
+            errorMsg += '\n\nDetails: ' + (typeof data.details === 'string' ? data.details : JSON.stringify(data.details, null, 2));
+          }
+        } catch (e) {
+          console.error('Failed to parse error response:', e);
+        }
+        setSaveError(errorMsg);
+        setSaving(false);
+        return;
       }
 
+      const result = await res.json();
+      console.log('✅ Success:', result);
+      
       alert('Job updated successfully!');
       router.push(`/admin/jobs/${jobId}`);
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to update job');
+    } catch (error: any) {
+      console.error('❌ Exception during update:', error);
+      setSaveError(error?.message || 'Network error: Failed to update job');
     } finally {
       setSaving(false);
     }
@@ -244,6 +275,12 @@ export default function EditJob() {
         </button>
         <h1>Edit Job Details</h1>
       </div>
+
+      {saveError && (
+        <div style={{ background: '#ffeaea', color: '#712A18', padding: 12, borderRadius: 8, marginBottom: 16, fontWeight: 700, border: '1px solid #f5c2c7' }}>
+          ⚠️ {saveError}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="edit-job-form">
         {/* Customer Information */}
