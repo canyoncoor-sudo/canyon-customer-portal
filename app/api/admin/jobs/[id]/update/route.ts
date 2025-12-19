@@ -31,6 +31,17 @@ export async function PUT(
     console.log('📝 Job ID:', jobId);
     
     const body = await req.json();
+    console.log('📦 Request body:', JSON.stringify(body, null, 2));
+    
+    const {
+      customer_name,
+      customer_email,
+      customer_phone,
+      job_address,
+      status,
+      intake
+    } = body;
+
     // Update portal_jobs table
     console.log('🔄 Updating portal_jobs...');
     const { error: jobError } = await supabaseAdmin
@@ -53,16 +64,8 @@ export async function PUT(
       }, { status: 500 });
     }
     
-    console.log('✅ portal_jobs updated successfully');   status,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', jobId);
+    console.log('✅ portal_jobs updated successfully');
 
-    if (jobError) {
-      console.error('Error updating job:', jobError);
-      return NextResponse.json({
-        error: jobError.message || 'Failed to update job',
-        details: typeof jobError === 'object' ? JSON.stringify(jobError, null, 2) : String(jobError)
     // Check if job_intake exists
     console.log('🔍 Checking for existing job_intake...');
     const { data: existingIntake } = await supabaseAdmin
@@ -73,9 +76,6 @@ export async function PUT(
 
     if (existingIntake) {
       console.log('✅ Found existing intake, updating...');
-      // Update existing intake
-
-    if (existingIntake) {
       // Update existing intake
       const { error: intakeError } = await supabaseAdmin
         .from('job_intakes')
@@ -92,6 +92,11 @@ export async function PUT(
           meeting_notes: intake.meeting_notes,
           lead_source: intake.lead_source,
           priority: intake.priority,
+          internal_notes: intake.internal_notes,
+          updated_at: new Date().toISOString()
+        })
+        .eq('job_id', jobId);
+
       if (intakeError) {
         console.error('❌ Error updating job_intakes:', intakeError);
         return NextResponse.json({
@@ -102,11 +107,6 @@ export async function PUT(
       console.log('✅ job_intakes updated successfully');
     } else {
       console.log('➕ No existing intake found, creating new...');
-      // Create new intakeor.message || 'Failed to update job intake',
-          details: typeof intakeError === 'object' ? JSON.stringify(intakeError, null, 2) : String(intakeError)
-        }, { status: 500 });
-      }
-    } else {
       // Create new intake
       const { error: intakeError } = await supabaseAdmin
         .from('job_intakes')
@@ -120,6 +120,13 @@ export async function PUT(
           work_description: intake.work_description,
           estimated_budget: intake.estimated_budget,
           timeline: intake.timeline,
+          first_meeting_datetime: intake.first_meeting_datetime,
+          meeting_notes: intake.meeting_notes,
+          lead_source: intake.lead_source,
+          priority: intake.priority,
+          internal_notes: intake.internal_notes
+        });
+
       if (intakeError) {
         console.error('❌ Error creating job_intakes:', intakeError);
         return NextResponse.json({
@@ -134,16 +141,9 @@ export async function PUT(
     return NextResponse.json({ 
       success: true,
       message: 'Job updated successfully'
-    }); }, { status: 500 });
-      }
-    }
-
-    return NextResponse.json({ 
-      success: true,
-      message: 'Job updated successfully'
     });
   } catch (error: any) {
-    console.error('Error in /api/admin/jobs/[id]/update:', error);
+    console.error('❌ Exception during update:', error);
     return NextResponse.json({
       error: error?.message || 'Internal server error',
       details: typeof error === 'object' ? JSON.stringify(error, null, 2) : String(error)
