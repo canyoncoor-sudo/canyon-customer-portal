@@ -112,8 +112,10 @@
 }
 
 .document-icon {
-  font-size: 48px;
-  line-height: 1;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  flex-shrink: 0;
 }
 
 .document-info {
@@ -154,11 +156,6 @@
   padding: 60px 20px;
   background: white;
   border-radius: 12px;
-}
-
-.no-results-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
 }
 
 .no-results h3 {

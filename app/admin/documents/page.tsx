@@ -8,7 +8,7 @@ interface DocumentTemplate {
   id: string;
   name: string;
   description: string;
-  icon: string;
+  color: string;
   path: string;
 }
 
@@ -21,56 +21,56 @@ export default function DocumentsPage() {
       id: 'intake-form',
       name: 'Job Intake Form',
       description: 'Comprehensive form for new project intake with customer details, project specifications, and meeting notes',
-      icon: '📋',
+      color: '#567A8D',
       path: '/admin/jobs/new'
     },
     {
       id: 'lien-law',
       name: 'Lien Law Document',
       description: 'Oregon construction lien law notices and documentation',
-      icon: '⚖️',
+      color: '#712A18',
       path: '/admin/documents/lien-law'
     },
     {
       id: 'change-order',
       name: 'Change Order Form',
       description: 'Document for tracking project changes, additional work, and cost adjustments',
-      icon: '📝',
+      color: '#261312',
       path: '/admin/documents/change-order'
     },
     {
       id: 'professional-agreement',
       name: 'Licensed Professional Agreement',
       description: 'Subcontractor and professional services agreement template',
-      icon: '🤝',
+      color: '#567A8D',
       path: '/admin/professionals/agreement'
     },
     {
       id: 'proposal',
       name: 'Project Proposal',
       description: 'Professional proposal template with scope, timeline, and pricing',
-      icon: '💼',
+      color: '#712A18',
       path: '/admin/proposals/new'
     },
     {
       id: 'safety-plan',
       name: 'Safety Plan',
       description: 'Job site safety plan and requirements documentation',
-      icon: '🦺',
+      color: '#261312',
       path: '/admin/documents/safety-plan'
     },
     {
       id: 'inspection-checklist',
       name: 'Inspection Checklist',
       description: 'Quality control and inspection documentation',
-      icon: '✅',
+      color: '#567A8D',
       path: '/admin/documents/inspection'
     },
     {
       id: 'closeout',
       name: 'Project Closeout',
       description: 'Final project documentation, warranties, and completion forms',
-      icon: '🎯',
+      color: '#712A18',
       path: '/admin/documents/closeout'
     }
   ];
@@ -119,7 +119,7 @@ export default function DocumentsPage() {
               className="document-card"
               onClick={() => handleDocumentClick(doc)}
             >
-              <div className="document-icon">{doc.icon}</div>
+              <div className="document-icon" style={{ backgroundColor: doc.color }}></div>
               <div className="document-info">
                 <h3>{doc.name}</h3>
                 <p>{doc.description}</p>
@@ -133,7 +133,6 @@ export default function DocumentsPage() {
 
         {filteredDocuments.length === 0 && (
           <div className="no-results">
-            <div className="no-results-icon">🔍</div>
             <h3>No documents found</h3>
             <p>Try adjusting your search terms</p>
           </div>
