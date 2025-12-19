@@ -51,6 +51,9 @@ function ProposalForm() {
   const searchParams = useSearchParams();
   const [customerName, setCustomerName] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
+  const [customerCity, setCustomerCity] = useState('');
+  const [customerState, setCustomerState] = useState('');
+  const [customerZip, setCustomerZip] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [proposalDate, setProposalDate] = useState(new Date().toISOString().split('T')[0]);
@@ -90,16 +93,20 @@ function ProposalForm() {
       setCustomerPhone(phoneParam);
     }
 
-    // Build full address from components
     if (addressParam) {
-      let fullAddress = addressParam;
-      if (cityParam || stateParam || zipParam) {
-        const parts = [cityParam, stateParam, zipParam].filter(Boolean);
-        if (parts.length > 0) {
-          fullAddress += ', ' + parts.join(' ');
-        }
-      }
-      setCustomerAddress(fullAddress);
+      setCustomerAddress(addressParam);
+    }
+
+    if (cityParam) {
+      setCustomerCity(cityParam);
+    }
+
+    if (stateParam) {
+      setCustomerState(stateParam);
+    }
+
+    if (zipParam) {
+      setCustomerZip(zipParam);
     }
 
     // Pre-fill first line item with project description if available
@@ -138,6 +145,9 @@ function ProposalForm() {
     try {
       const token = localStorage.getItem('admin_token');
       
+      // Build full address for submission
+      const fullAddress = `${customerAddress}, ${customerCity}, ${customerState} ${customerZip}`;
+      
       const res = await fetch('/api/admin/proposals/create', {
         method: 'POST',
         headers: {
@@ -146,7 +156,7 @@ function ProposalForm() {
         },
         body: JSON.stringify({
           customerName,
-          customerAddress,
+          customerAddress: fullAddress,
           customerPhone,
           customerEmail,
           lineItems: lineItems.filter(item => item.scope && item.cost > 0),
@@ -207,13 +217,55 @@ function ProposalForm() {
                 />
               </div>
               <div className="form-field">
-                <label>Address *</label>
+                <label>Email *</label>
+                <input
+                  type="email"
+                  value={customerEmail}
+                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  required
+                  placeholder="john@example.com"
+                />
+              </div>
+              <div className="form-field full-width">
+                <label>Street Address *</label>
                 <input
                   type="text"
                   value={customerAddress}
                   onChange={(e) => setCustomerAddress(e.target.value)}
                   required
-                  placeholder="123 Main St, Salem, OR 97301"
+                  placeholder="123 Main Street"
+                />
+              </div>
+              <div className="form-field">
+                <label>City *</label>
+                <input
+                  type="text"
+                  value={customerCity}
+                  onChange={(e) => setCustomerCity(e.target.value)}
+                  required
+                  placeholder="Salem"
+                />
+              </div>
+              <div className="form-field">
+                <label>State *</label>
+                <input
+                  type="text"
+                  value={customerState}
+                  onChange={(e) => setCustomerState(e.target.value)}
+                  required
+                  placeholder="OR"
+                  maxLength={2}
+                />
+              </div>
+              <div className="form-field">
+                <label>ZIP Code *</label>
+                <input
+                  type="text"
+                  value={customerZip}
+                  onChange={(e) => setCustomerZip(e.target.value)}
+                  required
+                  placeholder="97301"
+                  maxLength={10}
                 />
               </div>
               <div className="form-field">
@@ -224,16 +276,6 @@ function ProposalForm() {
                   onChange={(e) => setCustomerPhone(e.target.value)}
                   required
                   placeholder="(503) 555-0123"
-                />
-              </div>
-              <div className="form-field">
-                <label>Email *</label>
-                <input
-                  type="email"
-                  value={customerEmail}
-                  onChange={(e) => setCustomerEmail(e.target.value)}
-                  required
-                  placeholder="john@example.com"
                 />
               </div>
             </div>
