@@ -56,7 +56,20 @@ export default function GenerateAccessCode() {
       }
 
       const data = await res.json();
-      setJob(data);
+      
+      // Extract job data with intake information
+      const jobData: Job = {
+        id: data.job.id,
+        customer_name: data.job.customer_name,
+        customer_email: data.job.customer_email,
+        customer_phone: data.job.customer_phone,
+        job_address: data.job.job_address,
+        job_city: data.job.intake?.job_city,
+        job_state: data.job.intake?.job_state,
+        job_zip: data.job.intake?.job_zip,
+      };
+      
+      setJob(jobData);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching job:', error);
