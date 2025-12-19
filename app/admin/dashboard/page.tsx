@@ -120,7 +120,7 @@ export default function AdminDashboard() {
             onClick={() => router.push('/admin/documents')}
             className="nav-button"
           >
-            📄 Documents
+            Documents
           </button>
           <button 
             onClick={() => router.push('/admin/professionals')}

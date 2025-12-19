@@ -243,3 +243,102 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Additional Contacts Styling */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.add-contact-btn {
+  background: #567A8D;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-contact-btn:hover {
+  background: #456678;
+}
+
+.additional-contact-card {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.remove-btn-field {
+  display: flex;
+  align-items: flex-end;
+}
+
+.remove-contact-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.remove-contact-btn:hover {
+  background: #c82333;
+}
+
+.helper-text {
+  color: #6c757d;
+  font-size: 14px;
+  font-style: italic;
+  margin: 8px 0;
+}
+
+.disabled-field {
+  background: #e9ecef;
+  cursor: not-allowed;
+}
+
+.full-width-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.google-search-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.manual-entry-btn, .google-search-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.manual-entry-btn:hover, .google-search-btn:hover {
+  background: #5a6268;
+}
