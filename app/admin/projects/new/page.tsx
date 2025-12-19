@@ -166,7 +166,13 @@ function ProposalForm() {
 
       if (res.ok) {
         const data = await res.json();
-        router.push(`/admin/projects/${data.projectId}`);
+        // Redirect to access code generation page
+        if (jobId) {
+          router.push(`/admin/jobs/${jobId}/access-code`);
+        } else {
+          alert('Proposal created successfully!');
+          router.push('/admin/dashboard');
+        }
       } else {
         alert('Failed to create proposal');
         setLoading(false);
