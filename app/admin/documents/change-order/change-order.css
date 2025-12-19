@@ -1,0 +1,283 @@
+.change-order-container {
+  min-height: 100vh;
+  background: #F0F0EE;
+  padding: 20px;
+}
+
+.change-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-btn {
+  background: #567A8D;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.back-btn:hover {
+  background: #456678;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-save, .btn-print {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-save {
+  background: #712A18;
+  color: white;
+}
+
+.btn-save:hover {
+  background: #5a2213;
+}
+
+.btn-print {
+  background: #261312;
+  color: white;
+}
+
+.btn-print:hover {
+  background: #1a0c0b;
+}
+
+.change-order-document {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  padding: 60px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.doc-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid #567A8D;
+}
+
+.doc-header h1 {
+  color: #261312;
+  font-size: 32px;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+}
+
+.doc-subtitle {
+  color: #712A18;
+  font-size: 16px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.form-section {
+  margin-bottom: 32px;
+}
+
+.form-section h2 {
+  color: #261312;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #F0F0EE;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field label {
+  color: #261312;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form-field input,
+.form-section textarea {
+  padding: 10px 12px;
+  border: 2px solid #567A8D;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  background: white;
+  transition: border-color 0.2s;
+}
+
+.form-field input:focus,
+.form-section textarea:focus {
+  outline: none;
+  border-color: #712A18;
+}
+
+.form-section textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+.cost-table {
+  background: #F0F0EE;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.cost-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 8px 0;
+}
+
+.cost-row label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #261312;
+}
+
+.cost-row input {
+  width: 180px;
+  padding: 8px 12px;
+  border: 2px solid #567A8D;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: right;
+}
+
+.cost-row.highlight {
+  background: rgba(113, 42, 24, 0.1);
+  padding: 12px;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+.cost-row.total {
+  border-top: 2px solid #261312;
+  padding-top: 16px;
+  margin-top: 16px;
+  font-weight: 700;
+}
+
+.cost-row.total input {
+  background: #261312;
+  color: white;
+  border-color: #261312;
+  font-weight: 700;
+}
+
+.signatures-section {
+  margin-top: 40px;
+}
+
+.signature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.signature-block label {
+  display: block;
+  color: #261312;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.signature-block input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #567A8D;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.signature-line {
+  margin-top: 24px;
+}
+
+.signature-line label {
+  display: block;
+  color: #261312;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.signature-box {
+  width: 100%;
+  height: 80px;
+  border: 2px solid #261312;
+  border-radius: 4px;
+  background: white;
+}
+
+.doc-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 2px solid #F0F0EE;
+  text-align: center;
+}
+
+.doc-footer p {
+  color: #567A8D;
+  font-size: 12px;
+  font-style: italic;
+  margin: 0;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .change-order-container {
+    background: white;
+    padding: 0;
+  }
+
+  .change-order-document {
+    box-shadow: none;
+    padding: 40px;
+  }
+
+  .form-field input,
+  .form-section textarea,
+  .cost-row input {
+    border: none;
+    border-bottom: 1px solid #000;
+    background: transparent;
+    padding: 4px 0;
+  }
+}
