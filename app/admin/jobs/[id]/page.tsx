@@ -103,8 +103,7 @@ export default function JobPreview() {
   };
 
   const handleEdit = () => {
-    // TODO: Navigate to edit page
-    alert('Edit functionality coming soon');
+    router.push(`/admin/jobs/${jobId}/edit`);
   };
 
   if (loading) {
