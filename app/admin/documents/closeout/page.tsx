@@ -100,7 +100,7 @@ export default function ProjectCloseoutPage() {
         </button>
         <div className="header-actions">
           <button onClick={handleSave} className="btn-save">Save</button>
-          <button onClick={handlePrint} className="btn-print">Print</button>
+          <button onClick={handlePrint} className="btn-print">🖨️ Print / Save as PDF</button>
         </div>
       </header>
 

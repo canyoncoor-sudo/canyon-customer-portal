@@ -114,8 +114,8 @@ function AgreementContent() {
       <div className="agreement-header no-print">
         <button onClick={() => router.back()} className="back-btn">← Back</button>
         <div className="header-actions">
-          <button onClick={handleSave} className="btn-save">Save Agreement</button>
-          <button onClick={handlePrint} className="btn-print">Print / PDF</button>
+          <button onClick={handleSave} className="btn-save">Save to Database</button>
+          <button onClick={handlePrint} className="btn-print">🖨️ Print / Save as PDF</button>
         </div>
       </div>
 
