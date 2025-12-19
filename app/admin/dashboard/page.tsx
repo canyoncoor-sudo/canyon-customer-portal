@@ -170,12 +170,6 @@ export default function AdminDashboard() {
                   <td>
                     <div className="action-buttons">
                       <button 
-                        className="btn-edit"
-                        onClick={() => router.push(`/admin/projects/${project.id}`)}
-                      >
-                        Edit
-                      </button>
-                      <button 
                         className="btn-view"
                         onClick={() => window.open(`/dashboard?preview=${project.id}`, '_blank')}
                       >

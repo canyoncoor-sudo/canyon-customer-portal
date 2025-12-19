@@ -99,7 +99,7 @@ export default function JobPreview() {
       description: job.intake?.work_description || '',
     });
     
-    router.push(`/admin/proposals/new?${params.toString()}`);
+    router.push(`/admin/projects/new?${params.toString()}`);
   };
 
   const handleEdit = () => {

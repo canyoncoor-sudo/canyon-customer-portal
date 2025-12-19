@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import './new-proposal.css';
 
 interface LineItem {
@@ -46,8 +46,9 @@ const SCOPE_OPTIONS = [
   'Windows'
 ];
 
-export default function NewProposal() {
+function ProposalForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [customerName, setCustomerName] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -59,6 +60,55 @@ export default function NewProposal() {
     { id: '1', scope: '', description: '', cost: 0 }
   ]);
   const [loading, setLoading] = useState(false);
+  const [jobId, setJobId] = useState<string | null>(null);
+
+  // Pre-fill form from URL parameters (coming from job preview)
+  useEffect(() => {
+    const fromJobId = searchParams.get('jobId');
+    const nameParam = searchParams.get('customerName');
+    const emailParam = searchParams.get('email');
+    const phoneParam = searchParams.get('phone');
+    const addressParam = searchParams.get('address');
+    const cityParam = searchParams.get('city');
+    const stateParam = searchParams.get('state');
+    const zipParam = searchParams.get('zip');
+    const descriptionParam = searchParams.get('description');
+
+    if (fromJobId) {
+      setJobId(fromJobId);
+    }
+
+    if (nameParam) {
+      setCustomerName(nameParam);
+    }
+
+    if (emailParam) {
+      setCustomerEmail(emailParam);
+    }
+
+    if (phoneParam) {
+      setCustomerPhone(phoneParam);
+    }
+
+    // Build full address from components
+    if (addressParam) {
+      let fullAddress = addressParam;
+      if (cityParam || stateParam || zipParam) {
+        const parts = [cityParam, stateParam, zipParam].filter(Boolean);
+        if (parts.length > 0) {
+          fullAddress += ', ' + parts.join(' ');
+        }
+      }
+      setCustomerAddress(fullAddress);
+    }
+
+    // Pre-fill first line item with project description if available
+    if (descriptionParam && descriptionParam.trim()) {
+      setLineItems([
+        { id: '1', scope: '', description: descriptionParam, cost: 0 }
+      ]);
+    }
+  }, [searchParams]);
 
   const addLineItem = () => {
     setLineItems([
@@ -122,7 +172,14 @@ export default function NewProposal() {
     <div className="proposal-builder">
       <div className="proposal-header">
         <button onClick={() => router.back()} className="back-btn">← Back</button>
-        <h1>Create New Proposal</h1>
+        <div>
+          <h1>Create New Proposal</h1>
+          {jobId && (
+            <p style={{ margin: '4px 0 0', fontSize: '14px', color: '#567A8D', fontWeight: 600 }}>
+              📋 Pre-filled from Job Intake
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="proposal-container">
@@ -343,5 +400,13 @@ export default function NewProposal() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function NewProposal() {
+  return (
+    <Suspense fallback={<div style={{ padding: '60px', textAlign: 'center' }}>Loading...</div>}>
+      <ProposalForm />
+    </Suspense>
   );
 }
