@@ -64,8 +64,7 @@ export default function AdminJobs() {
   };
 
   const handleViewJob = (jobId: string) => {
-    // TODO: Navigate to job detail page
-    alert(`View job ${jobId} - Coming soon`);
+    router.push(`/admin/jobs/${jobId}`);
   };
 
   const filteredJobs = jobs.filter(job => {

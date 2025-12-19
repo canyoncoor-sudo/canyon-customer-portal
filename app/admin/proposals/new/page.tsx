@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import './new-proposal.css';
 
 export default function NewProposal() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -21,6 +22,44 @@ export default function NewProposal() {
   });
   const [loading, setLoading] = useState(false);
   const [generatedCode, setGeneratedCode] = useState('');
+  const [jobId, setJobId] = useState<string | null>(null);
+
+  // Pre-fill form data from URL parameters (coming from job preview)
+  useEffect(() => {
+    const customerName = searchParams.get('customerName');
+    const email = searchParams.get('email');
+    const phone = searchParams.get('phone');
+    const address = searchParams.get('address');
+    const city = searchParams.get('city');
+    const state = searchParams.get('state');
+    const zip = searchParams.get('zip');
+    const description = searchParams.get('description');
+    const fromJobId = searchParams.get('jobId');
+
+    if (customerName) {
+      // Split customer name into first and last
+      const nameParts = customerName.split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      setFormData(prev => ({
+        ...prev,
+        first_name: firstName,
+        last_name: lastName,
+        project_address: address || '',
+        city: city || '',
+        state: state || '',
+        zip_code: zip || '',
+        email: email || '',
+        phone: phone || '',
+        project_description: description || '',
+      }));
+
+      if (fromJobId) {
+        setJobId(fromJobId);
+      }
+    }
+  }, [searchParams]);
 
   const generateAccessCode = () => {
     const randomNum = Math.floor(1000 + Math.random() * 9000);
@@ -88,7 +127,14 @@ export default function NewProposal() {
           <button onClick={() => router.back()} className="back-btn">
             ← Back
           </button>
-          <h1>Create New Proposal</h1>
+          <div>
+            <h1>Create New Proposal</h1>
+            {jobId && (
+              <p style={{ margin: '4px 0 0', fontSize: '14px', color: '#567A8D', fontWeight: 600 }}>
+                📋 Pre-filled from Job Intake
+              </p>
+            )}
+          </div>
           <div style={{ width: '80px' }}></div>
         </div>
       </header>
