@@ -185,12 +185,14 @@ export default function AdminDashboard() {
           {filteredProjects.length === 0 && (
             <div className="empty-state">
               <p>No projects found</p>
-              <button 
-                onClick={() => router.push('/admin/projects/new')}
-                className="btn-primary"
-              >
-                Create Your First Project
-              </button>
+              {filter !== 'proposals' && (
+                <button 
+                  onClick={() => router.push('/admin/projects/new')}
+                  className="btn-primary"
+                >
+                  Create Your First Project
+                </button>
+              )}
             </div>
           )}
         </div>
