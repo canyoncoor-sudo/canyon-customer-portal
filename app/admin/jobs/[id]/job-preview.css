@@ -51,6 +51,23 @@
   border-color: #567A8D;
 }
 
+.btn-view-customer {
+  background: #567A8D;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+  transition: all 0.2s;
+}
+
+.btn-view-customer:hover {
+  background: #6B8FA0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(86, 122, 141, 0.3);
+}
+
 .btn-create-proposal {
   background: #712A18;
   border: none;
@@ -113,6 +130,34 @@
 .status-badge.inactive {
   background: #FFF3E0;
   color: #E65100;
+}
+
+.status-badge-button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-badge-button.proposal-created {
+  background: #E3F2FD;
+  color: #1565C0;
+}
+
+.status-badge-button.proposal-created:hover {
+  background: #1565C0;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(21, 101, 192, 0.3);
+}
+
+.status-badge-button.proposal-created:active {
+  transform: translateY(0);
 }
 
 .info-section {

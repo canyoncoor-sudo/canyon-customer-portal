@@ -4,6 +4,42 @@
   background: var(--color-background);
 }
 
+/* Admin Preview Banner */
+.preview-banner {
+  background: linear-gradient(135deg, #567A8D 0%, #6B8FA0 100%);
+  color: white;
+  padding: 12px 0;
+  box-shadow: 0 2px 8px rgba(86, 122, 141, 0.3);
+}
+
+.preview-banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.preview-close {
+  background: white;
+  color: #567A8D;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.preview-close:hover {
+  background: #F0F0EE;
+  transform: translateY(-1px);
+}
+
 .dashboard-header {
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);

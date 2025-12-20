@@ -1,0 +1,269 @@
+.proposals-container {
+  min-height: 100vh;
+  background: #F0F0EE;
+  padding: 32px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.proposals-header {
+  max-width: 1200px;
+  margin: 0 auto 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.proposals-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #261312;
+  margin: 0 0 8px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+.back-btn {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #261312;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+}
+
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.empty-state {
+  max-width: 500px;
+  margin: 80px auto;
+  text-align: center;
+  background: white;
+  padding: 60px 40px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.empty-state h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #261312;
+  margin: 0 0 12px;
+}
+
+.empty-state p {
+  font-size: 16px;
+  color: #666;
+  margin: 0 0 32px;
+}
+
+.btn-primary {
+  background: #712A18;
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: #5a2113;
+  transform: translateY(-1px);
+}
+
+.proposals-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.proposal-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.proposal-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+.proposal-card-header {
+  background: #F0F0EE;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #E0E0E0;
+}
+
+.proposal-status {
+  flex: 1;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.active {
+  background: #E3F2FD;
+  color: #1565C0;
+}
+
+.proposal-date {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+}
+
+.proposal-card-body {
+  padding: 24px 20px;
+}
+
+.customer-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #261312;
+  margin: 0 0 12px;
+}
+
+.address {
+  font-size: 15px;
+  color: #454547;
+  margin-bottom: 6px;
+}
+
+.email {
+  font-size: 14px;
+  color: #567A8D;
+  margin-bottom: 20px;
+}
+
+.proposal-total {
+  background: #F0F0EE;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.total-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #454547;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.total-amount {
+  font-size: 24px;
+  font-weight: 800;
+  color: #712A18;
+  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+}
+
+.proposal-card-actions {
+  padding: 16px 20px;
+  background: #FAFAFA;
+  border-top: 1px solid #E0E0E0;
+  display: flex;
+  gap: 12px;
+}
+
+.btn-view-proposal,
+.btn-view-job {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-view-proposal {
+  background: #712A18;
+  color: white;
+}
+
+.btn-view-proposal:hover {
+  background: #5a2113;
+  transform: translateY(-1px);
+}
+
+.btn-view-job {
+  background: white;
+  color: #567A8D;
+  border: 2px solid #567A8D;
+}
+
+.btn-view-job:hover {
+  background: #567A8D;
+  color: white;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .proposals-container {
+    padding: 20px;
+  }
+
+  .proposals-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .back-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .proposals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .proposal-card-actions {
+    flex-direction: column;
+  }
+
+  .btn-view-proposal,
+  .btn-view-job {
+    width: 100%;
+  }
+}

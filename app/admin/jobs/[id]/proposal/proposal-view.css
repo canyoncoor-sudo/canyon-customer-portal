@@ -1,0 +1,272 @@
+.proposal-view-container {
+  min-height: 100vh;
+  background: #F0F0EE;
+  padding: 24px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.proposal-view-header {
+  max-width: 900px;
+  margin: 0 auto 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-btn {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #261312;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-print {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: #712A18;
+  color: white;
+  transition: all 0.2s;
+}
+
+.btn-print:hover {
+  background: #5a2113;
+  transform: translateY(-1px);
+}
+
+.proposal-document {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  padding: 60px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+.doc-header {
+  text-align: center;
+  border-bottom: 3px solid #712A18;
+  padding-bottom: 30px;
+  margin-bottom: 40px;
+}
+
+.doc-header h1 {
+  font-size: 36px;
+  font-weight: 800;
+  color: #261312;
+  margin: 0 0 16px;
+  letter-spacing: 2px;
+}
+
+.company-name {
+  font-size: 18px;
+  color: #567A8D;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.proposal-date {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.proposal-section {
+  margin-bottom: 40px;
+}
+
+.proposal-section h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #712A18;
+  margin: 0 0 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #F0F0EE;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.client-info {
+  background: #F0F0EE;
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.info-row {
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: #261312;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.project-description {
+  line-height: 1.8;
+  color: #261312;
+  font-size: 15px;
+  margin: 0;
+}
+
+.line-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.line-items-table thead {
+  background: #567A8D;
+  color: white;
+}
+
+.line-items-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.line-items-table th.cost-column {
+  text-align: right;
+  width: 150px;
+}
+
+.line-items-table tbody tr {
+  border-bottom: 1px solid #F0F0EE;
+}
+
+.line-items-table tbody tr:hover {
+  background: #FAFAFA;
+}
+
+.line-items-table td {
+  padding: 16px;
+  font-size: 14px;
+  color: #261312;
+}
+
+.scope-cell {
+  font-weight: 600;
+  color: #712A18;
+  width: 30%;
+}
+
+.description-cell {
+  color: #454547;
+}
+
+.cost-cell {
+  text-align: right;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+  color: #261312;
+}
+
+.line-items-table tfoot {
+  background: #F0F0EE;
+}
+
+.total-row td {
+  padding: 20px 16px;
+  font-size: 18px;
+  font-weight: 800;
+  border-top: 3px solid #712A18;
+}
+
+.total-label {
+  text-align: right;
+  color: #261312;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.total-cost {
+  color: #712A18;
+  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+  font-size: 24px;
+}
+
+.terms-content {
+  line-height: 1.8;
+  color: #261312;
+}
+
+.terms-content p {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.terms-content strong {
+  color: #712A18;
+  font-weight: 700;
+}
+
+.proposal-footer {
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 2px solid #F0F0EE;
+  text-align: center;
+}
+
+.proposal-footer p {
+  margin: 0 0 12px;
+  color: #454547;
+  font-size: 14px;
+}
+
+.contact-info {
+  font-weight: 600;
+  color: #567A8D;
+}
+
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .proposal-view-container {
+    padding: 0;
+    background: white;
+  }
+  
+  .proposal-document {
+    box-shadow: none;
+    padding: 40px;
+    max-width: 100%;
+  }
+  
+  .proposal-section {
+    page-break-inside: avoid;
+  }
+  
+  .line-items-table {
+    page-break-inside: avoid;
+  }
+}

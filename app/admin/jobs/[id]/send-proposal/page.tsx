@@ -28,6 +28,8 @@ export default function SendProposalEmail() {
   const [emailBody, setEmailBody] = useState('');
   const [portalLink, setPortalLink] = useState('');
   const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendStatus, setSendStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
   useEffect(() => {
     fetchJobDetails();
@@ -129,6 +131,59 @@ Canyon Construction Inc.
     window.location.href = mailtoLink;
   };
 
+  const handleSendEmail = async () => {
+    if (!job) return;
+    
+    setSending(true);
+    setSendStatus(null);
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin/dashboard');
+        return;
+      }
+
+      const res = await fetch('/api/admin/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          to: job.customer_email,
+          subject: emailSubject,
+          body: emailBody,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to send email');
+      }
+
+      setSendStatus({
+        type: 'success',
+        message: `✅ Email sent successfully to ${job.customer_email}!`
+      });
+
+      // Optionally redirect back to job after a delay
+      setTimeout(() => {
+        router.push(`/admin/jobs/${jobId}`);
+      }, 2000);
+
+    } catch (error: any) {
+      console.error('Error sending email:', error);
+      setSendStatus({
+        type: 'error',
+        message: error.message || 'Failed to send email. Try using "Open in Email Client" instead.'
+      });
+    } finally {
+      setSending(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="send-proposal-container">
@@ -190,20 +245,31 @@ Canyon Construction Inc.
         </div>
 
         <div className="action-buttons">
-          <button onClick={handleOpenEmailClient} className="btn-primary">
+          <button 
+            onClick={handleSendEmail} 
+            className="btn-send-now"
+            disabled={sending || !job?.customer_email}
+          >
+            {sending ? '📤 Sending...' : '📧 Send Email Now'}
+          </button>
+          <button onClick={handleOpenEmailClient} className="btn-secondary">
             📧 Open in Email Client
           </button>
           <button onClick={handleCopyBody} className="btn-secondary">
             {copied ? '✓ Copied!' : '📋 Copy Email Body'}
           </button>
-          <button onClick={handleCopyAll} className="btn-secondary">
-            📋 Copy Subject + Body
-          </button>
         </div>
 
+        {sendStatus && (
+          <div className={`send-status ${sendStatus.type}`}>
+            {sendStatus.message}
+          </div>
+        )}
+
         <div className="helper-text">
-          <p>💡 <strong>Tip:</strong> You can edit the email text above to personalize it before sending. 
-          Click "Open in Email Client" to compose in your default email app, or copy the text to use in Gmail, Outlook, etc.</p>
+          <p>💡 <strong>Send Email Now:</strong> Sends directly from the system to {job?.customer_email}</p>
+          <p>💡 <strong>Open in Email Client:</strong> Opens your default email app (Outlook, Gmail, etc.)</p>
+          <p>💡 <strong>Copy Email Body:</strong> Copy text to paste into any email service</p>
         </div>
       </div>
 

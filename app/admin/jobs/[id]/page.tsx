@@ -83,6 +83,12 @@ export default function JobPreview() {
     router.push('/admin/jobs');
   };
 
+  const handleViewProposal = () => {
+    if (!job) return;
+    // Navigate to view the existing proposal
+    router.push(`/admin/jobs/${jobId}/proposal`);
+  };
+
   const handleCreateProposal = () => {
     if (!job) return;
     
@@ -108,6 +114,39 @@ export default function JobPreview() {
 
   const handleSendProposal = () => {
     router.push(`/admin/jobs/${jobId}/send-proposal`);
+  };
+
+  const handleViewAsCustomer = async () => {
+    if (!job) return;
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin/dashboard');
+        return;
+      }
+
+      // Generate a customer portal token for this job
+      const res = await fetch(`/api/admin/jobs/${jobId}/customer-preview`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to generate customer preview');
+      }
+
+      const data = await res.json();
+
+      // Open customer portal in new tab with the generated token
+      const customerPortalUrl = `/dashboard?preview_token=${data.token}`;
+      window.open(customerPortalUrl, '_blank');
+    } catch (error) {
+      console.error('Failed to generate customer preview:', error);
+      alert('Failed to open customer portal preview');
+    }
   };
 
   const handleDelete = async () => {
@@ -173,6 +212,9 @@ export default function JobPreview() {
           <button onClick={handleEdit} className="btn-edit">
             Edit Job
           </button>
+          <button onClick={handleViewAsCustomer} className="btn-view-customer">
+            👁️ View as Customer
+          </button>
           <button onClick={handleSendProposal} className="btn-send-email">
             📧 Send Proposal Email
           </button>
@@ -189,9 +231,19 @@ export default function JobPreview() {
         <div className="preview-title-section">
           <h1>Job Details</h1>
           <div className="job-status">
-            <span className={`status-badge ${job.is_active ? 'active' : 'inactive'}`}>
-              {job.status || (job.is_active ? 'Active' : 'Inactive')}
-            </span>
+            {job.status === 'proposal_created' ? (
+              <button 
+                onClick={handleViewProposal}
+                className="status-badge-button proposal-created"
+                title="Click to view proposal"
+              >
+                Proposal Created ✓
+              </button>
+            ) : (
+              <span className={`status-badge ${job.is_active ? 'active' : 'inactive'}`}>
+                {job.status || (job.is_active ? 'Active' : 'Inactive')}
+              </span>
+            )}
           </div>
         </div>
 

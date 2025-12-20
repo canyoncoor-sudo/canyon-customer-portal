@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import "./dashboard.css";
 
 interface JobData {
@@ -15,36 +15,72 @@ interface JobData {
   project_description?: string;
 }
 
-export default function DashboardPage() {
+function DashboardContent() {
   const [job, setJob] = useState<JobData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    // Get job data from localStorage (set during login)
-    const jobData = localStorage.getItem("portal_job");
-    const token = localStorage.getItem("portal_token");
+    const previewToken = searchParams.get('preview_token');
 
-    if (!jobData || !token) {
-      router.push("/");
-      return;
+    if (previewToken) {
+      // Admin is viewing as customer - fetch job data using the preview token
+      setIsPreviewMode(true);
+      fetchJobWithPreviewToken(previewToken);
+    } else {
+      // Normal customer login flow
+      const jobData = localStorage.getItem("portal_job");
+      const token = localStorage.getItem("portal_token");
+
+      if (!jobData || !token) {
+        router.push("/");
+        return;
+      }
+
+      try {
+        const parsedJob = JSON.parse(jobData);
+        setJob(parsedJob);
+      } catch (e) {
+        console.error("Error parsing job data:", e);
+        router.push("/");
+      } finally {
+        setLoading(false);
+      }
     }
+  }, [router, searchParams]);
 
+  const fetchJobWithPreviewToken = async (token: string) => {
     try {
-      const parsedJob = JSON.parse(jobData);
-      setJob(parsedJob);
-    } catch (e) {
-      console.error("Error parsing job data:", e);
-      router.push("/");
-    } finally {
+      const res = await fetch('/api/customer/job', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch job data');
+      }
+
+      const data = await res.json();
+      setJob(data.job);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching preview job:', error);
+      alert('Failed to load customer preview');
       setLoading(false);
     }
-  }, [router]);
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("portal_job");
-    localStorage.removeItem("portal_token");
-    router.push("/");
+    if (isPreviewMode) {
+      window.close();
+    } else {
+      localStorage.removeItem("portal_job");
+      localStorage.removeItem("portal_token");
+      router.push("/");
+    }
   };
 
   if (loading) {
@@ -60,12 +96,24 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard">
+      {/* Admin Preview Banner */}
+      {isPreviewMode && (
+        <div className="preview-banner">
+          <div className="preview-banner-content">
+            <span>👁️ Admin Preview Mode - Viewing as Customer: {job.customer_name}</span>
+            <button onClick={() => window.close()} className="preview-close">
+              Close Preview
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="dashboard-header">
         <div className="header-content">
           <div className="logo">🏗️ Canyon Construction Inc.</div>
           <button onClick={handleLogout} className="btn-logout">
-            Logout
+            {isPreviewMode ? 'Close Preview' : 'Logout'}
           </button>
         </div>
       </header>
@@ -145,5 +193,18 @@ export default function DashboardPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading your portal...</p>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }

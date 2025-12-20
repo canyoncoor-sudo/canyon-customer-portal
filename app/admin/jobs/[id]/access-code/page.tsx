@@ -115,7 +115,7 @@ export default function GenerateAccessCode() {
 
       const data = await res.json();
       
-      alert(`✅ Access Code Created Successfully!\n\nCustomer: ${job?.customer_name}\n\nShare these credentials:\nAddress: ${job?.job_address}\nAccess Code: ${accessCode}\n\nExpires: ${expirationDays} days`);
+      alert(`✅ Access Code Created Successfully!\n\nCustomer: ${job?.customer_name}\n\nShare these credentials:\nCustomer Name: ${job?.customer_name}\nAccess Code: ${accessCode}\n\nExpires: ${expirationDays} days`);
       
       router.push(`/admin/jobs/${jobId}`);
     } catch (error) {
@@ -236,8 +236,8 @@ export default function GenerateAccessCode() {
               <p>Share these credentials with your customer:</p>
               <div className="credentials-box">
                 <div className="credential-item">
-                  <span className="cred-label">Address:</span>
-                  <code>{job.job_address || '[address]'}</code>
+                  <span className="cred-label">Customer Name:</span>
+                  <code>{job.customer_name || '[customer name]'}</code>
                 </div>
                 <div className="credential-item">
                   <span className="cred-label">Access Code:</span>
