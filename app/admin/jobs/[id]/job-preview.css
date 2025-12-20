@@ -277,3 +277,18 @@
 .btn-send-email:hover {
   background: #456274;
 }
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-delete:hover {
+  background: #c82333;
+}

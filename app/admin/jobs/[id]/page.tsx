@@ -110,6 +110,43 @@ export default function JobPreview() {
     router.push(`/admin/jobs/${jobId}/send-proposal`);
   };
 
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this job? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin/dashboard');
+        return;
+      }
+
+      const res = await fetch(`/api/admin/jobs/${jobId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (res.status === 401) {
+        localStorage.removeItem('admin_token');
+        router.push('/admin/dashboard');
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error('Failed to delete job');
+      }
+
+      alert('Job deleted successfully');
+      router.push('/admin/jobs');
+    } catch (error) {
+      console.error('Failed to delete job:', error);
+      alert('Failed to delete job. Please try again.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="job-preview-container">
@@ -141,6 +178,9 @@ export default function JobPreview() {
           </button>
           <button onClick={handleCreateProposal} className="btn-create-proposal">
             Create Proposal
+          </button>
+          <button onClick={handleDelete} className="btn-delete">
+            🗑️ Delete Job
           </button>
         </div>
       </div>
