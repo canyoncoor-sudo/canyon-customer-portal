@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyPortalToken } from '@/lib/jwt';
 import { createClient } from '@supabase/supabase-js';
+import jwt from 'jsonwebtoken';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,7 +15,14 @@ export async function GET(req: NextRequest) {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    const payload = await verifyPortalToken(token);
+    
+    // Verify JWT token
+    let payload: any;
+    try {
+      payload = jwt.verify(token, process.env.JWT_SECRET || 'canyon_portal_secret_2024');
+    } catch (err) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    }
 
     if (!payload || !payload.jobId) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });

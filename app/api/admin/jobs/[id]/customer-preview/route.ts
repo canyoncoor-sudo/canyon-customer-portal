@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdminToken } from '@/lib/verify-token';
-import { signPortalToken } from '@/lib/jwt';
 import { createClient } from '@supabase/supabase-js';
+import jwt from 'jsonwebtoken';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -40,8 +40,12 @@ export async function POST(
       return NextResponse.json({ error: 'Job not found' }, { status: 404 });
     }
 
-    // Generate a customer portal token for this job
-    const customerToken = await signPortalToken(jobId);
+    // Generate a customer portal token for this job using jwt
+    const customerToken = jwt.sign(
+      { jobId: jobId },
+      process.env.JWT_SECRET || 'canyon_portal_secret_2024',
+      { expiresIn: '1d' }
+    );
 
     return NextResponse.json({
       token: customerToken,
