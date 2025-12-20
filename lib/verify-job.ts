@@ -10,10 +10,10 @@ interface Job {
 }
 
 export async function verifyJob(
-  address: string,
+  name: string,
   code: string
 ): Promise<{ success: true; job: Job } | { success: false; error: string }> {
-  // Find job by job_address
+  // Find job by customer_name (case-insensitive)
   const { data: jobs, error: jErr } = await supabaseAdmin
     .from('portal_jobs')
     .select('*')
@@ -24,11 +24,11 @@ export async function verifyJob(
   }
 
   const job = (jobs || []).find(
-    (j: any) => normalize(j.job_address) === normalize(address)
+    (j: any) => normalize(j.customer_name) === normalize(name)
   );
 
   if (!job) {
-    return { success: false, error: 'No matching job found for that address.' };
+    return { success: false, error: 'No matching customer found for that name.' };
   }
 
   // Check access code hash (it's in the same table)

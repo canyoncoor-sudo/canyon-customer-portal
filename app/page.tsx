@@ -47,7 +47,7 @@ export default function Home() {
       const r = await fetch("/api/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ address: field1, code: field2 }),
+        body: JSON.stringify({ name: field1, code: field2 }),
       });
       const data = await r.json();
       
@@ -87,12 +87,12 @@ export default function Home() {
         <div style={{ background: "white", borderRadius: 16, padding: 18, border: "1px solid rgba(38,19,18,.10)", marginTop: 14 }}>
           <h2 style={{ marginTop: 0 }}>Login</h2>
 
-          <label style={{ fontWeight: 800 }}>Project Address</label>
+          <label style={{ fontWeight: 800 }}>Your Name</label>
           <input
             value={field1}
             onChange={(e) => setField1(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="123 Main St"
+            placeholder="Spencer Stanley"
             style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid rgba(38,19,18,.2)", margin: "6px 0 12px" }}
           />
 
@@ -102,7 +102,7 @@ export default function Home() {
             value={field2}
             onChange={(e) => setField2(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="CANYON-XXXX"
+            placeholder="Canyon-1024"
             style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid rgba(38,19,18,.2)", margin: "6px 0 12px" }}
           />
 

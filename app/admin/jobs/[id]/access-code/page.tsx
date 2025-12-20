@@ -80,7 +80,7 @@ export default function GenerateAccessCode() {
 
   const generateAccessCode = () => {
     const randomNum = Math.floor(1000 + Math.random() * 9000);
-    const code = `CANYON-${randomNum}`;
+    const code = `Canyon-${randomNum}`;
     setGeneratedCode(code);
     setAccessCode(code);
   };
@@ -212,7 +212,7 @@ export default function GenerateAccessCode() {
                 required
                 readOnly={!!generatedCode}
               />
-              <small>Customer will use this code along with their project address to login</small>
+              <small>Customer will use this code along with their name to login</small>
             </div>
 
             <div className="form-field">

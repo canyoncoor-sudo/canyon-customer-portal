@@ -57,7 +57,7 @@ export default function SendProposalEmail() {
 
   const generateEmailContent = (jobData: Job) => {
     const firstName = jobData.customer_name.split(' ')[0];
-    const accessCode = jobData.access_code_plain || 'CANYON-XXXX';
+    const accessCode = jobData.access_code_plain || 'Canyon-XXXX';
     const city = jobData.intake?.job_city || 'your area';
     
     // Generate portal link (update with your actual domain when deployed)
@@ -77,7 +77,7 @@ We've prepared a detailed proposal for your project. You can view it anytime thr
 🔐 Your Portal Access Information:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Portal Link: ${link}
-Project Address: ${jobData.job_address}
+Your Name: ${jobData.customer_name}
 Access Code: ${accessCode}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -90,7 +90,7 @@ What You'll Find in Your Portal:
 
 To access your portal:
 1. Visit the link above
-2. Enter your project address: ${jobData.job_address}
+2. Enter your name: ${jobData.customer_name}
 3. Enter your access code: ${accessCode}
 
 If you have any questions or would like to discuss the proposal, please don't hesitate to reach out. We're here to help!
@@ -215,8 +215,8 @@ Canyon Construction Inc.
             <span className="value">{portalLink}</span>
           </div>
           <div className="quick-item">
-            <span className="label">Project Address:</span>
-            <span className="value">{job.job_address}</span>
+            <span className="label">Customer Name:</span>
+            <span className="value">{job.customer_name}</span>
           </div>
           <div className="quick-item">
             <span className="label">Access Code:</span>

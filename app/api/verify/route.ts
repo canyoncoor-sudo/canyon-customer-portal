@@ -4,16 +4,16 @@ import { signPortalToken } from '@/lib/jwt';
 
 export async function POST(req: NextRequest) {
   try {
-    const { address, code } = await req.json();
+    const { name, code } = await req.json();
 
-    if (!address || !code) {
+    if (!name || !code) {
       return NextResponse.json(
-        { error: 'Address and code are required.' },
+        { error: 'Name and code are required.' },
         { status: 400 }
       );
     }
 
-    const result = await verifyJob(address, code);
+    const result = await verifyJob(name, code);
 
     if (!result.success) {
       return NextResponse.json(
