@@ -59,6 +59,7 @@ function ProposalForm() {
   const [proposalDate, setProposalDate] = useState(new Date().toISOString().split('T')[0]);
   const [customerSignature, setCustomerSignature] = useState('');
   const [contractorSignature, setContractorSignature] = useState('');
+  const [proposalNotes, setProposalNotes] = useState('');
   const [lineItems, setLineItems] = useState<LineItem[]>([
     { id: '1', scope: '', description: '', cost: 0 }
   ]);
@@ -371,7 +372,9 @@ function ProposalForm() {
               <div className="company-details">
                 <h4>Canyon Construction Inc</h4>
                 <p>CCB #256596</p>
-                <p>Email: spencer@canyonconstructioninc.com</p>
+                <p>Email: projects@canyonconstructioninc.com</p>
+                <p>Phone: (971) 340-0802</p>
+                <p>Contact: Spencer Stanley</p>
               </div>
               
               <div className="signature-boxes">
@@ -416,32 +419,16 @@ function ProposalForm() {
                 </div>
               </div>
             </div>
-          </section>
-
-          {/* Lien Notice */}
-          <section className="proposal-section lien-notice">
-            <h4>NOTICE OF POTENTIAL LIEN RIGHTS</h4>
-            <p className="notice-subtitle">(Required Under Oregon Law — ORS 87.021 & 87.023)</p>
-            
-            <p><strong>Please read carefully:</strong></p>
-            <p>Any contractor, subcontractor, material supplier, equipment provider, or laborer who works on your project and is not paid may have the right to file a construction lien against your property. A construction lien is a legal claim that may affect your title and could lead to foreclosure if unpaid.</p>
-            
-            <p>Even if you, the property owner, pay Canyon Construction Inc. in full, other parties who supplied labor or materials to your project may still have lien rights if they are not paid by the contractor or subcontractor who hired them.</p>
-            
-            <p><strong>Your rights and protections as the property owner:</strong></p>
-            <ol>
-              <li>You may request written lien waivers or proof of payment from Canyon Construction Inc. before issuing payment.</li>
-              <li>You may also request a list of all subcontractors, suppliers, and equipment rental companies who may have lien rights.</li>
-              <li>You may withhold payment if you believe lien claimants have not been paid.</li>
-              <li>You may protect yourself by making checks jointly payable to Canyon Construction Inc. and listed subcontractors/suppliers.</li>
-              <li>Oregon law allows you to demand a Notice of Right to Lien from any party who intends to claim a lien. If they fail to provide this notice when required, they may lose their lien rights.</li>
-            </ol>
-            
-            <p><strong>What Canyon Construction Inc. will do:</strong></p>
-            <p>Canyon Construction Inc. will only use licensed contractors (when required), will pay subcontractors and suppliers in accordance with Oregon law, and will provide lien waivers or proof of payment upon reasonable request from the homeowner.</p>
-            
-            <p><strong>IMPORTANT:</strong></p>
-            <p>If a lien is filed against your property because someone who worked on your project was not paid, Oregon law gives you certain legal rights. For more information, you may contact an attorney or the Oregon Construction Contractors Board.</p>
+          </section>          {/* Additional Notes */}
+          <section className="proposal-section notes-section">
+            <h4>Additional Notes</h4>
+            <textarea
+              value={proposalNotes}
+              onChange={(e) => setProposalNotes(e.target.value)}
+              placeholder="Add any additional notes, terms, or conditions for this proposal..."
+              rows={6}
+              className="notes-textarea"
+            />
           </section>
 
           <div className="form-actions">
