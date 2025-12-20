@@ -92,7 +92,7 @@ export default function Home() {
             value={field1}
             onChange={(e) => setField1(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Spencer Stanley"
+            placeholder="First Last"
             style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid rgba(38,19,18,.2)", margin: "6px 0 12px" }}
           />
 
