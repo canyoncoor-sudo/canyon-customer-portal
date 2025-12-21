@@ -13,6 +13,10 @@ interface Project {
   access_code_expires_at: string | null;
   is_active: boolean;
   created_at: string;
+  proposal_accepted?: boolean;
+  unread_message_count?: number;
+  new_customer_photos?: number;
+  last_customer_activity?: string;
 }
 
 export default function AdminDashboard() {
@@ -70,6 +74,18 @@ export default function AdminDashboard() {
   const isExpired = (expiresAt: string | null) => {
     if (!expiresAt) return false;
     return new Date(expiresAt) < new Date();
+  };
+
+  const getActionCount = (project: Project) => {
+    let count = 0;
+    if (project.proposal_accepted) count++;
+    if (project.unread_message_count) count += project.unread_message_count;
+    if (project.new_customer_photos) count += project.new_customer_photos;
+    return count;
+  };
+
+  const handleRowClick = (projectId: string) => {
+    router.push(`/admin/jobs/${projectId}`);
   };
 
   if (loading) {
@@ -143,42 +159,65 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {filteredProjects.map(project => (
-                <tr key={project.id}>
-                  <td>{project.customer_name}</td>
-                  <td>{project.job_address}</td>
-                  <td>
-                    <span className={`status-badge status-${project.status.toLowerCase()}`}>
-                      {project.status}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`type-badge type-${project.access_code_type}`}>
-                      {project.access_code_type === 'proposal' ? 'Proposal' : 'Active Job'}
-                    </span>
-                  </td>
-                  <td>
-                    {project.access_code_expires_at ? (
-                      <span className={isExpired(project.access_code_expires_at) ? 'expired' : ''}>
-                        {new Date(project.access_code_expires_at).toLocaleDateString()}
-                        {isExpired(project.access_code_expires_at) && ' (Expired)'}
+              {filteredProjects.map(project => {
+                const actionCount = getActionCount(project);
+                return (
+                  <tr 
+                    key={project.id}
+                    onClick={() => handleRowClick(project.id)}
+                    className="clickable-row"
+                  >
+                    <td>{project.customer_name}</td>
+                    <td>{project.job_address}</td>
+                    <td>
+                      <span className={`status-badge status-${project.status.toLowerCase()}`}>
+                        {project.status}
                       </span>
-                    ) : (
-                      <span>Never</span>
-                    )}
-                  </td>
-                  <td>
-                    <div className="action-buttons">
-                      <button 
-                        className="btn-view"
-                        onClick={() => router.push(`/admin/jobs/${project.id}`)}
-                      >
-                        Preview
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td>
+                      <span className={`type-badge type-${project.access_code_type}`}>
+                        {project.access_code_type === 'proposal' ? 'Proposal' : 'Active Job'}
+                      </span>
+                    </td>
+                    <td>
+                      {project.access_code_expires_at ? (
+                        <span className={isExpired(project.access_code_expires_at) ? 'expired' : ''}>
+                          {new Date(project.access_code_expires_at).toLocaleDateString()}
+                          {isExpired(project.access_code_expires_at) && ' (Expired)'}
+                        </span>
+                      ) : (
+                        <span>Never</span>
+                      )}
+                    </td>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <div className="action-notifications">
+                        {actionCount > 0 ? (
+                          <>
+                            <span className="notification-badge">{actionCount}</span>
+                            <div className="action-details">
+                              {project.proposal_accepted && (
+                                <div className="action-item">✓ Proposal Accepted</div>
+                              )}
+                              {(project.unread_message_count ?? 0) > 0 && (
+                                <div className="action-item">
+                                  {project.unread_message_count} New Message{(project.unread_message_count ?? 0) > 1 ? 's' : ''}
+                                </div>
+                              )}
+                              {(project.new_customer_photos ?? 0) > 0 && (
+                                <div className="action-item">
+                                  {project.new_customer_photos} New Photo{(project.new_customer_photos ?? 0) > 1 ? 's' : ''}
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <span className="no-actions">—</span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
 
