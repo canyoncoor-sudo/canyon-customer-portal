@@ -298,15 +298,16 @@
 
 /* Clickable table rows */
 .clickable-row {
-  position: relative;
   cursor: pointer;
   transition: all 0.2s ease;
+  border-left: 3px solid transparent;
 }
 
 .clickable-row:hover {
   background: #f8f9fa !important;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left-color: var(--color-rust);
 }
 
 .clickable-row:active {
@@ -420,17 +421,4 @@
   position: relative;
 }
 
-.clickable-row::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: transparent;
-  transition: all 0.2s ease;
-}
-
-.clickable-row:hover::before {
-  background: var(--color-rust);
-}
+/* Removed ::before pseudo-element that was causing column shift */
