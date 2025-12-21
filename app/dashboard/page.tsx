@@ -179,7 +179,7 @@ function DashboardContent() {
                     </div>
                   )}
                   <div className="proposal-actions">
-                    <button className="btn-view-proposal" onClick={() => window.open(`/dashboard/proposal/${job.id}`, '_blank')}>
+                    <button className="btn-view-proposal" onClick={() => router.push(`/dashboard/proposal/${job.id}${isPreviewMode ? `?preview_token=${new URLSearchParams(window.location.search).get('preview_token')}` : ''}`)}>
                       View Full Proposal
                     </button>
                   </div>
@@ -198,10 +198,13 @@ function DashboardContent() {
                 <p>View your project</p>
               </a>
 
-              <a href="/dashboard/quotes" className="nav-card">
+              <a 
+                href={job.has_proposal ? `/dashboard/proposal/${job.id}${isPreviewMode ? `?preview_token=${new URLSearchParams(window.location.search).get('preview_token')}` : ''}` : '/dashboard/quotes'} 
+                className="nav-card"
+              >
                 <div className="nav-icon" style={{backgroundColor: '#A45941'}}></div>
                 <h3>Proposals</h3>
-                <p>View your project's proposal</p>
+                <p>{job.has_proposal ? 'View your project proposal' : 'No proposal available yet'}</p>
               </a>
 
               <a href="/dashboard/subcontractors" className="nav-card">
