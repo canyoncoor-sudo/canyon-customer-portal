@@ -77,6 +77,7 @@ function ProposalForm() {
     const stateParam = searchParams.get('state');
     const zipParam = searchParams.get('zip');
     const descriptionParam = searchParams.get('description');
+    const existingProposalParam = searchParams.get('existingProposal');
 
     if (fromJobId) {
       setJobId(fromJobId);
@@ -110,8 +111,25 @@ function ProposalForm() {
       setCustomerZip(zipParam);
     }
 
-    // Pre-fill first line item with project description if available
-    if (descriptionParam && descriptionParam.trim()) {
+    // Load existing proposal data if editing
+    if (existingProposalParam) {
+      try {
+        const proposalData = JSON.parse(existingProposalParam);
+        if (proposalData.lineItems && Array.isArray(proposalData.lineItems)) {
+          // Convert existing line items to the expected format
+          const loadedItems = proposalData.lineItems.map((item: any, index: number) => ({
+            id: String(index + 1),
+            scope: item.scope || '',
+            description: item.description || '',
+            cost: item.cost || 0
+          }));
+          setLineItems(loadedItems);
+        }
+      } catch (error) {
+        console.error('Failed to parse existing proposal data:', error);
+      }
+    } else if (descriptionParam && descriptionParam.trim()) {
+      // Pre-fill first line item with project description if available (only if not editing)
       setLineItems([
         { id: '1', scope: '', description: descriptionParam, cost: 0 }
       ]);

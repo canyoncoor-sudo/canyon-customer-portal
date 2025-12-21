@@ -23,6 +23,7 @@ interface Job {
   customer_email: string;
   customer_phone: string;
   proposal_data: ProposalData | null;
+  proposal_accepted?: boolean;
   intake: {
     job_city?: string;
     job_state?: string;
@@ -81,6 +82,27 @@ export default function ProposalView() {
     window.print();
   };
 
+  const handleEditProposal = () => {
+    if (!job || !job.proposal_data) return;
+    
+    // Navigate to proposal creation/edit with existing data
+    const params = new URLSearchParams({
+      jobId: job.id,
+      customerName: job.customer_name,
+      email: job.customer_email,
+      phone: job.customer_phone || '',
+      address: job.job_address,
+      city: job.intake?.job_city || '',
+      state: job.intake?.job_state || '',
+      zip: job.intake?.job_zip || '',
+      description: job.intake?.work_description || '',
+      // Pass existing proposal data
+      existingProposal: JSON.stringify(job.proposal_data),
+    });
+    
+    router.push(`/admin/projects/new?${params.toString()}`);
+  };
+
   if (loading) {
     return (
       <div className="proposal-view-container">
@@ -107,6 +129,14 @@ export default function ProposalView() {
           ← Back to Job
         </button>
         <div className="header-actions">
+          {!job.proposal_accepted && (
+            <button 
+              onClick={handleEditProposal}
+              className="btn-edit"
+            >
+              ✏️ Edit Proposal
+            </button>
+          )}
           <button onClick={handlePrint} className="btn-print">
             🖨️ Print Proposal
           </button>
