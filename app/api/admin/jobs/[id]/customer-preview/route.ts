@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyAdminToken } from '@/lib/verify-token';
+import { verifyAdminToken } from '@/lib/verify-admin-token';
 import { createClient } from '@supabase/supabase-js';
 import jwt from 'jsonwebtoken';
 
