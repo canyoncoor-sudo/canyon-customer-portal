@@ -75,12 +75,12 @@ export default function JobPreview() {
       console.error('Failed to fetch job:', error);
       setLoading(false);
       alert('Failed to load job details');
-      router.push('/admin/jobs');
+      router.push('/admin/dashboard');
     }
   };
 
   const handleBack = () => {
-    router.push('/admin/jobs');
+    router.push('/admin/dashboard');
   };
 
   const handleViewProposal = () => {
@@ -180,7 +180,7 @@ export default function JobPreview() {
       }
 
       alert('Job deleted successfully');
-      router.push('/admin/jobs');
+      router.push('/admin/dashboard');
     } catch (error) {
       console.error('Failed to delete job:', error);
       alert('Failed to delete job. Please try again.');
@@ -207,7 +207,7 @@ export default function JobPreview() {
     <div className="job-preview-container">
       <div className="job-preview-header">
         <button onClick={handleBack} className="back-btn">
-          ← Back to Jobs
+          ← Back to Dashboard
         </button>
         <div className="header-actions">
           <button onClick={handleEdit} className="btn-edit">
