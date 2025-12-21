@@ -77,7 +77,8 @@ function DashboardContent() {
 
   const handleLogout = () => {
     if (isPreviewMode) {
-      window.close();
+      // Navigate back to the job preview page
+      router.push(`/admin/jobs/${job?.id}`);
     } else {
       localStorage.removeItem("portal_job");
       localStorage.removeItem("portal_token");
@@ -103,8 +104,8 @@ function DashboardContent() {
         <div className="preview-banner">
           <div className="preview-banner-content">
             <span>Admin Preview Mode - Viewing Client Portal: {job.customer_name}</span>
-            <button onClick={() => window.close()} className="preview-close">
-              Close Preview
+            <button onClick={() => router.push(`/admin/jobs/${job.id}`)} className="preview-close">
+              Back to Admin
             </button>
           </div>
         </div>
@@ -115,7 +116,7 @@ function DashboardContent() {
         <div className="header-content">
           <div className="logo">Canyon Construction Inc.</div>
           <button onClick={handleLogout} className="btn-logout">
-            {isPreviewMode ? 'Close Preview' : 'Logout'}
+            {isPreviewMode ? 'Back to Admin' : 'Logout'}
           </button>
         </div>
       </header>

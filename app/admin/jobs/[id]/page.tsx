@@ -140,9 +140,10 @@ export default function JobPreview() {
 
       const data = await res.json();
 
-      // Open customer portal in new tab with the generated token
+      // Navigate to customer portal in same tab with preview token
+      // This avoids popup blockers and provides seamless preview
       const customerPortalUrl = `/dashboard?preview_token=${data.token}`;
-      window.open(customerPortalUrl, '_blank');
+      router.push(customerPortalUrl);
     } catch (error) {
       console.error('Failed to generate customer preview:', error);
       alert('Failed to open customer portal preview');
