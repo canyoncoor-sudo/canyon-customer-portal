@@ -13,6 +13,8 @@ interface JobData {
   customer_phone?: string;
   customer_email?: string;
   project_description?: string;
+  proposal_data?: any;
+  has_proposal?: boolean;
 }
 
 function DashboardContent() {
@@ -100,7 +102,7 @@ function DashboardContent() {
       {isPreviewMode && (
         <div className="preview-banner">
           <div className="preview-banner-content">
-            <span>👁️ Admin Preview Mode - Viewing as Customer: {job.customer_name}</span>
+            <span>Admin Preview Mode - Viewing Client Portal: {job.customer_name}</span>
             <button onClick={() => window.close()} className="preview-close">
               Close Preview
             </button>
@@ -111,7 +113,7 @@ function DashboardContent() {
       {/* Header */}
       <header className="dashboard-header">
         <div className="header-content">
-          <div className="logo">🏗️ Canyon Construction Inc.</div>
+          <div className="logo">Canyon Construction Inc.</div>
           <button onClick={handleLogout} className="btn-logout">
             {isPreviewMode ? 'Close Preview' : 'Logout'}
           </button>
@@ -128,26 +130,62 @@ function DashboardContent() {
                 <img src={job.home_photo_url} alt="Project home" />
               ) : (
                 <div className="photo-placeholder">
-                  <span>🏠</span>
+                  <span></span>
                   <p>Project Photo</p>
                 </div>
               )}
             </div>
             <div className="job-info">
               <h1>{job.customer_name}</h1>
-              <p className="job-address">📍 {job.job_address}</p>
+              <p className="job-address">{job.job_address}</p>
               <div className="status-badge status-active">{job.status}</div>
               {job.project_description && (
                 <p className="job-description">{job.project_description}</p>
               )}
               {job.customer_phone && (
-                <p className="contact-info">📞 {job.customer_phone}</p>
+                <p className="contact-info">Phone: {job.customer_phone}</p>
               )}
               {job.customer_email && (
-                <p className="contact-info">✉️ {job.customer_email}</p>
+                <p className="contact-info">Email: {job.customer_email}</p>
               )}
             </div>
           </div>
+
+          {/* Proposal Section - Show if proposal exists */}
+          {job.has_proposal && job.proposal_data && (
+            <div className="proposal-preview-section">
+              <h2>Your Project Proposal</h2>
+              <div className="proposal-card">
+                <div className="proposal-header">
+                  <h3>Proposal Details</h3>
+                  <span className="proposal-status">Ready for Review</span>
+                </div>
+                <div className="proposal-content">
+                  <div className="proposal-info-grid">
+                    <div>
+                      <strong>Total Amount:</strong>
+                      <span className="proposal-amount">${job.proposal_data.total || 'TBD'}</span>
+                    </div>
+                    <div>
+                      <strong>Scope:</strong>
+                      <p>{job.proposal_data.scope || 'Detailed scope provided in proposal document'}</p>
+                    </div>
+                  </div>
+                  {job.proposal_data.notes && (
+                    <div className="proposal-notes">
+                      <strong>Notes:</strong>
+                      <p>{job.proposal_data.notes}</p>
+                    </div>
+                  )}
+                  <div className="proposal-actions">
+                    <button className="btn-view-proposal" onClick={() => window.open(`/dashboard/proposal/${job.id}`, '_blank')}>
+                      View Full Proposal
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Navigation Grid */}
           <div className="portal-navigation">

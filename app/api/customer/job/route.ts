@@ -49,6 +49,8 @@ export async function GET(req: NextRequest) {
         customer_phone: job.customer_phone,
         home_photo_url: job.home_photo_url,
         project_description: job.project_description,
+        proposal_data: job.proposal_data,
+        has_proposal: job.status === 'proposal_created' && job.proposal_data !== null,
       },
     });
   } catch (error: any) {

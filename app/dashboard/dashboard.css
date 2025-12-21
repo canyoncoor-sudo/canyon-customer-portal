@@ -216,6 +216,127 @@
   line-height: 1.5;
 }
 
+/* Proposal Preview Section */
+.proposal-preview-section {
+  margin: var(--spacing-xl) 0;
+}
+
+.proposal-preview-section h2 {
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.proposal-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+}
+
+.proposal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid #F0F0EE;
+}
+
+.proposal-header h3 {
+  color: var(--color-text);
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.proposal-status {
+  background: #567A8D;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.proposal-info-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.proposal-info-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.proposal-info-grid strong {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.proposal-amount {
+  font-size: 32px;
+  font-weight: 800;
+  color: #712A18;
+}
+
+.proposal-info-grid p {
+  margin: 0;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.proposal-notes {
+  background: #F0F0EE;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.proposal-notes strong {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.proposal-notes p {
+  margin: 0;
+  color: var(--color-text);
+  line-height: 1.8;
+}
+
+.proposal-actions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.btn-view-proposal {
+  background: #712A18;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+
+.btn-view-proposal:hover {
+  background: #5a2113;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(113, 42, 24, 0.3);
+}
+
 /* Loading State */
 .loading-container {
   min-height: 100vh;
@@ -254,5 +375,13 @@
 
   .nav-grid {
     grid-template-columns: 1fr;
+  }
+
+  .proposal-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .proposal-amount {
+    font-size: 24px;
   }
 }
