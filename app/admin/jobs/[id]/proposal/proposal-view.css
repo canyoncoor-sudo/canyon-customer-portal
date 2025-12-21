@@ -166,7 +166,7 @@
 
 .scope-cell {
   font-weight: 600;
-  color: #712A18;
+  color: #567A8D;
   width: 30%;
 }
 
@@ -200,7 +200,7 @@
 }
 
 .total-cost {
-  color: #712A18;
+  color: #567A8D;
   font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
   font-size: 24px;
 }

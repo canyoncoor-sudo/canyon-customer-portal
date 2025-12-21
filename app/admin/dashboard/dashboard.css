@@ -273,6 +273,18 @@
   transition: all 0.2s;
 }
 
+.btn-new-job {
+  background: #712A18;
+  color: white;
+  font-weight: 700;
+}
+
+.btn-new-job:hover {
+  background: #5a2113;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(113, 42, 24, 0.3);
+}
+
 .nav-button:hover {
   background: var(--color-ecru);
 }

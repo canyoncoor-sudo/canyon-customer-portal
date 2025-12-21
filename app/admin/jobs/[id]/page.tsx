@@ -216,12 +216,6 @@ export default function JobPreview() {
           <button onClick={handleViewAsCustomer} className="btn-view-customer">
             View Client Portal
           </button>
-          <button onClick={handleSendProposal} className="btn-send-email">
-            Send Proposal Email
-          </button>
-          <button onClick={handleCreateProposal} className="btn-create-proposal">
-            Create Proposal
-          </button>
           <button onClick={handleDelete} className="btn-delete">
             Delete Job
           </button>

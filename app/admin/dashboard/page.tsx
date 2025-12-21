@@ -18,7 +18,7 @@ interface Project {
 export default function AdminDashboard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'active' | 'proposals' | 'closed'>('all');
+  const [filter, setFilter] = useState<'all' | 'active' | 'proposals' | 'closed'>('proposals');
   const router = useRouter();
 
   useEffect(() => {
@@ -93,16 +93,10 @@ export default function AdminDashboard() {
 
         <div className="filter-tabs">
           <button 
-            className={filter === 'all' ? 'active' : ''}
-            onClick={() => setFilter('all')}
-          >
-            All ({projects.length})
-          </button>
-          <button 
             className={filter === 'proposals' ? 'active' : ''}
             onClick={() => setFilter('proposals')}
           >
-            Proposals ({projects.filter(p => p.access_code_type === 'proposal').length})
+            All Proposals ({projects.filter(p => p.access_code_type === 'proposal').length})
           </button>
           <button 
             className={filter === 'active' ? 'active' : ''}
@@ -115,6 +109,12 @@ export default function AdminDashboard() {
             onClick={() => setFilter('closed')}
           >
             Closed ({projects.filter(p => !p.is_active).length})
+          </button>
+          <button 
+            onClick={() => router.push('/admin/intake')}
+            className="nav-button btn-new-job"
+          >
+            + New Job
           </button>
           <button 
             onClick={() => router.push('/admin/documents')}
