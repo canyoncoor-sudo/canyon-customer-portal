@@ -410,3 +410,103 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Edit Mode Styles */
+.edit-btn, .save-btn, .cancel-btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.edit-btn {
+  background: #567A8D;
+  color: white;
+}
+
+.edit-btn:hover {
+  background: #456373;
+}
+
+.save-btn {
+  background: #567A8D;
+  color: white;
+}
+
+.save-btn:hover:not(:disabled) {
+  background: #456373;
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: #f5f5f5;
+  color: #261312;
+  border: 1px solid #ddd;
+}
+
+.cancel-btn:hover {
+  background: #e5e5e5;
+}
+
+.info-grid-edit {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.edit-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #454547;
+}
+
+.edit-field input,
+.edit-field select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  transition: border-color 0.2s;
+}
+
+.edit-field input:focus,
+.edit-field select:focus {
+  outline: none;
+  border-color: #567A8D;
+}
+
+.description-card textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: system-ui, -apple-system, sans-serif;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.description-card textarea:focus {
+  outline: none;
+  border-color: #567A8D;
+}
+
+@media (max-width: 768px) {
+  .info-grid-edit {
+    grid-template-columns: 1fr;
+  }
+}
