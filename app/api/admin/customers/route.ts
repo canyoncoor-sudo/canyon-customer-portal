@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+const ADMIN_JWT_SECRET = new TextEncoder().encode(
+  process.env.ADMIN_JWT_SECRET || process.env.PORTAL_JWT_SECRET || 'admin-secret-key'
 );
 
 export async function GET(request: NextRequest) {
@@ -18,7 +22,7 @@ export async function GET(request: NextRequest) {
     const token = authHeader.substring(7);
     
     try {
-      jwt.verify(token, process.env.ADMIN_JWT_SECRET!);
+      await jwtVerify(token, ADMIN_JWT_SECRET);
     } catch (err) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }

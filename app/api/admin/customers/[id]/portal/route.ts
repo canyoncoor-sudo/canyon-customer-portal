@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+const ADMIN_JWT_SECRET = new TextEncoder().encode(
+  process.env.ADMIN_JWT_SECRET || process.env.PORTAL_JWT_SECRET || 'admin-secret-key'
 );
 
 export async function GET(
@@ -12,7 +16,6 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const resolvedParams = await params;
     const authHeader = request.headers.get('authorization');
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -22,32 +25,28 @@ export async function GET(
     const token = authHeader.substring(7);
     
     try {
-      jwt.verify(token, process.env.ADMIN_JWT_SECRET!);
+      await jwtVerify(token, ADMIN_JWT_SECRET);
     } catch (err) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    // Fetch job details
-    const { data: job, error: jobError } = await supabase
+    const { id } = await params;
+
+    // Fetch customer/job details
+    const { data: job, error } = await supabase
       .from('portal_jobs')
       .select('*')
-      .eq('id', resolvedParams.id)
+      .eq('id', id)
       .single();
 
-    if (jobError || !job) {
+    if (error || !job) {
       return NextResponse.json({ error: 'Customer not found' }, { status: 404 });
     }
 
-    // Fetch documents (placeholder - will be implemented later)
+    // Placeholder data for now - will be implemented later
     const documents: any[] = [];
-
-    // Fetch photos (placeholder - will be implemented later)
     const photos: any[] = [];
-
-    // Fetch timeline (placeholder - will be implemented later)
     const timeline: any[] = [];
-
-    // Fetch payments (placeholder - will be implemented later)
     const payments: any[] = [];
 
     return NextResponse.json({
