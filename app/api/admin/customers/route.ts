@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { jwtVerify } from 'jose';
+import jwt from 'jsonwebtoken';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -10,34 +10,34 @@ const supabase = createClient(
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const token = authHeader.split(' ')[1];
-    const secret = new TextEncoder().encode(
-      process.env.ADMIN_JWT_SECRET || 'your-secret-key'
-    );
+    const token = authHeader.substring(7);
     
     try {
-      await jwtVerify(token, secret);
+      jwt.verify(token, process.env.ADMIN_JWT_SECRET!);
     } catch (err) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
+    // Fetch all customers from portal_jobs
     const { data: customers, error } = await supabase
       .from('portal_jobs')
-      .select('id, customer_name, job_address, access_code_hash')
+      .select('*')
       .order('created_at', { ascending: false });
-    
+
     if (error) {
-      console.error('Database error:', error);
+      console.error('Failed to fetch customers:', error);
       return NextResponse.json({ error: 'Failed to fetch customers' }, { status: 500 });
     }
 
-    return NextResponse.json({ customers });
+    return NextResponse.json({ customers: customers || [] });
+
   } catch (error) {
-    console.error('Server error:', error);
+    console.error('Customers fetch error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
