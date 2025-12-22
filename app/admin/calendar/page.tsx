@@ -32,9 +32,36 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [showDayPanel, setShowDayPanel] = useState(false);
+  const [showEventForm, setShowEventForm] = useState(false);
+  const [showTaskForm, setShowTaskForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'events' | 'tasks'>('events');
   const [draggedEvent, setDraggedEvent] = useState<CalendarEvent | null>(null);
   const router = useRouter();
+
+  // Form states
+  const [eventForm, setEventForm] = useState({
+    title: '',
+    type: 'meeting' as CalendarEvent['type'],
+    startTime: '09:00',
+    endTime: '10:00',
+    customer_name: '',
+    status: 'scheduled' as CalendarEvent['status'],
+    notes: '',
+    assignedTo: ''
+  });
+
+  const [taskForm, setTaskForm] = useState({
+    title: '',
+    priority: 'medium' as Task['priority']
+  });
+  // Google Calendar integration
+  const [googleConnected, setGoogleConnected] = useState(false);
+  const [showGoogleSettings, setShowGoogleSettings] = useState(false);
+  const [syncStatus, setSyncStatus] = useState('');
+  // Google Calendar integration
+  const [googleConnected, setGoogleConnected] = useState(false);
+  const [showGoogleSettings, setShowGoogleSettings] = useState(false);
+  const [syncStatus, setSyncStatus] = useState('');
 
   useEffect(() => {
     fetchEvents();
@@ -50,7 +77,6 @@ export default function CalendarPage() {
       }
 
       // TODO: Fetch from API
-      // Mock data for now
       setEvents([
         {
           id: '1',
@@ -81,7 +107,6 @@ export default function CalendarPage() {
   const fetchTasks = async () => {
     try {
       // TODO: Fetch from API
-      // Mock data for now
       setTasks([
         {
           id: '1',
@@ -108,6 +133,8 @@ export default function CalendarPage() {
     setSelectedEvent(null);
     setActiveTab('events');
     setShowDayPanel(true);
+    setShowEventForm(false);
+    setShowTaskForm(false);
   };
 
   const handleEventClick = (event: CalendarEvent, e: React.MouseEvent) => {
@@ -116,7 +143,224 @@ export default function CalendarPage() {
     setSelectedDate(event.start);
     setActiveTab('events');
     setShowDayPanel(true);
+    setShowEventForm(false);
   };
+
+  const handleAddEventClick = () => {
+    setEventForm({
+      title: '',
+      type: 'meeting',
+      startTime: '09:00',
+      endTime: '10:00',
+      customer_name: '',
+      status: 'scheduled',
+      notes: '',
+      assignedTo: ''
+    });
+    setShowEventForm(true);
+    setSelectedEvent(null);
+  };
+
+  const handleAddTaskClick = () => {
+    setTaskForm({
+      title: '',
+      priority: 'medium'
+    });
+    setShowTaskForm(true);
+  };
+
+  const handleSaveEvent = () => {
+    if (!selectedDate || !eventForm.title) return;
+
+    const [startHour, startMin] = eventForm.startTime.split(':').map(Number);
+    const [endHour, endMin] = eventForm.endTime.split(':').map(Number);
+
+    const newEvent: CalendarEvent = {
+      id: Date.now().toString(),
+      title: eventForm.title,
+      type: eventForm.type,
+      start: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), startHour, startMin),
+      end: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), endHour, endMin),
+      customer_name: eventForm.customer_name,
+      status: eventForm.status,
+      notes: eventForm.notes,
+      assignedTo: eventForm.assignedTo
+    };
+
+    setEvents([...events, newEvent]);
+    syncEventToGoogle(newEvent, 'create');
+    syncEventToGoogle(newEvent, 'create');
+    setShowEventForm(false);
+    setEventForm({
+      title: '',
+      type: 'meeting',
+      startTime: '09:00',
+      endTime: '10:00',
+      customer_name: '',
+      status: 'scheduled',
+      notes: '',
+      assignedTo: ''
+    });
+  };
+
+  const handleSaveTask = () => {
+    if (!selectedDate || !taskForm.title) return;
+
+    const newTask: Task = {
+      id: Date.now().toString(),
+      title: taskForm.title,
+      date: selectedDate,
+      completed: false,
+      priority: taskForm.priority
+    };
+
+    setTasks([...tasks, newTask]);
+    setShowTaskForm(false);
+    setTaskForm({
+      title: '',
+      priority: 'medium'
+    });
+  };
+
+  const handleToggleTask = (taskId: string) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId ? { ...task, completed: !task.completed } : task
+    ));
+  };
+
+  const handleDeleteEvent = () => {
+    if (!selectedEvent) return;
+    setEvents(events.filter(e => e.id !== selectedEvent.id));
+    syncEventToGoogle(selectedEvent, 'delete');
+    syncEventToGoogle(selectedEvent, 'delete');
+    setSelectedEvent(null);
+  };
+
+  
+  const checkGoogleConnection = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      const res = await fetch('/api/admin/calendar/google/status', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setGoogleConnected(data.connected || false);
+    } catch (error) {
+      console.error('Failed to check Google connection:', error);
+    }
+  };
+
+  const connectGoogleCalendar = async () => {
+    try {
+      const res = await fetch('/api/admin/calendar/google/auth');
+      const data = await res.json();
+      if (data.authUrl) {
+        window.location.href = data.authUrl;
+      }
+    } catch (error) {
+      console.error('Failed to connect Google Calendar:', error);
+      setSyncStatus('Failed to connect. Please try again.');
+    }
+  };
+
+  const disconnectGoogleCalendar = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      await fetch('/api/admin/calendar/google/status', {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setGoogleConnected(false);
+      setSyncStatus('Disconnected from Google Calendar');
+    } catch (error) {
+      console.error('Failed to disconnect:', error);
+    }
+  };
+
+  const syncEventToGoogle = async (event: CalendarEvent, action: 'create' | 'update' | 'delete') => {
+    if (!googleConnected) return;
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      await fetch('/api/admin/calendar/google/sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ event, action })
+      });
+    } catch (error) {
+      console.error('Failed to sync to Google:', error);
+    }
+  };
+
+  useEffect(() => {
+    checkGoogleConnection();
+  }, []);
+
+  
+  const checkGoogleConnection = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      const res = await fetch('/api/admin/calendar/google/status', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setGoogleConnected(data.connected || false);
+    } catch (error) {
+      console.error('Failed to check Google connection:', error);
+    }
+  };
+
+  const connectGoogleCalendar = async () => {
+    try {
+      const res = await fetch('/api/admin/calendar/google/auth');
+      const data = await res.json();
+      if (data.authUrl) {
+        window.location.href = data.authUrl;
+      }
+    } catch (error) {
+      console.error('Failed to connect Google Calendar:', error);
+      setSyncStatus('Failed to connect. Please try again.');
+    }
+  };
+
+  const disconnectGoogleCalendar = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      await fetch('/api/admin/calendar/google/status', {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setGoogleConnected(false);
+      setSyncStatus('Disconnected from Google Calendar');
+    } catch (error) {
+      console.error('Failed to disconnect:', error);
+    }
+  };
+
+  const syncEventToGoogle = async (event: CalendarEvent, action: 'create' | 'update' | 'delete') => {
+    if (!googleConnected) return;
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      await fetch('/api/admin/calendar/google/sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ event, action })
+      });
+    } catch (error) {
+      console.error('Failed to sync to Google:', error);
+    }
+  };
+
+  useEffect(() => {
+    checkGoogleConnection();
+  }, []);
 
   const handleDragStart = (event: CalendarEvent) => {
     setDraggedEvent(event);
@@ -246,9 +490,119 @@ export default function CalendarPage() {
           <div className="legend-item">
             <span className="legend-dot" style={{ background: '#261312' }}></span>
             Tasks
-          </div>
+          
+        <div className="google-calendar-section">
+          <button 
+            className="btn-google-settings" 
+            onClick={() => setShowGoogleSettings(!showGoogleSettings)}
+          >
+            {googleConnected ? '✓ Google Calendar Connected' : '⚙️ Connect Google Calendar'}
+          </button>
+        </div>
+      
+        <div className="google-calendar-section">
+          <button 
+            className="btn-google-settings" 
+            onClick={() => setShowGoogleSettings(!showGoogleSettings)}
+          >
+            {googleConnected ? '✓ Google Calendar Connected' : '⚙️ Connect Google Calendar'}
+          </button>
+        </div>
+      </div>
         </div>
       </header>
+
+      
+      {showGoogleSettings && (
+        <div className="google-settings-panel">
+          <div className="google-settings-content">
+            <h3>Google Calendar Integration</h3>
+            
+            {googleConnected ? (
+              <>
+                <p className="google-status">✅ Your Google Calendar is connected and syncing</p>
+                <div className="google-info">
+                  <p>Events created here will automatically appear in your Google Calendar with color-coded categories.</p>
+                </div>
+                {syncStatus && <p className="sync-status">{syncStatus}</p>}
+                <div className="google-actions">
+                  <button className="btn-disconnect" onClick={disconnectGoogleCalendar}>
+                    Disconnect Google Calendar
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="google-status">Connect your Google Calendar to sync events automatically</p>
+                <div className="google-benefits">
+                  <h4>Benefits:</h4>
+                  <ul>
+                    <li>✓ Events automatically sync to Google Calendar</li>
+                    <li>✓ Color-coded by event type</li>
+                    <li>✓ Access from any device</li>
+                    <li>✓ Never miss an appointment</li>
+                  </ul>
+                </div>
+                {syncStatus && <p className="sync-status error">{syncStatus}</p>}
+                <div className="google-actions">
+                  <button className="btn-connect-google" onClick={connectGoogleCalendar}>
+                    🔗 Connect Google Calendar
+                  </button>
+                </div>
+                <p className="google-note">
+                  <small>You'll be redirected to Google to authorize access. We only read and write calendar events.</small>
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      
+      {showGoogleSettings && (
+        <div className="google-settings-panel">
+          <div className="google-settings-content">
+            <h3>Google Calendar Integration</h3>
+            
+            {googleConnected ? (
+              <>
+                <p className="google-status">✅ Your Google Calendar is connected and syncing</p>
+                <div className="google-info">
+                  <p>Events created here will automatically appear in your Google Calendar with color-coded categories.</p>
+                </div>
+                {syncStatus && <p className="sync-status">{syncStatus}</p>}
+                <div className="google-actions">
+                  <button className="btn-disconnect" onClick={disconnectGoogleCalendar}>
+                    Disconnect Google Calendar
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="google-status">Connect your Google Calendar to sync events automatically</p>
+                <div className="google-benefits">
+                  <h4>Benefits:</h4>
+                  <ul>
+                    <li>✓ Events automatically sync to Google Calendar</li>
+                    <li>✓ Color-coded by event type</li>
+                    <li>✓ Access from any device</li>
+                    <li>✓ Never miss an appointment</li>
+                  </ul>
+                </div>
+                {syncStatus && <p className="sync-status error">{syncStatus}</p>}
+                <div className="google-actions">
+                  <button className="btn-connect-google" onClick={connectGoogleCalendar}>
+                    🔗 Connect Google Calendar
+                  </button>
+                </div>
+                <p className="google-note">
+                  <small>You'll be redirected to Google to authorize access. We only read and write calendar events.</small>
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="calendar-scroll-container">
         {getNextSixMonths().map((monthDate, monthIndex) => {
@@ -343,13 +697,13 @@ export default function CalendarPage() {
           <div className="day-panel-tabs">
             <button 
               className={`tab-btn ${activeTab === 'events' ? 'active' : ''}`}
-              onClick={() => setActiveTab('events')}
+              onClick={() => { setActiveTab('events'); setShowEventForm(false); setShowTaskForm(false); }}
             >
               Events ({getEventsForDate(selectedDate).length})
             </button>
             <button 
               className={`tab-btn ${activeTab === 'tasks' ? 'active' : ''}`}
-              onClick={() => setActiveTab('tasks')}
+              onClick={() => { setActiveTab('tasks'); setShowEventForm(false); setShowTaskForm(false); }}
             >
               Tasks & To-Do ({getTasksForDate(selectedDate).length})
             </button>
@@ -358,9 +712,106 @@ export default function CalendarPage() {
           <div className="day-panel-content">
             {activeTab === 'events' && (
               <div className="events-tab">
-                <button className="btn-add-item">+ Add Event</button>
+                {!showEventForm && !selectedEvent && (
+                  <button className="btn-add-item" onClick={handleAddEventClick}>+ Add Event</button>
+                )}
                 
-                {selectedEvent ? (
+                {showEventForm ? (
+                  <div className="event-form">
+                    <h4>New Event</h4>
+                    
+                    <div className="form-field">
+                      <label>Event Title *</label>
+                      <input
+                        type="text"
+                        value={eventForm.title}
+                        onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
+                        placeholder="e.g., Site Visit - Smith Project"
+                      />
+                    </div>
+
+                    <div className="form-field">
+                      <label>Event Type *</label>
+                      <select
+                        value={eventForm.type}
+                        onChange={(e) => setEventForm({ ...eventForm, type: e.target.value as CalendarEvent['type'] })}
+                      >
+                        <option value="meeting">Meeting</option>
+                        <option value="crew">Crew Scheduling</option>
+                        <option value="site_visit">Site Visit</option>
+                        <option value="appointment">Appointment</option>
+                        <option value="task">Task</option>
+                      </select>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-field">
+                        <label>Start Time *</label>
+                        <input
+                          type="time"
+                          value={eventForm.startTime}
+                          onChange={(e) => setEventForm({ ...eventForm, startTime: e.target.value })}
+                        />
+                      </div>
+                      <div className="form-field">
+                        <label>End Time *</label>
+                        <input
+                          type="time"
+                          value={eventForm.endTime}
+                          onChange={(e) => setEventForm({ ...eventForm, endTime: e.target.value })}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-field">
+                      <label>Customer Name</label>
+                      <input
+                        type="text"
+                        value={eventForm.customer_name}
+                        onChange={(e) => setEventForm({ ...eventForm, customer_name: e.target.value })}
+                        placeholder="Optional"
+                      />
+                    </div>
+
+                    <div className="form-field">
+                      <label>Status</label>
+                      <select
+                        value={eventForm.status}
+                        onChange={(e) => setEventForm({ ...eventForm, status: e.target.value as CalendarEvent['status'] })}
+                      >
+                        <option value="scheduled">Scheduled</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="completed">Completed</option>
+                      </select>
+                    </div>
+
+                    <div className="form-field">
+                      <label>Assigned To</label>
+                      <input
+                        type="text"
+                        value={eventForm.assignedTo}
+                        onChange={(e) => setEventForm({ ...eventForm, assignedTo: e.target.value })}
+                        placeholder="e.g., Crew A, John Smith"
+                      />
+                    </div>
+
+                    <div className="form-field">
+                      <label>Notes</label>
+                      <textarea
+                        value={eventForm.notes}
+                        onChange={(e) => setEventForm({ ...eventForm, notes: e.target.value })}
+                        placeholder="Additional details..."
+                        rows={3}
+                      />
+                    </div>
+
+                    <div className="form-actions">
+                      <button className="btn-save" onClick={handleSaveEvent}>Save Event</button>
+                      <button className="btn-cancel" onClick={() => setShowEventForm(false)}>Cancel</button>
+                    </div>
+                  </div>
+                ) : selectedEvent ? (
                   <div className="event-detail">
                     <h4>Event Details</h4>
                     <div className="detail-field">
@@ -399,6 +850,12 @@ export default function CalendarPage() {
                         </span>
                       </p>
                     </div>
+                    {selectedEvent.assignedTo && (
+                      <div className="detail-field">
+                        <label>Assigned To</label>
+                        <p>{selectedEvent.assignedTo}</p>
+                      </div>
+                    )}
                     {selectedEvent.notes && (
                       <div className="detail-field">
                         <label>Notes</label>
@@ -407,7 +864,7 @@ export default function CalendarPage() {
                     )}
                     <div className="detail-actions">
                       <button className="btn-edit">Edit</button>
-                      <button className="btn-delete">Delete</button>
+                      <button className="btn-delete" onClick={handleDeleteEvent}>Delete</button>
                       <button className="btn-back" onClick={() => setSelectedEvent(null)}>Back to List</button>
                     </div>
                   </div>
@@ -451,34 +908,69 @@ export default function CalendarPage() {
 
             {activeTab === 'tasks' && (
               <div className="tasks-tab">
-                <button className="btn-add-item">+ Add Task</button>
+                {!showTaskForm && (
+                  <button className="btn-add-item" onClick={handleAddTaskClick}>+ Add Task</button>
+                )}
                 
-                <div className="task-list">
-                  {getTasksForDate(selectedDate).length === 0 ? (
-                    <div className="empty-state">
-                      <p>No tasks for this day.</p>
-                      <p className="hint">Click "+ Add Task" to create one.</p>
+                {showTaskForm ? (
+                  <div className="task-form">
+                    <h4>New Task</h4>
+                    
+                    <div className="form-field">
+                      <label>Task Description *</label>
+                      <input
+                        type="text"
+                        value={taskForm.title}
+                        onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
+                        placeholder="What needs to be done?"
+                      />
                     </div>
-                  ) : (
-                    getTasksForDate(selectedDate).map(task => (
-                      <div key={task.id} className="task-item">
-                        <input 
-                          type="checkbox" 
-                          checked={task.completed}
-                          onChange={() => {}}
-                        />
-                        <div className="task-content">
-                          <div className={`task-title ${task.completed ? 'completed' : ''}`}>
-                            {task.title}
-                          </div>
-                          <div className={`task-priority priority-${task.priority}`}>
-                            {task.priority}
+
+                    <div className="form-field">
+                      <label>Priority</label>
+                      <select
+                        value={taskForm.priority}
+                        onChange={(e) => setTaskForm({ ...taskForm, priority: e.target.value as Task['priority'] })}
+                      >
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                      </select>
+                    </div>
+
+                    <div className="form-actions">
+                      <button className="btn-save" onClick={handleSaveTask}>Save Task</button>
+                      <button className="btn-cancel" onClick={() => setShowTaskForm(false)}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="task-list">
+                    {getTasksForDate(selectedDate).length === 0 ? (
+                      <div className="empty-state">
+                        <p>No tasks for this day.</p>
+                        <p className="hint">Click "+ Add Task" to create one.</p>
+                      </div>
+                    ) : (
+                      getTasksForDate(selectedDate).map(task => (
+                        <div key={task.id} className="task-item">
+                          <input 
+                            type="checkbox" 
+                            checked={task.completed}
+                            onChange={() => handleToggleTask(task.id)}
+                          />
+                          <div className="task-content">
+                            <div className={`task-title ${task.completed ? 'completed' : ''}`}>
+                              {task.title}
+                            </div>
+                            <div className={`task-priority priority-${task.priority}`}>
+                              {task.priority}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))
-                  )}
-                </div>
+                      ))
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>

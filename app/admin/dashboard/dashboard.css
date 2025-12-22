@@ -605,3 +605,103 @@
 }
 
 /* Removed ::before pseudo-element that was causing column shift */
+
+/* Navigation Tabs */
+.admin-nav-tabs {
+  display: flex;
+  gap: 0;
+  background: white;
+  border-bottom: 2px solid #F0F0EE;
+  padding: 0 24px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.nav-tab {
+  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 15px;
+  font-weight: 600;
+  color: #454547;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.nav-tab:hover {
+  color: #261312;
+  background: rgba(86, 122, 141, 0.05);
+}
+
+.nav-tab.active {
+  color: #712A18;
+  border-bottom-color: #712A18;
+  background: rgba(113, 42, 24, 0.03);
+}
+
+/* View Headers */
+.view-header {
+  padding: 24px;
+  background: white;
+  border-bottom: 1px solid #F0F0EE;
+}
+
+.view-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #261312;
+}
+
+.view-header p {
+  margin: 0;
+  font-size: 16px;
+  color: #454547;
+}
+
+/* Content Placeholder */
+.content-placeholder {
+  background: white;
+  border-radius: 12px;
+  padding: 60px 40px;
+  text-align: center;
+  margin: 24px;
+  border: 2px dashed #F0F0EE;
+}
+
+.placeholder-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.content-placeholder h3 {
+  margin: 0 0 12px 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #261312;
+}
+
+.content-placeholder p {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #454547;
+}
+
+.placeholder-detail {
+  font-size: 14px;
+  color: #9A8C7A;
+}
+
+/* Responsive Navigation */
+@media (max-width: 900px) {
+  .admin-nav-tabs {
+    padding: 0 12px;
+  }
+  
+  .nav-tab {
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+}
