@@ -162,9 +162,9 @@ export default function CustomerPortalAdminView({ params }: { params: Promise<{ 
           <div className="quick-actions">
             {!isEditing ? (
               <>
-                <button className="edit-btn" onClick={handleEdit}>✏️ Edit Info</button>
+                <button className="edit-btn" onClick={handleEdit}>Edit Info</button>
                 <label className="upload-btn">
-                  📸 Add Photos
+                  Add Photos
                   <input 
                     type="file" 
                     multiple 
@@ -174,7 +174,7 @@ export default function CustomerPortalAdminView({ params }: { params: Promise<{ 
                   />
                 </label>
                 <label className="upload-btn">
-                  📄 Add Document
+                  Add Document
                   <input 
                     type="file" 
                     onChange={handleDocumentUpload}
@@ -185,9 +185,9 @@ export default function CustomerPortalAdminView({ params }: { params: Promise<{ 
             ) : (
               <>
                 <button className="save-btn" onClick={handleSaveEdit} disabled={saving}>
-                  {saving ? 'Saving...' : '💾 Save Changes'}
+                  {saving ? 'Saving...' : 'Save Changes'}
                 </button>
-                <button className="cancel-btn" onClick={handleCancelEdit}>✕ Cancel</button>
+                <button className="cancel-btn" onClick={handleCancelEdit}>Cancel</button>
               </>
             )}
           </div>
