@@ -18,8 +18,7 @@ interface CalendarEvent {
 }
 
 export default function CalendarPage() {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState<'month' | 'week' | 'day'>('month');
+  const [currentDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [showEventModal, setShowEventModal] = useState(false);
@@ -29,7 +28,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     fetchEvents();
-  }, [currentDate]);
+  }, []);
 
   const fetchEvents = async () => {
     try {
@@ -68,34 +67,6 @@ export default function CalendarPage() {
     }
   };
 
-  const handlePrevious = () => {
-    const newDate = new Date(currentDate);
-    if (view === 'month') {
-      newDate.setMonth(newDate.getMonth() - 1);
-    } else if (view === 'week') {
-      newDate.setDate(newDate.getDate() - 7);
-    } else {
-      newDate.setDate(newDate.getDate() - 1);
-    }
-    setCurrentDate(newDate);
-  };
-
-  const handleNext = () => {
-    const newDate = new Date(currentDate);
-    if (view === 'month') {
-      newDate.setMonth(newDate.getMonth() + 1);
-    } else if (view === 'week') {
-      newDate.setDate(newDate.getDate() + 7);
-    } else {
-      newDate.setDate(newDate.getDate() + 1);
-    }
-    setCurrentDate(newDate);
-  };
-
-  const handleToday = () => {
-    setCurrentDate(new Date());
-  };
-
   const handleEventClick = (event: CalendarEvent) => {
     setSelectedEvent(event);
     setShowEventModal(true);
@@ -128,9 +99,7 @@ export default function CalendarPage() {
     setDraggedEvent(null);
   };
 
-  const getDaysInMonth = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+  const getDaysInMonth = (year: number, month: number) => {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
@@ -161,8 +130,8 @@ export default function CalendarPage() {
     });
   };
 
-  const formatMonthYear = () => {
-    return currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const formatMonthYear = (date: Date) => {
+    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   };
 
   const getEventTypeColor = (type: string) => {
@@ -186,6 +155,16 @@ export default function CalendarPage() {
     }
   };
 
+  // Generate array of 6 months starting from current month
+  const getNextSixMonths = () => {
+    const months = [];
+    for (let i = 0; i < 6; i++) {
+      const date = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
+      months.push(date);
+    }
+    return months;
+  };
+
   return (
     <div className="calendar-container">
       <header className="calendar-header">
@@ -198,33 +177,7 @@ export default function CalendarPage() {
 
         <div className="calendar-controls">
           <div className="view-controls">
-            <button onClick={handleToday} className="btn-today">Today</button>
-            <div className="nav-buttons">
-              <button onClick={handlePrevious} className="btn-nav">‹</button>
-              <button onClick={handleNext} className="btn-nav">›</button>
-            </div>
-            <h2 className="current-period">{formatMonthYear()}</h2>
-          </div>
-
-          <div className="view-toggle">
-            <button 
-              className={`view-btn ${view === 'month' ? 'active' : ''}`}
-              onClick={() => setView('month')}
-            >
-              Month
-            </button>
-            <button 
-              className={`view-btn ${view === 'week' ? 'active' : ''}`}
-              onClick={() => setView('week')}
-            >
-              Week
-            </button>
-            <button 
-              className={`view-btn ${view === 'day' ? 'active' : ''}`}
-              onClick={() => setView('day')}
-            >
-              Day
-            </button>
+            <h2 className="current-period">6-Month View • {formatMonthYear(currentDate)}</h2>
           </div>
 
           <div className="action-buttons">
@@ -259,64 +212,78 @@ export default function CalendarPage() {
         </div>
       </header>
 
-      <div className="calendar-main">
-        {view === 'month' && (
-          <div className="calendar-grid">
-            <div className="calendar-weekdays">
-              {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
-                <div key={day} className="weekday-header">{day}</div>
-              ))}
-            </div>
+      <div className="calendar-scroll-container">
+        {getNextSixMonths().map((monthDate, monthIndex) => {
+          const year = monthDate.getFullYear();
+          const month = monthDate.getMonth();
+          const isCurrentMonth = month === currentDate.getMonth() && year === currentDate.getFullYear();
 
-            <div className="calendar-days">
-              {getDaysInMonth().map((date, index) => {
-                const dayEvents = getEventsForDate(date);
-                const isToday = date && 
-                  date.getDate() === new Date().getDate() &&
-                  date.getMonth() === new Date().getMonth() &&
-                  date.getFullYear() === new Date().getFullYear();
+          return (
+            <div key={`${year}-${month}`} className="month-section">
+              <div className="month-header">
+                <h3>{formatMonthYear(monthDate)}</h3>
+                {isCurrentMonth && <span className="current-month-badge">Current Month</span>}
+              </div>
 
-                return (
-                  <div
-                    key={index}
-                    className={`calendar-day ${!date ? 'empty' : ''} ${isToday ? 'today' : ''}`}
-                    onDragOver={handleDragOver}
-                    onDrop={() => date && handleDrop(date)}
-                  >
-                    {date && (
-                      <>
-                        <div className="day-number">{date.getDate()}</div>
-                        <div className="day-events">
-                          {dayEvents.map(event => (
-                            <div
-                              key={event.id}
-                              className="event-item"
-                              style={{ borderLeftColor: getEventTypeColor(event.type) }}
-                              draggable
-                              onDragStart={() => handleDragStart(event)}
-                              onClick={() => handleEventClick(event)}
-                            >
-                              <div className="event-time">
-                                {event.start.toLocaleTimeString('en-US', { 
-                                  hour: 'numeric', 
-                                  minute: '2-digit' 
-                                })}
-                              </div>
-                              <div className="event-title">{event.title}</div>
-                              <span className={`event-status ${getStatusBadgeClass(event.status)}`}>
-                                {event.status}
-                              </span>
+              <div className="calendar-grid">
+                <div className="calendar-weekdays">
+                  {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
+                    <div key={day} className="weekday-header">{day}</div>
+                  ))}
+                </div>
+
+                <div className="calendar-days">
+                  {getDaysInMonth(year, month).map((date, index) => {
+                    const dayEvents = getEventsForDate(date);
+                    const today = new Date();
+                    const isToday = date && 
+                      date.getDate() === today.getDate() &&
+                      date.getMonth() === today.getMonth() &&
+                      date.getFullYear() === today.getFullYear();
+
+                    return (
+                      <div
+                        key={index}
+                        className={`calendar-day ${!date ? 'empty' : ''} ${isToday ? 'today' : ''}`}
+                        onDragOver={handleDragOver}
+                        onDrop={() => date && handleDrop(date)}
+                      >
+                        {date && (
+                          <>
+                            <div className="day-number">{date.getDate()}</div>
+                            <div className="day-events">
+                              {dayEvents.map(event => (
+                                <div
+                                  key={event.id}
+                                  className="event-item"
+                                  style={{ borderLeftColor: getEventTypeColor(event.type) }}
+                                  draggable
+                                  onDragStart={() => handleDragStart(event)}
+                                  onClick={() => handleEventClick(event)}
+                                >
+                                  <div className="event-time">
+                                    {event.start.toLocaleTimeString('en-US', { 
+                                      hour: 'numeric', 
+                                      minute: '2-digit' 
+                                    })}
+                                  </div>
+                                  <div className="event-title">{event.title}</div>
+                                  <span className={`event-status ${getStatusBadgeClass(event.status)}`}>
+                                    {event.status}
+                                  </span>
+                                </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                );
-              })}
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })}
       </div>
 
       {showTaskPanel && (
