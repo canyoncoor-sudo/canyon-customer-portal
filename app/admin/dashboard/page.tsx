@@ -85,7 +85,7 @@ export default function AdminDashboard() {
       <header className="admin-header">
         <div className="admin-header-content">
           <div className="header-left">
-            <h1>🏗️ Canyon Admin Portal</h1>
+            <h1>Canyon Admin Portal</h1>
             <p className="header-subtitle">Welcome back! Here's your business overview.</p>
           </div>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
           
           {/* CUSTOMERS CARD */}
           <div className="dashboard-card" onClick={() => router.push('/admin/customers')}>
-            <div className="card-icon">👥</div>
+            <div className="card-icon-block" style={{ background: '#567A8D' }}></div>
             <div className="card-content">
               <h2 className="card-title">Customers</h2>
               <p className="card-subtitle">Manage customer portals & files</p>
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
 
           {/* JOBS & PROJECTS CARD */}
           <div className="dashboard-card" onClick={() => router.push('/admin/jobs')}>
-            <div className="card-icon">🏗️</div>
+            <div className="card-icon-block" style={{ background: '#712A18' }}></div>
             <div className="card-content">
               <h2 className="card-title">Jobs & Projects</h2>
               <p className="card-subtitle">Daily work & job tracking</p>
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
 
           {/* CALENDAR & SCHEDULE CARD */}
           <div className="dashboard-card" onClick={() => router.push('/admin/calendar')}>
-            <div className="card-icon">📅</div>
+            <div className="card-icon-block" style={{ background: '#261312' }}></div>
             <div className="card-content">
               <h2 className="card-title">Calendar & Schedule</h2>
               <p className="card-subtitle">Site visits, crews & tasks</p>
@@ -140,7 +140,7 @@ export default function AdminDashboard() {
 
           {/* DOCUMENTS & PROPOSALS CARD */}
           <div className="dashboard-card" onClick={() => router.push('/admin/documents')}>
-            <div className="card-icon">📄</div>
+            <div className="card-icon-block" style={{ background: '#454547' }}></div>
             <div className="card-content">
               <h2 className="card-title">Documents & Proposals</h2>
               <p className="card-subtitle">Contracts, invoices & permits</p>
@@ -154,7 +154,7 @@ export default function AdminDashboard() {
 
           {/* LICENSED PROFESSIONALS CARD */}
           <div className="dashboard-card" onClick={() => router.push('/admin/professionals')}>
-            <div className="card-icon">🔧</div>
+            <div className="card-icon-block" style={{ background: '#9A8C7A' }}></div>
             <div className="card-content">
               <h2 className="card-title">Licensed Professionals</h2>
               <p className="card-subtitle">Subcontractors by trade</p>
@@ -173,19 +173,19 @@ export default function AdminDashboard() {
           <h3>Quick Actions</h3>
           <div className="quick-actions-grid">
             <button className="quick-action-btn" onClick={() => router.push('/admin/jobs/new')}>
-              <span className="qa-icon">➕</span>
+              <div className="qa-icon-block" style={{ background: '#567A8D' }}></div>
               <span>New Job Intake</span>
             </button>
             <button className="quick-action-btn" onClick={() => router.push('/admin/projects/new')}>
-              <span className="qa-icon">📝</span>
+              <div className="qa-icon-block" style={{ background: '#712A18' }}></div>
               <span>Create Proposal</span>
             </button>
             <button className="quick-action-btn" onClick={() => router.push('/admin/calendar')}>
-              <span className="qa-icon">🗓️</span>
+              <div className="qa-icon-block" style={{ background: '#261312' }}></div>
               <span>Schedule Visit</span>
             </button>
             <button className="quick-action-btn" onClick={() => router.push('/admin/professionals/new')}>
-              <span className="qa-icon">👷</span>
+              <div className="qa-icon-block" style={{ background: '#9A8C7A' }}></div>
               <span>Add Professional</span>
             </button>
           </div>

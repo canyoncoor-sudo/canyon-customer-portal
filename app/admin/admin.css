@@ -107,10 +107,11 @@
   margin: 0 auto;
 }
 
-.coming-soon-icon {
-  font-size: 96px;
-  margin-bottom: 24px;
-  animation: float 3s ease-in-out infinite;
+.coming-soon-icon-block {
+  width: 120px;
+  height: 120px;
+  border-radius: 24px;
+  margin-bottom: 32px;
 }
 
 @keyframes float {

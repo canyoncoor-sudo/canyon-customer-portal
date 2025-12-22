@@ -14,7 +14,7 @@ export default function CalendarPage() {
       </header>
       
       <div className="coming-soon-container">
-        <div className="coming-soon-icon">📅</div>
+        <div className="coming-soon-icon-block" style={{ background: '#261312' }}></div>
         <h2>Calendar & Task Management</h2>
         <p>Scheduling, crew assignments, and task tracking coming soon.</p>
         <div className="feature-list">

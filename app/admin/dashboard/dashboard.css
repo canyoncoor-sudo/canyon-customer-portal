@@ -85,9 +85,11 @@
   box-shadow: 0 8px 24px rgba(113, 42, 24, 0.15);
 }
 
-.card-icon {
-  font-size: 48px;
-  line-height: 1;
+.card-icon-block {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  flex-shrink: 0;
 }
 
 .card-content {
@@ -188,8 +190,11 @@
   transform: translateY(-2px);
 }
 
-.qa-icon {
-  font-size: 24px;
+.qa-icon-block {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  flex-shrink: 0;
 }
 
 /* Loading State */

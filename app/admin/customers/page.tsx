@@ -14,7 +14,7 @@ export default function CustomersPage() {
       </header>
       
       <div className="coming-soon-container">
-        <div className="coming-soon-icon">👥</div>
+        <div className="coming-soon-icon-block" style={{ background: '#567A8D' }}></div>
         <h2>Customer Management</h2>
         <p>Customer portal access, files, and communication hub coming soon.</p>
         <div className="feature-list">
