@@ -58,10 +58,6 @@ export default function CalendarPage() {
   const [googleConnected, setGoogleConnected] = useState(false);
   const [showGoogleSettings, setShowGoogleSettings] = useState(false);
   const [syncStatus, setSyncStatus] = useState('');
-  // Google Calendar integration
-  const [googleConnected, setGoogleConnected] = useState(false);
-  const [showGoogleSettings, setShowGoogleSettings] = useState(false);
-  const [syncStatus, setSyncStatus] = useState('');
 
   useEffect(() => {
     fetchEvents();
@@ -237,81 +233,7 @@ export default function CalendarPage() {
   };
 
   
-  const checkGoogleConnection = async () => {
-    try {
-      const token = localStorage.getItem('admin_token');
-      const res = await fetch('/api/admin/calendar/google/status', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      setGoogleConnected(data.connected || false);
-    } catch (error) {
-      console.error('Failed to check Google connection:', error);
-    }
-  };
-
-  const connectGoogleCalendar = async () => {
-    try {
-      const res = await fetch('/api/admin/calendar/google/auth');
-      const data = await res.json();
-      if (data.authUrl) {
-        window.location.href = data.authUrl;
-      }
-    } catch (error) {
-      console.error('Failed to connect Google Calendar:', error);
-      setSyncStatus('Failed to connect. Please try again.');
-    }
-  };
-
-  const disconnectGoogleCalendar = async () => {
-    try {
-      const token = localStorage.getItem('admin_token');
-      await fetch('/api/admin/calendar/google/status', {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      setGoogleConnected(false);
-      setSyncStatus('Disconnected from Google Calendar');
-    } catch (error) {
-      console.error('Failed to disconnect:', error);
-    }
-  };
-
-  const syncEventToGoogle = async (event: CalendarEvent, action: 'create' | 'update' | 'delete') => {
-    if (!googleConnected) return;
-
-    try {
-      const token = localStorage.getItem('admin_token');
-      await fetch('/api/admin/calendar/google/sync', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ event, action })
-      });
-    } catch (error) {
-      console.error('Failed to sync to Google:', error);
-    }
-  };
-
-  useEffect(() => {
-    checkGoogleConnection();
-  }, []);
-
   
-  const checkGoogleConnection = async () => {
-    try {
-      const token = localStorage.getItem('admin_token');
-      const res = await fetch('/api/admin/calendar/google/status', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      setGoogleConnected(data.connected || false);
-    } catch (error) {
-      console.error('Failed to check Google connection:', error);
-    }
-  };
 
   const connectGoogleCalendar = async () => {
     try {
@@ -355,6 +277,19 @@ export default function CalendarPage() {
       });
     } catch (error) {
       console.error('Failed to sync to Google:', error);
+    }
+  };
+
+  const checkGoogleConnection = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      const res = await fetch('/api/admin/calendar/google/status', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setGoogleConnected(data.connected || false);
+    } catch (error) {
+      console.error('Failed to check Google connection:', error);
     }
   };
 
