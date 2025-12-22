@@ -98,7 +98,7 @@ export default function NewJob() {
 
   const handleCancel = () => {
     if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
-      router.push('/admin/jobs');
+      router.push('/admin/documents');
     }
   };
 
