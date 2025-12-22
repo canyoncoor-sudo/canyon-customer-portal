@@ -107,12 +107,6 @@ export default function AdminDashboard() {
           Branding
         </button>
         <button 
-          className={`nav-tab ${activeView === 'audience' ? 'active' : ''}`}
-          onClick={() => setActiveView('audience')}
-        >
-          Audience
-        </button>
-        <button 
           className={`nav-tab ${activeView === 'clientdata' ? 'active' : ''}`}
           onClick={() => setActiveView('clientdata')}
         >
@@ -243,35 +237,6 @@ export default function AdminDashboard() {
               <div className="placeholder-icon">🎨</div>
               <h3>Branding Center Coming Soon</h3>
               <p>Upload and manage logos, brand colors, letterheads, and marketing templates</p>
-            </div>
-          </>
-        )}
-
-        {/* AUDIENCE VIEW */}
-        {activeView === 'audience' && (
-          <>
-            <div className="view-header">
-              <h2>Audience Management</h2>
-              <p>View and manage your customers, leads, and contacts</p>
-            </div>
-            <div className="dashboard-grid">
-              <div className="dashboard-card" onClick={() => router.push('/admin/customers')}>
-                <div className="card-icon-block" style={{ background: '#567A8D' }}></div>
-                <div className="card-content">
-                  <h2 className="card-title">All Customers</h2>
-                  <p className="card-subtitle">Active and past clients</p>
-                  <div className="card-stats">
-                    <div className="card-count">{stats.totalCustomers}</div>
-                    <p className="card-label">Total Customers</p>
-                  </div>
-                </div>
-                <button className="card-action">Manage Customers →</button>
-              </div>
-              <div className="content-placeholder">
-                <div className="placeholder-icon">👥</div>
-                <h3>Leads & Contacts</h3>
-                <p>Track potential customers and maintain contact database</p>
-              </div>
             </div>
           </>
         )}
