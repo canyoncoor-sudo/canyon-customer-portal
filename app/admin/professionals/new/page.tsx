@@ -137,14 +137,17 @@ export default function NewProfessional() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Failed to create professional');
+        const errorMessage = data.error || 'Failed to create professional';
+        alert(`Error: ${errorMessage}`);
+        setLoading(false);
+        return;
       }
 
       const data = await res.json();
       router.push(`/admin/professionals/agreement?id=${data.professional.id}`);
     } catch (error) {
       console.error('Error creating professional:', error);
-      alert('Failed to create professional. Please try again.');
+      alert(`Failed to create professional: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setLoading(false);
     }
   };

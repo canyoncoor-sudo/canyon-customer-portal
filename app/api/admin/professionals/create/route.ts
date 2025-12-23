@@ -37,18 +37,16 @@ export async function POST(req: NextRequest) {
       is_google_verified
     } = body;
 
-    // Validate required fields
+    // Validate required fields (ccb_number is optional)
     console.log('Received data:', { company_name, trade, ccb_number, contact_name, phone, email });
-    if (!company_name || !trade || !ccb_number || !contact_name || !phone || !email) {
-      console.log('Missing fields:', { 
+    if (!company_name || !trade || !contact_name || !phone) {
+      console.log('Missing required fields:', { 
         company_name: !company_name, 
         trade: !trade, 
-        ccb_number: !ccb_number, 
         contact_name: !contact_name, 
-        phone: !phone, 
-        email: !email 
+        phone: !phone
       });
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required fields: Company Name, Trade, Contact Name, and Phone are required' }, { status: 400 });
     }
 
     // Prepare insert data
