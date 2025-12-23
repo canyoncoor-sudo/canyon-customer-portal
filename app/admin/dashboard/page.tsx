@@ -21,7 +21,6 @@ export default function AdminDashboard() {
     activeProfessionals: 0,
   });
   const [loading, setLoading] = useState(true);
-  const [activeView, setActiveView] = useState('overview');
   const router = useRouter();
 
   useEffect(() => {
@@ -66,11 +65,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_token');
-    router.push('/');
-  };
-
   if (loading) {
     return (
       <div className="admin-loading">
@@ -81,135 +75,78 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="admin-dashboard">
-      <header className="admin-header">
-        <div className="admin-header-content">
-          <div className="header-left">
-            <h1>Canyon Admin Portal</h1>
-            <p className="header-subtitle">Manage your business from one place</p>
+    <div className="dashboard-content">
+      <div className="view-header">
+        <h2>Business Overview</h2>
+        <p>Key metrics and quick actions for your construction business</p>
+      </div>
+
+      <div className="dashboard-grid">
+        <div className="dashboard-card" onClick={() => router.push('/admin/customers')}>
+          <div className="card-icon-block" style={{ background: '#567A8D' }}></div>
+          <div className="card-content">
+            <h2 className="card-title">Customers</h2>
+            <p className="card-subtitle">Manage customer portals & files</p>
+            <div className="card-stats">
+              <div className="card-count">{stats.totalCustomers}</div>
+              <p className="card-label">Total Customers</p>
+            </div>
           </div>
-          <button onClick={handleLogout} className="logout-btn">Logout</button>
+          <button className="card-action">View All Customers →</button>
         </div>
-      </header>
 
-      {/* Main Navigation Tabs */}
-      <nav className="admin-nav-tabs">
-        <button 
-          className={`nav-tab ${activeView === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveView('overview')}
-        >
-          Overview
-        </button>
-        <button 
-          className={`nav-tab ${activeView === 'schedule' ? 'active' : ''}`}
-          onClick={() => router.push('/admin/calendar')}
-        >
-          Schedule
-        </button>
-        <button 
-          className={`nav-tab ${activeView === 'projects' ? 'active' : ''}`}
-          onClick={() => router.push('/admin/jobs')}
-        >
-          Projects
-        </button>
-        <button 
-          className={`nav-tab ${activeView === 'customers' ? 'active' : ''}`}
-          onClick={() => router.push('/admin/customers')}
-        >
-          Customers
-        </button>
-        <button 
-          className={`nav-tab ${activeView === 'documents' ? 'active' : ''}`}
-          onClick={() => router.push('/admin/documents')}
-        >
-          Documents
-        </button>
-        <button 
-          className={`nav-tab ${activeView === 'professionals' ? 'active' : ''}`}
-          onClick={() => router.push('/admin/professionals')}
-        >
-          Licensed Professionals
-        </button>
-      </nav>
-
-      <main className="admin-main">
-        {/* OVERVIEW VIEW */}
-        {activeView === 'overview' && (
-          <>
-            <div className="view-header">
-              <h2>Business Overview</h2>
-              <p>Key metrics and quick actions for your construction business</p>
+        <div className="dashboard-card" onClick={() => router.push('/admin/jobs')}>
+          <div className="card-icon-block" style={{ background: '#712A18' }}></div>
+          <div className="card-content">
+            <h2 className="card-title">Projects</h2>
+            <p className="card-subtitle">Daily work & job tracking</p>
+            <div className="card-stats">
+              <div className="card-count">{stats.activeJobs}</div>
+              <p className="card-label">Active Jobs</p>
             </div>
+          </div>
+          <button className="card-action">View All Jobs →</button>
+        </div>
 
-            <div className="dashboard-grid">
-              <div className="dashboard-card" onClick={() => router.push('/admin/customers')}>
-                <div className="card-icon-block" style={{ background: '#567A8D' }}></div>
-                <div className="card-content">
-                  <h2 className="card-title">Customers</h2>
-                  <p className="card-subtitle">Manage customer portals & files</p>
-                  <div className="card-stats">
-                    <div className="card-count">{stats.totalCustomers}</div>
-                    <p className="card-label">Total Customers</p>
-                  </div>
-                </div>
-                <button className="card-action">View All Customers →</button>
-              </div>
-
-              <div className="dashboard-card" onClick={() => router.push('/admin/jobs')}>
-                <div className="card-icon-block" style={{ background: '#712A18' }}></div>
-                <div className="card-content">
-                  <h2 className="card-title">Projects</h2>
-                  <p className="card-subtitle">Daily work & job tracking</p>
-                  <div className="card-stats">
-                    <div className="card-count">{stats.activeJobs}</div>
-                    <p className="card-label">Active Jobs</p>
-                  </div>
-                </div>
-                <button className="card-action">View All Jobs →</button>
-              </div>
-
-              <div className="dashboard-card" onClick={() => router.push('/admin/calendar')}>
-                <div className="card-icon-block" style={{ background: '#261312' }}></div>
-                <div className="card-content">
-                  <h2 className="card-title">Schedule</h2>
-                  <p className="card-subtitle">Site visits, crews & tasks</p>
-                  <div className="card-stats">
-                    <div className="card-count">{stats.todayEvents}</div>
-                    <p className="card-label">Today's Events</p>
-                  </div>
-                </div>
-                <button className="card-action">View Calendar →</button>
-              </div>
-
-              <div className="dashboard-card" onClick={() => router.push('/admin/documents')}>
-                <div className="card-icon-block" style={{ background: '#454547' }}></div>
-                <div className="card-content">
-                  <h2 className="card-title">Documents</h2>
-                  <p className="card-subtitle">Contracts, invoices & permits</p>
-                  <div className="card-stats">
-                    <div className="card-count">{stats.pendingDocuments}</div>
-                    <p className="card-label">Pending Documents</p>
-                  </div>
-                </div>
-                <button className="card-action">View Documents →</button>
-              </div>
-
-              <div className="dashboard-card" onClick={() => router.push('/admin/professionals')}>
-                <div className="card-icon-block" style={{ background: '#9A8C7A' }}></div>
-                <div className="card-content">
-                  <h2 className="card-title">Licensed Professionals</h2>
-                  <p className="card-subtitle">Subcontractors by trade</p>
-                  <div className="card-stats">
-                    <div className="card-count">{stats.activeProfessionals}</div>
-                    <p className="card-label">Active Professionals</p>
-                  </div>
-                </div>
-                <button className="card-action">View Professionals →</button>
-              </div>
+        <div className="dashboard-card" onClick={() => router.push('/admin/calendar')}>
+          <div className="card-icon-block" style={{ background: '#261312' }}></div>
+          <div className="card-content">
+            <h2 className="card-title">Schedule</h2>
+            <p className="card-subtitle">Site visits, crews & tasks</p>
+            <div className="card-stats">
+              <div className="card-count">{stats.todayEvents}</div>
+              <p className="card-label">Today's Events</p>
             </div>
-          </>
-        )}
-      </main>
+          </div>
+          <button className="card-action">View Calendar →</button>
+        </div>
+
+        <div className="dashboard-card" onClick={() => router.push('/admin/documents')}>
+          <div className="card-icon-block" style={{ background: '#454547' }}></div>
+          <div className="card-content">
+            <h2 className="card-title">Documents</h2>
+            <p className="card-subtitle">Contracts, invoices & permits</p>
+            <div className="card-stats">
+              <div className="card-count">{stats.pendingDocuments}</div>
+              <p className="card-label">Pending Documents</p>
+            </div>
+          </div>
+          <button className="card-action">View Documents →</button>
+        </div>
+
+        <div className="dashboard-card" onClick={() => router.push('/admin/professionals')}>
+          <div className="card-icon-block" style={{ background: '#9A8C7A' }}></div>
+          <div className="card-content">
+            <h2 className="card-title">Licensed Professionals</h2>
+            <p className="card-subtitle">Subcontractors by trade</p>
+            <div className="card-stats">
+              <div className="card-count">{stats.activeProfessionals}</div>
+              <p className="card-label">Active Professionals</p>
+            </div>
+          </div>
+          <button className="card-action">View Professionals →</button>
+        </div>
+      </div>
     </div>
   );
 }
