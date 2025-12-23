@@ -219,28 +219,49 @@ export default function NewProfessional() {
 
             <div className="form-field">
               <label>Trade *</label>
-              <select
+              <input
+                type="text"
                 name="trade"
+                list="trade-options"
                 value={formData.trade}
                 onChange={handleChange}
+                placeholder="Type or select a trade..."
                 required
-              >
-                <option value="">Select Trade</option>
-                <option value="General Contractor">General Contractor</option>
-                <option value="Electrical">Electrical</option>
-                <option value="Plumbing">Plumbing</option>
-                <option value="HVAC">HVAC</option>
-                <option value="Framing">Framing</option>
-                <option value="Roofing">Roofing</option>
-                <option value="Concrete">Concrete</option>
-                <option value="Drywall">Drywall</option>
-                <option value="Painting">Painting</option>
-                <option value="Flooring">Flooring</option>
-                <option value="Landscaping">Landscaping</option>
-                <option value="Excavation">Excavation</option>
-                <option value="Masonry">Masonry</option>
-                <option value="Other">Other</option>
-              </select>
+              />
+              <datalist id="trade-options">
+                <option value="Arborist" />
+                <option value="Cabinets" />
+                <option value="Carpentry" />
+                <option value="Carpeting" />
+                <option value="Concrete" />
+                <option value="Demolition" />
+                <option value="Drywall" />
+                <option value="Electrical" />
+                <option value="Excavation" />
+                <option value="Finish Carpentry" />
+                <option value="Flooring" />
+                <option value="Framing" />
+                <option value="General Contractor" />
+                <option value="Hardwood Flooring" />
+                <option value="House Cleaning" />
+                <option value="HVAC" />
+                <option value="Insulation" />
+                <option value="Landscape Construction" />
+                <option value="Landscape Maintenance" />
+                <option value="Landscaping" />
+                <option value="Masonry" />
+                <option value="Painting" />
+                <option value="Plumbing" />
+                <option value="Pressure Washing" />
+                <option value="Remodeling" />
+                <option value="Roofing" />
+                <option value="Sheet Rock" />
+                <option value="Siding" />
+                <option value="Tile" />
+                <option value="Trim" />
+                <option value="Windows & Doors" />
+              </datalist>
+              <p className="field-hint" style={{fontSize: '12px', color: '#454547', marginTop: '4px'}}>Start typing or select from the list. You can enter a custom trade if needed.</p>
             </div>
 
             <div className="form-field">

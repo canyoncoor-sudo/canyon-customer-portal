@@ -195,24 +195,36 @@ export default function EditProfessional() {
                   placeholder="Type or select a trade..."
                 />
                 <datalist id="trade-options">
+                  <option value="Arborist" />
                   <option value="Cabinets" />
+                  <option value="Carpentry" />
+                  <option value="Carpeting" />
                   <option value="Concrete" />
                   <option value="Demolition" />
                   <option value="Drywall" />
                   <option value="Electrical" />
                   <option value="Excavation" />
+                  <option value="Finish Carpentry" />
                   <option value="Flooring" />
                   <option value="Framing" />
+                  <option value="General Contractor" />
                   <option value="Hardwood Flooring" />
+                  <option value="House Cleaning" />
                   <option value="HVAC" />
                   <option value="Insulation" />
+                  <option value="Landscape Construction" />
+                  <option value="Landscape Maintenance" />
                   <option value="Landscaping" />
                   <option value="Masonry" />
                   <option value="Painting" />
                   <option value="Plumbing" />
+                  <option value="Pressure Washing" />
+                  <option value="Remodeling" />
                   <option value="Roofing" />
+                  <option value="Sheet Rock" />
                   <option value="Siding" />
                   <option value="Tile" />
+                  <option value="Trim" />
                   <option value="Windows & Doors" />
                 </datalist>
               </div>
