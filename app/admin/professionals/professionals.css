@@ -1,6 +1,8 @@
 .admin-professionals {
   min-height: 100vh;
   background: var(--color-ecru);
+  display: flex;
+  flex-direction: column;
 }
 
 .professionals-header {
@@ -8,8 +10,8 @@
   border-bottom: 2px solid var(--color-rust);
   padding: var(--spacing-lg) var(--spacing-xl);
   position: sticky;
-  top: 0;
-  z-index: 100;
+  top: 56px; /* Below the main admin header */
+  z-index: 50;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -79,19 +81,24 @@
 }
 
 .professionals-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
-  padding: var(--spacing-xl);
+  padding: 0;
 }
 
 .view-tabs {
   display: flex;
   gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
   background: white;
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-lg);
+  padding: var(--spacing-md) var(--spacing-xl);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 136px; /* Below the professionals header */
+  z-index: 40;
 }
 
 .view-tabs button {
@@ -116,10 +123,18 @@
   color: white;
 }
 
+.trade-groups,
+.professionals-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl);
+}
+
 .trade-groups {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: var(--spacing-lg);
+  align-content: start;
 }
 
 .trade-card {
@@ -578,11 +593,13 @@
   background: linear-gradient(135deg, #567A8D 0%, #4A6B7C 100%);
   color: white;
   padding: 16px 24px;
-  margin: -24px -24px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 136px; /* Below professionals header */
+  z-index: 45;
 }
 
 .banner-content {
@@ -637,4 +654,16 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+
+/* Adjust tabs position when customer banner is present */
+.customer-context-banner ~ .professionals-content .view-tabs {
+  top: 200px; /* Below header + banner */
+}
+
+
+/* Adjust tabs position when customer banner is present */
+.customer-context-banner ~ .professionals-content .view-tabs {
+  top: 200px; /* Below header + banner */
 }
