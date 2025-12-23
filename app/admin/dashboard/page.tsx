@@ -101,28 +101,34 @@ export default function AdminDashboard() {
           Overview
         </button>
         <button 
-          className={`nav-tab ${activeView === 'branding' ? 'active' : ''}`}
-          onClick={() => setActiveView('branding')}
+          className={`nav-tab ${activeView === 'schedule' ? 'active' : ''}`}
+          onClick={() => router.push('/admin/calendar')}
         >
-          Branding
+          Schedule
         </button>
         <button 
-          className={`nav-tab ${activeView === 'clientdata' ? 'active' : ''}`}
-          onClick={() => setActiveView('clientdata')}
+          className={`nav-tab ${activeView === 'projects' ? 'active' : ''}`}
+          onClick={() => router.push('/admin/jobs')}
         >
-          Client Data
+          Projects
         </button>
         <button 
-          className={`nav-tab ${activeView === 'access' ? 'active' : ''}`}
-          onClick={() => setActiveView('access')}
+          className={`nav-tab ${activeView === 'customers' ? 'active' : ''}`}
+          onClick={() => router.push('/admin/customers')}
         >
-          Access Verification Center
+          Customers
         </button>
         <button 
-          className={`nav-tab ${activeView === 'settings' ? 'active' : ''}`}
-          onClick={() => setActiveView('settings')}
+          className={`nav-tab ${activeView === 'documents' ? 'active' : ''}`}
+          onClick={() => router.push('/admin/documents')}
         >
-          Settings
+          Documents
+        </button>
+        <button 
+          className={`nav-tab ${activeView === 'professionals' ? 'active' : ''}`}
+          onClick={() => router.push('/admin/professionals')}
+        >
+          Licensed Professionals
         </button>
       </nav>
 
@@ -152,7 +158,7 @@ export default function AdminDashboard() {
               <div className="dashboard-card" onClick={() => router.push('/admin/jobs')}>
                 <div className="card-icon-block" style={{ background: '#712A18' }}></div>
                 <div className="card-content">
-                  <h2 className="card-title">Jobs & Projects</h2>
+                  <h2 className="card-title">Projects</h2>
                   <p className="card-subtitle">Daily work & job tracking</p>
                   <div className="card-stats">
                     <div className="card-count">{stats.activeJobs}</div>
@@ -165,7 +171,7 @@ export default function AdminDashboard() {
               <div className="dashboard-card" onClick={() => router.push('/admin/calendar')}>
                 <div className="card-icon-block" style={{ background: '#261312' }}></div>
                 <div className="card-content">
-                  <h2 className="card-title">Calendar & Schedule</h2>
+                  <h2 className="card-title">Schedule</h2>
                   <p className="card-subtitle">Site visits, crews & tasks</p>
                   <div className="card-stats">
                     <div className="card-count">{stats.todayEvents}</div>
@@ -178,7 +184,7 @@ export default function AdminDashboard() {
               <div className="dashboard-card" onClick={() => router.push('/admin/documents')}>
                 <div className="card-icon-block" style={{ background: '#454547' }}></div>
                 <div className="card-content">
-                  <h2 className="card-title">Documents & Proposals</h2>
+                  <h2 className="card-title">Documents</h2>
                   <p className="card-subtitle">Contracts, invoices & permits</p>
                   <div className="card-stats">
                     <div className="card-count">{stats.pendingDocuments}</div>
@@ -200,122 +206,6 @@ export default function AdminDashboard() {
                 </div>
                 <button className="card-action">View Professionals →</button>
               </div>
-            </div>
-
-            <div className="quick-actions-section">
-              <h3>Quick Actions</h3>
-              <div className="quick-actions-grid">
-                <button className="quick-action-btn" onClick={() => router.push('/admin/jobs/new')}>
-                  <div className="qa-icon-block" style={{ background: '#567A8D' }}></div>
-                  <span>New Job Intake</span>
-                </button>
-                <button className="quick-action-btn" onClick={() => router.push('/admin/projects/new')}>
-                  <div className="qa-icon-block" style={{ background: '#712A18' }}></div>
-                  <span>Create Proposal</span>
-                </button>
-                <button className="quick-action-btn" onClick={() => router.push('/admin/calendar')}>
-                  <div className="qa-icon-block" style={{ background: '#261312' }}></div>
-                  <span>Schedule Visit</span>
-                </button>
-                <button className="quick-action-btn" onClick={() => router.push('/admin/professionals/new')}>
-                  <div className="qa-icon-block" style={{ background: '#9A8C7A' }}></div>
-                  <span>Add Professional</span>
-                </button>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* BRANDING VIEW */}
-        {activeView === 'branding' && (
-          <>
-            <div className="view-header">
-              <h2>Branding & Marketing</h2>
-              <p>Manage your brand assets, logos, and marketing materials</p>
-            </div>
-            <div className="content-placeholder">
-              <div className="placeholder-icon">🎨</div>
-              <h3>Branding Center Coming Soon</h3>
-              <p>Upload and manage logos, brand colors, letterheads, and marketing templates</p>
-            </div>
-          </>
-        )}
-
-        {/* CLIENT DATA VIEW */}
-        {activeView === 'clientdata' && (
-          <>
-            <div className="view-header">
-              <h2>Client Data & Projects</h2>
-              <p>Manage all client project data, jobs, and documents</p>
-            </div>
-            <div className="dashboard-grid">
-              <div className="dashboard-card" onClick={() => router.push('/admin/jobs')}>
-                <div className="card-icon-block" style={{ background: '#712A18' }}></div>
-                <div className="card-content">
-                  <h2 className="card-title">Jobs & Projects</h2>
-                  <p className="card-subtitle">All active and completed projects</p>
-                  <div className="card-stats">
-                    <div className="card-count">{stats.activeJobs}</div>
-                    <p className="card-label">Active Jobs</p>
-                  </div>
-                </div>
-                <button className="card-action">View Jobs →</button>
-              </div>
-              <div className="dashboard-card" onClick={() => router.push('/admin/documents')}>
-                <div className="card-icon-block" style={{ background: '#454547' }}></div>
-                <div className="card-content">
-                  <h2 className="card-title">Documents</h2>
-                  <p className="card-subtitle">Contracts, proposals, invoices</p>
-                  <div className="card-stats">
-                    <div className="card-count">{stats.pendingDocuments}</div>
-                    <p className="card-label">Total Documents</p>
-                  </div>
-                </div>
-                <button className="card-action">View Documents →</button>
-              </div>
-              <div className="dashboard-card" onClick={() => router.push('/admin/professionals')}>
-                <div className="card-icon-block" style={{ background: '#9A8C7A' }}></div>
-                <div className="card-content">
-                  <h2 className="card-title">Professionals Network</h2>
-                  <p className="card-subtitle">Licensed subcontractors</p>
-                  <div className="card-stats">
-                    <div className="card-count">{stats.activeProfessionals}</div>
-                    <p className="card-label">Active Pros</p>
-                  </div>
-                </div>
-                <button className="card-action">Manage Professionals →</button>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* ACCESS VERIFICATION CENTER VIEW */}
-        {activeView === 'access' && (
-          <>
-            <div className="view-header">
-              <h2>Access Verification Center</h2>
-              <p>Manage customer portal access codes and security</p>
-            </div>
-            <div className="content-placeholder">
-              <div className="placeholder-icon">🔐</div>
-              <h3>Access Code Management</h3>
-              <p>Generate, update, and revoke customer portal access codes</p>
-              <p className="placeholder-detail">View login history and manage access permissions</p>
-            </div>
-          </>
-        )}
-
-        {/* SETTINGS VIEW */}
-        {activeView === 'settings' && (
-          <>
-            <div className="view-header">
-              <h2>Settings</h2>
-              <p>Configure your admin portal and business preferences</p>
-            </div>
-            <div className="content-placeholder">
-              <div className="placeholder-icon">⚙️</div>
-              <h3>Admin Settings</h3>
-              <p>Configure notifications, integrations, and system preferences</p>
             </div>
           </>
         )}
