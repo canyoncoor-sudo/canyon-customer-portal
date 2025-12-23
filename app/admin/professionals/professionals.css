@@ -572,3 +572,69 @@
 .action-buttons button {
   margin-right: 8px;
 }
+
+/* Customer Context Banner */
+.customer-context-banner {
+  background: linear-gradient(135deg, #567A8D 0%, #4A6B7C 100%);
+  color: white;
+  padding: 16px 24px;
+  margin: -24px -24px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+}
+
+.banner-icon {
+  font-size: 24px;
+  background: rgba(255,255,255,0.2);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.btn-secondary {
+  background: white;
+  color: #567A8D;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-secondary:hover {
+  background: #F0F0EE;
+}
+
+.btn-add-customer {
+  background: #28A745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-add-customer:hover {
+  background: #218838;
+}
+
+.card-footer {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}

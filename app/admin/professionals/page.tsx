@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import './professionals.css';
 
 interface Professional {
@@ -28,14 +28,22 @@ interface ProfessionalGroup {
   professionals: Professional[];
 }
 
-export default function AdminProfessionals() {
+function AdminProfessionalsContent() {
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<'groups' | 'list'>('groups');
   const [selectedTrade, setSelectedTrade] = useState<string | null>(null);
+  const [customerId, setCustomerId] = useState<string | null>(null);
+  const [customerName, setCustomerName] = useState<string>('');
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
+    const customerIdParam = searchParams.get('customerId');
+    if (customerIdParam) {
+      setCustomerId(customerIdParam);
+      fetchCustomerName(customerIdParam);
+    }
     fetchProfessionals();
   }, []);
 
@@ -70,6 +78,21 @@ export default function AdminProfessionals() {
     }
   };
 
+  const fetchCustomerName = async (id: string) => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      const res = await fetch(`/api/admin/customers/${id}/portal`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCustomerName(data.job?.customer_name || 'Customer');
+      }
+    } catch (error) {
+      console.error('Failed to fetch customer name:', error);
+    }
+  };
+
   const groupByTrade = (): ProfessionalGroup[] => {
     const groups: { [key: string]: Professional[] } = {};
     
@@ -101,6 +124,47 @@ export default function AdminProfessionals() {
       router.push('/admin/dashboard');
     }
   };
+
+  const handleAddToCustomer = async (professionalId: string, companyName: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!customerId) return;
+    
+    const description = prompt(`Add work description for ${companyName}:`);
+    if (description === null) return; // User cancelled
+    
+    const startDate = prompt('Enter start date (YYYY-MM-DD):');
+    if (!startDate) return;
+    
+    try {
+      const token = localStorage.getItem('admin_token');
+      const res = await fetch(`/api/admin/customers/${customerId}/professionals`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          professional_id: professionalId,
+          description,
+          start_date: startDate,
+          status: 'Active',
+        }),
+      });
+
+      if (res.ok) {
+        alert(`${companyName} added to customer portal!`);
+        router.push(`/admin/customers/${customerId}`);
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to add professional to customer');
+      }
+    } catch (error) {
+      console.error('Add to customer error:', error);
+      alert('Error adding professional to customer');
+    }
+  };
+
 
   const handleDelete = async (id: string, companyName: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -159,6 +223,23 @@ export default function AdminProfessionals() {
           </button>
         </div>
       </header>
+
+      {customerId && customerName && (
+        <div className="customer-context-banner">
+          <div className="banner-content">
+            <span className="banner-icon">👤</span>
+            <div>
+              <strong>Adding to Customer Portal:</strong> {customerName}
+            </div>
+          </div>
+          <button 
+            onClick={() => router.push(`/admin/customers/${customerId}`)}
+            className="btn-secondary"
+          >
+            Cancel & Return
+          </button>
+        </div>
+      )}
 
       <div className="professionals-content">
         <div className="view-tabs">
@@ -267,6 +348,14 @@ export default function AdminProfessionals() {
                     <p><strong>Email:</strong> {pro.email}</p>
                   </div>
                   <div className="card-footer">
+                    {customerId && (
+                      <button 
+                        className="btn-add-customer"
+                        onClick={(e) => handleAddToCustomer(pro.id, pro.company_name, e)}
+                      >
+                        Add to Customer
+                      </button>
+                    )}
                     <button 
                       className="btn-edit"
                       onClick={(e) => {
@@ -295,5 +384,13 @@ export default function AdminProfessionals() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AdminProfessionals() {
+  return (
+    <Suspense fallback={<div className="admin-loading"><div>Loading professionals...</div></div>}>
+      <AdminProfessionalsContent />
+    </Suspense>
   );
 }
