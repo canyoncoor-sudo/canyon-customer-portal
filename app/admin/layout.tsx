@@ -35,8 +35,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <header className="admin-header">
         <div className="admin-header-content">
           <div className="admin-header-left">
-            <h1 className="admin-header-title">Canyon Admin Portal</h1>
-            <p className="admin-header-subtitle">Manage business from one place</p>
+            <button onClick={() => router.back()} className="admin-back-btn" title="Go back">
+              ← Back
+            </button>
+            <div className="admin-header-text">
+              <h1 className="admin-header-title">Canyon Admin Portal</h1>
+              <p className="admin-header-subtitle">Manage business from one place</p>
+            </div>
           </div>
           <button onClick={handleLogout} className="admin-logout-btn">
             Logout

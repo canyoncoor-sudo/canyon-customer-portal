@@ -26,6 +26,31 @@
 
 .admin-header-left {
   display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-back-btn {
+  background: white;
+  color: #454547;
+  border: 2px solid #e5e5e5;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.admin-back-btn:hover {
+  background: #F0F0EE;
+  border-color: #567A8D;
+  color: #567A8D;
+}
+
+.admin-header-text {
+  display: flex;
   flex-direction: column;
   gap: 4px;
 }
