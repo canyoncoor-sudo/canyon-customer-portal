@@ -181,7 +181,7 @@ export default function CustomerPortalAdminView({ params }: { params: Promise<{ 
                     style={{ display: 'none' }}
                   />
                 </label>
-                <button className="action-btn" onClick={() => router.push(`/admin/customers/${params.id}/professionals`)}>
+                <button className="action-btn" onClick={() => router.push(`/admin/customers/${resolvedParams.id}/professionals`)}>
                   Add Licensed Professionals
                 </button>
               </>
