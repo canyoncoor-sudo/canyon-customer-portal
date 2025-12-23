@@ -133,8 +133,45 @@ function AdminProfessionalsContent() {
     const description = prompt(`Add work description for ${companyName}:`);
     if (description === null) return; // User cancelled
     
-    const startDate = prompt('Enter start date (YYYY-MM-DD):');
-    if (!startDate) return;
+    const dateInput = prompt('Enter start date (MM/DD/YY or MM-DD-YY):\nExample: 01/10/26 or 01-10-26');
+    if (!dateInput) return;
+    
+    // Parse the date input (MM/DD/YY or MM-DD-YY)
+    const dateParts = dateInput.split(/[\/\-]/);
+    if (dateParts.length !== 3) {
+      alert('Invalid date format. Please use MM/DD/YY or MM-DD-YY');
+      return;
+    }
+    
+    let [month, day, year] = dateParts;
+    
+    // Pad with zeros if needed
+    month = month.padStart(2, '0');
+    day = day.padStart(2, '0');
+    
+    // Convert 2-digit year to 4-digit
+    if (year.length === 2) {
+      const currentYear = new Date().getFullYear();
+      const century = Math.floor(currentYear / 100) * 100;
+      year = `${century + parseInt(year)}`;
+    }
+    
+    // Validate month and day
+    const monthNum = parseInt(month);
+    const dayNum = parseInt(day);
+    
+    if (monthNum < 1 || monthNum > 12) {
+      alert('Invalid month. Please enter a month between 01 and 12');
+      return;
+    }
+    
+    if (dayNum < 1 || dayNum > 31) {
+      alert('Invalid day. Please enter a day between 01 and 31');
+      return;
+    }
+    
+    // Format as YYYY-MM-DD for the database
+    const startDate = `${year}-${month}-${day}`;
     
     try {
       const token = localStorage.getItem('admin_token');
@@ -153,7 +190,7 @@ function AdminProfessionalsContent() {
       });
 
       if (res.ok) {
-        alert(`${companyName} added to customer portal!`);
+        alert(`${companyName} added to customer portal!\nStart Date: ${month}/${day}/${year}`);
         router.push(`/admin/customers/${customerId}`);
       } else {
         const data = await res.json();
