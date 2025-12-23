@@ -68,6 +68,22 @@
   background: #712A18;
 }
 
+.action-btn {
+  background: #9A8C7A;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: none;
+}
+
+.action-btn:hover {
+  background: #7a6d5a;
+}
+
 .portal-tabs {
   display: flex;
   gap: 8px;
