@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, use, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import './customer-portal.css';
 
@@ -22,11 +22,27 @@ export default function CustomerPortalAdminView({ params }: { params: Promise<{ 
   const [isEditing, setIsEditing] = useState(false);
   const [editedJob, setEditedJob] = useState<any>(null);
   const [saving, setSaving] = useState(false);
+  const [showActionsMenu, setShowActionsMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
     fetchCustomerPortalData();
   }, [resolvedParams.id]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowActionsMenu(false);
+      }
+    };
+
+    if (showActionsMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showActionsMenu]);
 
   const fetchCustomerPortalData = async () => {
     try {
@@ -151,7 +167,63 @@ export default function CustomerPortalAdminView({ params }: { params: Promise<{ 
       <header className="portal-admin-header">
         <div className="header-controls">
           <button onClick={() => router.back()} className="back-btn">← Back to Customers</button>
-          <div className="admin-badge">ADMIN VIEW</div>
+          <div className="admin-badge-container">
+            <div className="admin-badge">ADMIN VIEW</div>
+            <div className="admin-actions-dropdown" ref={menuRef}>
+              <button 
+                className="admin-actions-btn" 
+                onClick={() => setShowActionsMenu(!showActionsMenu)}
+              >
+                ⚡ Actions ▾
+              </button>
+              {showActionsMenu && (
+                <div className="admin-dropdown-menu">
+                  <button 
+                    className="dropdown-item"
+                    onClick={() => {
+                      setShowActionsMenu(false);
+                      handleEdit();
+                    }}
+                  >
+                    ✏️ Edit Info
+                  </button>
+                  <label className="dropdown-item">
+                    📸 Add Photos
+                    <input 
+                      type="file" 
+                      multiple 
+                      accept="image/*" 
+                      onChange={(e) => {
+                        setShowActionsMenu(false);
+                        handlePhotoUpload(e);
+                      }}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  <label className="dropdown-item">
+                    📄 Add Document
+                    <input 
+                      type="file" 
+                      onChange={(e) => {
+                        setShowActionsMenu(false);
+                        handleDocumentUpload(e);
+                      }}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  <button 
+                    className="dropdown-item"
+                    onClick={() => {
+                      setShowActionsMenu(false);
+                      router.push(`/admin/professionals?customerId=${resolvedParams.id}`);
+                    }}
+                  >
+                    👷 Add Licensed Professional
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
         
         <div className="portal-header-content">
@@ -160,32 +232,7 @@ export default function CustomerPortalAdminView({ params }: { params: Promise<{ 
             <p className="job-address">{displayJob.job_address}, {displayJob.city}, {displayJob.state}</p>
           </div>
           <div className="quick-actions">
-            {!isEditing ? (
-              <>
-                <button className="edit-btn" onClick={handleEdit}>Edit Info</button>
-                <label className="upload-btn">
-                  Add Photos
-                  <input 
-                    type="file" 
-                    multiple 
-                    accept="image/*" 
-                    onChange={handlePhotoUpload}
-                    style={{ display: 'none' }}
-                  />
-                </label>
-                <label className="upload-btn">
-                  Add Document
-                  <input 
-                    type="file" 
-                    onChange={handleDocumentUpload}
-                    style={{ display: 'none' }}
-                  />
-                </label>
-                <button className="action-btn" onClick={() => router.push(`/admin/professionals?customerId=${resolvedParams.id}`)}>
-                  Add Licensed Professionals
-                </button>
-              </>
-            ) : (
+            {isEditing && (
               <>
                 <button className="save-btn" onClick={handleSaveEdit} disabled={saving}>
                   {saving ? 'Saving...' : 'Save Changes'}
