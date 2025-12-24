@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import './calendar.css';
 
 interface CalendarEvent {
   id: string;
   title: string;
-  type: 'meeting' | 'crew' | 'site_visit' | 'appointment' | 'task';
+  type: 'meeting' | 'crew' | 'site_visit' | 'appointment' | 'task' | 'personal';
   start: Date;
   end: Date;
   customer_name?: string;
@@ -15,17 +15,11 @@ interface CalendarEvent {
   status: 'scheduled' | 'pending' | 'confirmed' | 'completed';
   notes?: string;
   assignedTo?: string;
-  professional_id?: string;
-  professional_name?: string;
-}
-
-interface Professional {
-  id: string;
-  company_name: string;
-  trade: string;
-  contact_name: string;
-  phone: string;
-  email: string;
+  // Menu system fields
+  assigned_professional_id?: string;
+  project_id?: string;
+  duration_days?: number;
+  is_multi_day?: boolean;
 }
 
 interface Task {
@@ -40,7 +34,6 @@ export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [showDayPanel, setShowDayPanel] = useState(false);
@@ -48,7 +41,6 @@ export default function CalendarPage() {
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'events' | 'tasks'>('events');
   const [draggedEvent, setDraggedEvent] = useState<CalendarEvent | null>(null);
-  const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
 
   // Form states
@@ -60,8 +52,7 @@ export default function CalendarPage() {
     customer_name: '',
     status: 'scheduled' as CalendarEvent['status'],
     notes: '',
-    assignedTo: '',
-    professional_id: ''
+    assignedTo: ''
   });
 
   const [taskForm, setTaskForm] = useState({
@@ -82,7 +73,34 @@ export default function CalendarPage() {
     personal: '#9B59B6',
     subcontractor: '#D97706'
   });
+  
+  // Menu System States
+  const [showMenu, setShowMenu] = useState(false);
+  const [showDisplayDropdown, setShowDisplayDropdown] = useState(false);
+  const [showFiltersDropdown, setShowFiltersDropdown] = useState(false);
+  const [showColorRulesDropdown, setShowColorRulesDropdown] = useState(false);
+  const [filterView, setFilterView] = useState<'all' | 'professionals' | 'projects' | 'open_slots'>('all');
+    const [viewMode, setViewMode] = useState<'month' | 'week' | 'timeline'>('month');
+  const [displayDensity, setDisplayDensity] = useState<'compact' | 'extended'>('extended');
+  const [selectedProfessionals, setSelectedProfessionals] = useState<string[]>([]);
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  const [showOnlyActive, setShowOnlyActive] = useState(false);
+  const [hideCompleted, setHideCompleted] = useState(true);
+  const [showContractorNames, setShowContractorNames] = useState(true);
+  const [showJobDuration, setShowJobDuration] = useState(true);
+  const [showMultiDayBars, setShowMultiDayBars] = useState(true);
+  const [showConflicts, setShowConflicts] = useState(true);
+  const [colorRule, setColorRule] = useState<'professional' | 'project' | 'status'>('status');
+  const [professionals, setProfessionals] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
   const [syncStatus, setSyncStatus] = useState('');
+
+  // Refs for click-outside detection
+  const menuRef = useRef<HTMLDivElement>(null);
+  const monthPickerRef = useRef<HTMLDivElement>(null);
+  const colorPaletteRef = useRef<HTMLDivElement>(null);
+  const dayPanelRef = useRef<HTMLDivElement>(null);
+  const googleSettingsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchEvents();
@@ -126,6 +144,181 @@ export default function CalendarPage() {
     }
   };
 
+  const fetchProfessionals = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) return;
+      const response = await fetch('/api/admin/professionals', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setProfessionals(data.professionals || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch professionals:', error);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) return;
+      const response = await fetch('/api/admin/jobs', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setProjects(data.jobs || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch projects:', error);
+    }
+  };
+
+  const jumpToToday = () => {
+    const today = new Date();
+    setCurrentDate(today);
+    setSelectedDate(today);
+    setShowDayPanel(true);
+    setShowMenu(false);
+  };
+
+  const jumpToNextAvailable = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const availableDays: Date[] = [];
+    let checkDate = new Date(today);
+    
+    // Find next 3 available days (days with no events)
+    for (let i = 1; i <= 365 && availableDays.length < 3; i++) {
+      checkDate = new Date(today);
+      checkDate.setDate(checkDate.getDate() + i);
+      
+      const dayEvents = events.filter(e => {
+        const eventDate = new Date(e.start);
+        eventDate.setHours(0, 0, 0, 0);
+        const compareDate = new Date(checkDate);
+        compareDate.setHours(0, 0, 0, 0);
+        return eventDate.getTime() === compareDate.getTime();
+      });
+      
+      if (dayEvents.length === 0) {
+        availableDays.push(new Date(checkDate));
+      }
+    }
+    
+    if (availableDays.length > 0) {
+      // Navigate to first available day and show it
+      setCurrentDate(availableDays[0]);
+      setSelectedDate(availableDays[0]);
+      setShowDayPanel(true);
+      setShowMenu(false);
+      
+      // Show alert with next 3 available days
+      const dateStrings = availableDays.map(d => 
+        d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+      );
+      setTimeout(() => {
+        alert(`Next available slots:\n\n${dateStrings.join('\n')}`);
+      }, 300);
+    } else {
+      alert('No available slots found in the next year.');
+    }
+  };
+
+  const jumpToNextProject = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Find future events that are project-related (not just meetings or tasks)
+    const futureProjects = events
+      .filter(e => {
+        const eventDate = new Date(e.start);
+        return eventDate > today && (
+          e.type === 'crew' || 
+          e.type === 'site_visit' || 
+          e.title?.toLowerCase().includes('project') ||
+          e.title?.toLowerCase().includes('job') ||
+          e.customer_name // Has a customer associated
+        );
+      })
+      .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    
+    if (futureProjects.length > 0) {
+      const nextProject = futureProjects[0];
+      const projectDate = new Date(nextProject.start);
+      setCurrentDate(projectDate);
+      setSelectedDate(projectDate);
+      setShowDayPanel(true);
+      setShowMenu(false);
+      
+      // Show info about the project
+      setTimeout(() => {
+        const dateStr = projectDate.toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          month: 'long', 
+          day: 'numeric', 
+          year: 'numeric' 
+        });
+        alert(`Next Project Start:\n\n${nextProject.title}\n${dateStr}`);
+      }, 300);
+    } else {
+      alert('No upcoming projects found in the schedule.');
+    }
+  };
+
+  const exportToPDF = () => {
+    alert('PDF export functionality coming soon!');
+  };
+
+  const exportToCSV = () => {
+    const csvContent = [
+      ['Title', 'Type', 'Start', 'End', 'Customer', 'Status'].join(','),
+      ...events.map(e => [
+        e.title,
+        e.type,
+        e.start.toISOString(),
+        e.end.toISOString(),
+        e.customer_name || '',
+        e.status || ''
+      ].join(','))
+    ].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `schedule-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    setShowMenu(false);
+  };
+
+  const printSchedule = () => {
+    window.print();
+    setShowMenu(false);
+  };
+
+  const getEventColor = (event: CalendarEvent) => {
+    if (colorRule === 'professional' && event.assigned_professional_id) {
+      const prof = professionals.find(p => p.id === event.assigned_professional_id);
+      return prof?.assigned_color || eventColors[event.type as keyof typeof eventColors] || '#567A8D';
+    } else if (colorRule === 'project' && event.project_id) {
+      const hash = event.project_id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const hue = hash % 360;
+      return `hsl(${hue}, 60%, 50%)`;
+    } else if (colorRule === 'status') {
+      const statusColors = {
+        'active': '#2D7A3E',
+        'pending': '#D97706',
+        'completed': '#808080',
+        'cancelled': '#DC2626'
+      };
+      return statusColors[event.status as keyof typeof statusColors] || eventColors[event.type as keyof typeof eventColors] || '#567A8D';
+    }
+    return eventColors[event.type as keyof typeof eventColors] || '#567A8D';
+  };
+
   const fetchTasks = async () => {
     try {
       // TODO: Fetch from API
@@ -148,33 +341,6 @@ export default function CalendarPage() {
     } catch (error) {
       console.error('Failed to fetch tasks:', error);
     }
-  };
-
-  const fetchProfessionals = async () => {
-    try {
-      const token = localStorage.getItem('admin_token');
-      if (!token) return;
-
-      const response = await fetch('/api/admin/professionals', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch professionals');
-      }
-
-      const data = await response.json();
-      setProfessionals(data.professionals || []);
-    } catch (error) {
-      console.error('Failed to fetch professionals:', error);
-      setProfessionals([]);
-    }
-  };
-
-  const fetchProjects = async () => {
-    // Placeholder for future projects integration
   };
 
   const handleDayClick = (date: Date) => {
@@ -204,8 +370,7 @@ export default function CalendarPage() {
       customer_name: '',
       status: 'scheduled',
       notes: '',
-      assignedTo: '',
-      professional_id: ''
+      assignedTo: ''
     });
     setShowEventForm(true);
     setSelectedEvent(null);
@@ -225,8 +390,6 @@ export default function CalendarPage() {
     const [startHour, startMin] = eventForm.startTime.split(':').map(Number);
     const [endHour, endMin] = eventForm.endTime.split(':').map(Number);
 
-    const selectedProfessional = professionals.find(p => p.id === eventForm.professional_id);
-    
     const newEvent: CalendarEvent = {
       id: Date.now().toString(),
       title: eventForm.title,
@@ -236,9 +399,7 @@ export default function CalendarPage() {
       customer_name: eventForm.customer_name,
       status: eventForm.status,
       notes: eventForm.notes,
-      assignedTo: eventForm.assignedTo,
-      professional_id: eventForm.professional_id || undefined,
-      professional_name: selectedProfessional ? selectedProfessional.company_name : undefined
+      assignedTo: eventForm.assignedTo
     };
 
     setEvents([...events, newEvent]);
@@ -253,8 +414,7 @@ export default function CalendarPage() {
       customer_name: '',
       status: 'scheduled',
       notes: '',
-      assignedTo: '',
-      professional_id: ''
+      assignedTo: ''
     });
   };
 
@@ -282,6 +442,8 @@ export default function CalendarPage() {
       task.id === taskId ? { ...task, completed: !task.completed } : task
     ));
   };
+
+
 
   const connectGoogleCalendar = async () => {
     try {
@@ -478,6 +640,8 @@ export default function CalendarPage() {
     }
   };
 
+  
+
   return (
     <div className="calendar-container">
       <header className="calendar-header">
@@ -502,9 +666,253 @@ export default function CalendarPage() {
         </div>
       </header>
 
-      
+      {/* Menu Overlay */}
+      {showMenu && (
+        <div className="schedule-menu-panel">
+          <div className="menu-header">
+            <h2>Schedule Controls</h2>
+            <button className="btn-close-menu" onClick={() => setShowMenu(false)}>✕</button>
+          </div>
+
+          <div className="menu-content">
+            {/* 1. Display Section (Collapsible) */}
+            <div className="menu-section">
+              <button 
+                className="menu-section-header"
+                onClick={() => setShowDisplayDropdown(!showDisplayDropdown)}
+              >
+                <span>Display</span>
+                <span className="dropdown-arrow">{showDisplayDropdown ? '▼' : '▶'}</span>
+              </button>
+              
+              {showDisplayDropdown && (
+                <div className="section-content">
+                  <div className="control-group">
+                    <div className="radio-group">
+                      <label className={viewMode === 'month' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="viewMode" 
+                          value="month" 
+                          checked={viewMode === 'month'}
+                          onChange={(e) => setViewMode(e.target.value as 'month' | 'week' | 'timeline')}
+                        />
+                        <span>Month</span>
+                      </label>
+                      <label className={viewMode === 'week' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="viewMode" 
+                          value="week" 
+                          checked={viewMode === 'week'}
+                          onChange={(e) => setViewMode(e.target.value as 'month' | 'week' | 'timeline')}
+                        />
+                        <span>Week</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 2. Filters Section (Collapsible) */}
+            <div className="menu-section">
+              <button 
+                className="menu-section-header"
+                onClick={() => setShowFiltersDropdown(!showFiltersDropdown)}
+              >
+                <span>Filters</span>
+                <span className="dropdown-arrow">{showFiltersDropdown ? '▼' : '▶'}</span>
+              </button>
+              
+              {showFiltersDropdown && (
+                <div className="section-content">
+                  <div className="control-group">
+                    <div className="radio-group">
+                      <label className={filterView === 'all' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="filterView" 
+                          value="all" 
+                          checked={filterView === 'all'}
+                          onChange={(e) => setFilterView(e.target.value as 'all' | 'professionals' | 'projects' | 'open_slots')}
+                        />
+                        <span>All Events</span>
+                      </label>
+                      <label className={filterView === 'professionals' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="filterView" 
+                          value="professionals" 
+                          checked={filterView === 'professionals'}
+                          onChange={(e) => setFilterView(e.target.value as 'all' | 'professionals' | 'projects' | 'open_slots')}
+                        />
+                        <span>All Professionals</span>
+                      </label>
+                      <label className={filterView === 'projects' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="filterView" 
+                          value="projects" 
+                          checked={filterView === 'projects'}
+                          onChange={(e) => setFilterView(e.target.value as 'all' | 'professionals' | 'projects' | 'open_slots')}
+                        />
+                        <span>Projects</span>
+                      </label>
+                      <label className={filterView === 'open_slots' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="filterView" 
+                          value="open_slots" 
+                          checked={filterView === 'open_slots'}
+                          onChange={(e) => setFilterView(e.target.value as 'all' | 'professionals' | 'projects' | 'open_slots')}
+                        />
+                        <span>Open Slots</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 3. Color Rules Section (Collapsible) */}
+            <div className="menu-section">
+              <button 
+                className="menu-section-header"
+                onClick={() => setShowColorRulesDropdown(!showColorRulesDropdown)}
+              >
+                <span>Color Rules</span>
+                <span className="dropdown-arrow">{showColorRulesDropdown ? '▼' : '▶'}</span>
+              </button>
+              
+              {showColorRulesDropdown && (
+                <div className="section-content">
+                  <div className="control-group">
+                    <div className="radio-group">
+                      <label className={colorRule === 'professional' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="colorRule" 
+                          value="professional" 
+                          checked={colorRule === 'professional'}
+                          onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
+                        />
+                        <span>Color by Licensed Professional</span>
+                      </label>
+                      <label className={colorRule === 'project' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="colorRule" 
+                          value="project" 
+                          checked={colorRule === 'project'}
+                          onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
+                        />
+                        <span>Color by Project</span>
+                      </label>
+                      <label className={colorRule === 'status' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="colorRule" 
+                          value="status" 
+                          checked={colorRule === 'status'}
+                          onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
+                        />
+                        <span>Color by Job Status</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 4. Navigation Section */}
+            <div className="menu-section">
+              <h3>Navigation</h3>
+              
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={jumpToToday}>
+                  Jump to Today
+                </button>
+              </div>
+
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={jumpToNextAvailable}>
+                  Jump to Next Available Slot
+                </button>
+              </div>
+
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={jumpToNextProject}>
+                  Jump to Next Project Start
+                </button>
+              </div>
+            </div>
+
+            {/* 5. Utilities Section */}
+            <div className="menu-section">
+              <h3>Utilities</h3>
+              
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={exportToPDF}>
+                  Export PDF
+                </button>
+              </div>
+
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={exportToCSV}>
+                  Export CSV
+                </button>
+              </div>
+
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={printSchedule}>
+                  Print Schedule
+                </button>
+              </div>
+
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={() => setShowGoogleSettings(true)}>
+                  Google Calendar Sync
+                </button>
+              </div>
+            </div>
+
+            {/* 6. Quick Add Section */}
+            <div className="menu-section">
+              <h3>Quick Add</h3>
+              
+              <div className="control-group">
+                <button 
+                  className="btn-menu-action btn-add-event" 
+                  onClick={() => {
+                    setSelectedDate(new Date());
+                    setShowEventForm(true);
+                    setShowMenu(false);
+                  }}
+                >
+                  + Add Event
+                </button>
+              </div>
+
+              <div className="control-group">
+                <button 
+                  className="btn-menu-action btn-add-task" 
+                  onClick={() => {
+                    setSelectedDate(new Date());
+                    setShowTaskForm(true);
+                    setShowMenu(false);
+                  }}
+                >
+                  + Add Task
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showGoogleSettings && (
-        <div className="google-settings-panel">
+        <div className="google-settings-panel" ref={googleSettingsRef}>
           <div className="google-settings-content">
             <h3>Google Calendar Integration</h3>
             
@@ -550,7 +958,7 @@ export default function CalendarPage() {
 
       {/* Month Picker Dropdown */}
       {showMonthPicker && (
-        <div className="month-picker-panel">
+        <div className="month-picker-panel" ref={monthPickerRef}>
           <div className="month-picker-content">
             <h3>Select Month</h3>
             <div className="month-grid">
@@ -585,7 +993,7 @@ export default function CalendarPage() {
 
       {/* Color Palette Dropdown */}
       {showColorPalette && (
-        <div className="color-palette-panel">
+        <div className="color-palette-panel" ref={colorPaletteRef}>
           <div className="color-palette-content">
             <h3>Event Color Palette</h3>
             <p className="palette-subtitle">Customize colors for different event types</p>
@@ -672,7 +1080,7 @@ export default function CalendarPage() {
 
       {/* Month Picker Dropdown */}
       {showMonthPicker && (
-        <div className="month-picker-panel">
+        <div className="month-picker-panel" ref={monthPickerRef}>
           <div className="month-picker-content">
             <h3>Select Month</h3>
             <div className="month-grid">
@@ -707,7 +1115,7 @@ export default function CalendarPage() {
 
       {/* Color Palette Dropdown */}
       {showColorPalette && (
-        <div className="color-palette-panel">
+        <div className="color-palette-panel" ref={colorPaletteRef}>
           <div className="color-palette-content">
             <h3>Event Color Palette</h3>
             <p className="palette-subtitle">Customize colors for different event types</p>
@@ -794,7 +1202,7 @@ export default function CalendarPage() {
 
       
       {showGoogleSettings && (
-        <div className="google-settings-panel">
+        <div className="google-settings-panel" ref={googleSettingsRef}>
           <div className="google-settings-content">
             <h3>Google Calendar Integration</h3>
             
@@ -940,7 +1348,7 @@ export default function CalendarPage() {
       </div>
 
       {showDayPanel && selectedDate && (
-        <div className="day-panel">
+        <div className="day-panel" ref={dayPanelRef}>
           <div className="day-panel-header">
             <div className="day-panel-title">
               <h3>{formatDateFull(selectedDate)}</h3>
@@ -995,6 +1403,7 @@ export default function CalendarPage() {
                         <option value="site_visit">Site Visit</option>
                         <option value="appointment">Appointment</option>
                         <option value="task">Task</option>
+                        <option value="personal">Personal</option>
                         <option value="subcontractor">Subcontractor</option>
                       </select>
                     </div>
@@ -1049,21 +1458,6 @@ export default function CalendarPage() {
                         onChange={(e) => setEventForm({ ...eventForm, assignedTo: e.target.value })}
                         placeholder="e.g., Crew A, John Smith"
                       />
-                    </div>
-
-                    <div className="form-field">
-                      <label>Licensed Professional</label>
-                      <select
-                        value={eventForm.professional_id}
-                        onChange={(e) => setEventForm({ ...eventForm, professional_id: e.target.value })}
-                      >
-                        <option value="">None</option>
-                        {professionals.map(prof => (
-                          <option key={prof.id} value={prof.id}>
-                            {prof.company_name} - {prof.trade}
-                          </option>
-                        ))}
-                      </select>
                     </div>
 
                     <div className="form-field">
@@ -1126,12 +1520,6 @@ export default function CalendarPage() {
                         <p>{selectedEvent.assignedTo}</p>
                       </div>
                     )}
-                    {selectedEvent.professional_name && (
-                      <div className="detail-field">
-                        <label>Licensed Professional</label>
-                        <p>{selectedEvent.professional_name}</p>
-                      </div>
-                    )}
                     {selectedEvent.notes && (
                       <div className="detail-field">
                         <label>Notes</label>
@@ -1140,7 +1528,7 @@ export default function CalendarPage() {
                     )}
                     <div className="detail-actions">
                       <button className="btn-edit">Edit</button>
-                      <button className="btn-delete" onClick={() => handleDeleteEvent(selectedEvent.id)}>Delete</button>
+                      <button className="btn-delete" onClick={() => selectedEvent && handleDeleteEvent(selectedEvent.id)}>Delete</button>
                       <button className="btn-back" onClick={() => setSelectedEvent(null)}>Back to List</button>
                     </div>
                   </div>
