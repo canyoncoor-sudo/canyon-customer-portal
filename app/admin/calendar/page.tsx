@@ -75,7 +75,11 @@ export default function CalendarPage() {
   
   // Menu System States
   const [showMenu, setShowMenu] = useState(false);
-  const [viewMode, setViewMode] = useState<'month' | 'week' | 'timeline'>('month');
+  const [showDisplayDropdown, setShowDisplayDropdown] = useState(false);
+  const [showFiltersDropdown, setShowFiltersDropdown] = useState(false);
+  const [showColorRulesDropdown, setShowColorRulesDropdown] = useState(false);
+  const [filterView, setFilterView] = useState<'all' | 'professionals' | 'projects' | 'open_slots'>('all');
+    const [viewMode, setViewMode] = useState<'month' | 'week' | 'timeline'>('month');
   const [displayDensity, setDisplayDensity] = useState<'compact' | 'extended'>('extended');
   const [selectedProfessionals, setSelectedProfessionals] = useState<string[]>([]);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
@@ -598,11 +602,6 @@ export default function CalendarPage() {
 
       {/* Menu Overlay */}
       {showMenu && (
-        <div className="menu-overlay" onClick={() => setShowMenu(false)} />
-      )}
-
-      {/* Slide-out Menu Panel */}
-      {showMenu && (
         <div className="schedule-menu-panel">
           <div className="menu-header">
             <h2>Schedule Controls</h2>
@@ -610,294 +609,205 @@ export default function CalendarPage() {
           </div>
 
           <div className="menu-content">
-            {/* 1. View Controls Section */}
+            {/* 1. Display Section (Collapsible) */}
             <div className="menu-section">
-              <h3>View Controls</h3>
+              <button 
+                className="menu-section-header"
+                onClick={() => setShowDisplayDropdown(!showDisplayDropdown)}
+              >
+                <span>Display</span>
+                <span className="dropdown-arrow">{showDisplayDropdown ? '▼' : '▶'}</span>
+              </button>
               
-              <div className="control-group">
-                <label>View Mode</label>
-                <div className="radio-group">
-                  <label className={viewMode === 'month' ? 'active' : ''}>
-                    <input 
-                      type="radio" 
-                      name="viewMode" 
-                      value="month" 
-                      checked={viewMode === 'month'}
-                      onChange={(e) => setViewMode(e.target.value as 'month' | 'week' | 'timeline')}
-                    />
-                    <span>Month</span>
-                  </label>
-                  <label className={viewMode === 'week' ? 'active' : ''}>
-                    <input 
-                      type="radio" 
-                      name="viewMode" 
-                      value="week" 
-                      checked={viewMode === 'week'}
-                      onChange={(e) => setViewMode(e.target.value as 'month' | 'week' | 'timeline')}
-                    />
-                    <span>Week</span>
-                  </label>
-                  <label className={viewMode === 'timeline' ? 'active' : ''}>
-                    <input 
-                      type="radio" 
-                      name="viewMode" 
-                      value="timeline" 
-                      checked={viewMode === 'timeline'}
-                      onChange={(e) => setViewMode(e.target.value as 'month' | 'week' | 'timeline')}
-                    />
-                    <span>Timeline</span>
-                  </label>
+              {showDisplayDropdown && (
+                <div className="section-content">
+                  <div className="control-group">
+                    <div className="radio-group">
+                      <label className={viewMode === 'month' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="viewMode" 
+                          value="month" 
+                          checked={viewMode === 'month'}
+                          onChange={(e) => setViewMode(e.target.value as 'month' | 'week' | 'timeline')}
+                        />
+                        <span>Month</span>
+                      </label>
+                      <label className={viewMode === 'week' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="viewMode" 
+                          value="week" 
+                          checked={viewMode === 'week'}
+                          onChange={(e) => setViewMode(e.target.value as 'month' | 'week' | 'timeline')}
+                        />
+                        <span>Week</span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
+            </div>
 
-              <div className="control-group">
-                <label>Display Density</label>
-                <div className="radio-group">
-                  <label className={displayDensity === 'compact' ? 'active' : ''}>
-                    <input 
-                      type="radio" 
-                      name="density" 
-                      value="compact" 
-                      checked={displayDensity === 'compact'}
-                      onChange={(e) => setDisplayDensity(e.target.value as 'compact' | 'extended')}
-                    />
-                    <span>Compact</span>
-                  </label>
-                  <label className={displayDensity === 'extended' ? 'active' : ''}>
-                    <input 
-                      type="radio" 
-                      name="density" 
-                      value="extended" 
-                      checked={displayDensity === 'extended'}
-                      onChange={(e) => setDisplayDensity(e.target.value as 'compact' | 'extended')}
-                    />
-                    <span>Extended</span>
-                  </label>
+            {/* 2. Filters Section (Collapsible) */}
+            <div className="menu-section">
+              <button 
+                className="menu-section-header"
+                onClick={() => setShowFiltersDropdown(!showFiltersDropdown)}
+              >
+                <span>Filters</span>
+                <span className="dropdown-arrow">{showFiltersDropdown ? '▼' : '▶'}</span>
+              </button>
+              
+              {showFiltersDropdown && (
+                <div className="section-content">
+                  <div className="control-group">
+                    <div className="radio-group">
+                      <label className={filterView === 'all' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="filterView" 
+                          value="all" 
+                          checked={filterView === 'all'}
+                          onChange={(e) => setFilterView(e.target.value as 'all' | 'professionals' | 'projects' | 'open_slots')}
+                        />
+                        <span>All Events</span>
+                      </label>
+                      <label className={filterView === 'professionals' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="filterView" 
+                          value="professionals" 
+                          checked={filterView === 'professionals'}
+                          onChange={(e) => setFilterView(e.target.value as 'all' | 'professionals' | 'projects' | 'open_slots')}
+                        />
+                        <span>All Professionals</span>
+                      </label>
+                      <label className={filterView === 'projects' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="filterView" 
+                          value="projects" 
+                          checked={filterView === 'projects'}
+                          onChange={(e) => setFilterView(e.target.value as 'all' | 'professionals' | 'projects' | 'open_slots')}
+                        />
+                        <span>Projects</span>
+                      </label>
+                      <label className={filterView === 'open_slots' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="filterView" 
+                          value="open_slots" 
+                          checked={filterView === 'open_slots'}
+                          onChange={(e) => setFilterView(e.target.value as 'all' | 'professionals' | 'projects' | 'open_slots')}
+                        />
+                        <span>Open Slots</span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
-            {/* 2. Filters Section */}
+            {/* 3. Color Rules Section (Collapsible) */}
             <div className="menu-section">
-              <h3>Filters</h3>
+              <button 
+                className="menu-section-header"
+                onClick={() => setShowColorRulesDropdown(!showColorRulesDropdown)}
+              >
+                <span>Color Rules</span>
+                <span className="dropdown-arrow">{showColorRulesDropdown ? '▼' : '▶'}</span>
+              </button>
               
-              <div className="control-group">
-                <label>Licensed Professionals</label>
-                <select 
-                  multiple 
-                  className="multi-select"
-                  value={selectedProfessionals}
-                  onChange={(e) => {
-                    const values = Array.from(e.target.selectedOptions, option => option.value);
-                    setSelectedProfessionals(values);
-                  }}
-                >
-                  <option value="">All Professionals</option>
-                  {professionals.map(prof => (
-                    <option key={prof.id} value={prof.id}>
-                      {prof.full_name || prof.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="control-group">
-                <label>Projects</label>
-                <select 
-                  multiple 
-                  className="multi-select"
-                  value={selectedProjects}
-                  onChange={(e) => {
-                    const values = Array.from(e.target.selectedOptions, option => option.value);
-                    setSelectedProjects(values);
-                  }}
-                >
-                  <option value="">All Projects</option>
-                  {projects.map(proj => (
-                    <option key={proj.id} value={proj.id}>
-                      {proj.name || proj.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="control-group">
-                <label className="toggle-label">
-                  <input 
-                    type="checkbox" 
-                    checked={showOnlyActive}
-                    onChange={(e) => setShowOnlyActive(e.target.checked)}
-                  />
-                  <span>Show Only Active Jobs</span>
-                </label>
-              </div>
-
-              <div className="control-group">
-                <label className="toggle-label">
-                  <input 
-                    type="checkbox" 
-                    checked={hideCompleted}
-                    onChange={(e) => setHideCompleted(e.target.checked)}
-                  />
-                  <span>Hide Completed Jobs</span>
-                </label>
-              </div>
-            </div>
-
-            {/* 3. Display Toggles Section */}
-            <div className="menu-section">
-              <h3>Display Toggles</h3>
-              
-              <div className="control-group">
-                <label className="toggle-label">
-                  <input 
-                    type="checkbox" 
-                    checked={showContractorNames}
-                    onChange={(e) => setShowContractorNames(e.target.checked)}
-                  />
-                  <span>Show Contractor Names</span>
-                </label>
-              </div>
-
-              <div className="control-group">
-                <label className="toggle-label">
-                  <input 
-                    type="checkbox" 
-                    checked={showJobDuration}
-                    onChange={(e) => setShowJobDuration(e.target.checked)}
-                  />
-                  <span>Show Job Duration</span>
-                </label>
-              </div>
-
-              <div className="control-group">
-                <label className="toggle-label">
-                  <input 
-                    type="checkbox" 
-                    checked={showMultiDayBars}
-                    onChange={(e) => setShowMultiDayBars(e.target.checked)}
-                  />
-                  <span>Multi-Day Bars</span>
-                </label>
-              </div>
-
-              <div className="control-group">
-                <label className="toggle-label">
-                  <input 
-                    type="checkbox" 
-                    checked={showConflicts}
-                    onChange={(e) => setShowConflicts(e.target.checked)}
-                  />
-                  <span>Show Overlaps & Conflicts</span>
-                </label>
-              </div>
-            </div>
-
-            {/* 4. Color Rules Section */}
-            <div className="menu-section">
-              <h3>Color Rules</h3>
-              
-              <div className="control-group">
-                <div className="radio-group">
-                  <label className={colorRule === 'professional' ? 'active' : ''}>
-                    <input 
-                      type="radio" 
-                      name="colorRule" 
-                      value="professional" 
-                      checked={colorRule === 'professional'}
-                      onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
-                    />
-                    <span>Color by Licensed Professional</span>
-                  </label>
-                  <label className={colorRule === 'project' ? 'active' : ''}>
-                    <input 
-                      type="radio" 
-                      name="colorRule" 
-                      value="project" 
-                      checked={colorRule === 'project'}
-                      onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
-                    />
-                    <span>Color by Project</span>
-                  </label>
-                  <label className={colorRule === 'status' ? 'active' : ''}>
-                    <input 
-                      type="radio" 
-                      name="colorRule" 
-                      value="status" 
-                      checked={colorRule === 'status'}
-                      onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
-                    />
-                    <span>Color by Job Status</span>
-                  </label>
+              {showColorRulesDropdown && (
+                <div className="section-content">
+                  <div className="control-group">
+                    <div className="radio-group">
+                      <label className={colorRule === 'professional' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="colorRule" 
+                          value="professional" 
+                          checked={colorRule === 'professional'}
+                          onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
+                        />
+                        <span>Color by Licensed Professional</span>
+                      </label>
+                      <label className={colorRule === 'project' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="colorRule" 
+                          value="project" 
+                          checked={colorRule === 'project'}
+                          onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
+                        />
+                        <span>Color by Project</span>
+                      </label>
+                      <label className={colorRule === 'status' ? 'active' : ''}>
+                        <input 
+                          type="radio" 
+                          name="colorRule" 
+                          value="status" 
+                          checked={colorRule === 'status'}
+                          onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
+                        />
+                        <span>Color by Job Status</span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
-            {/* 5. Navigation Section */}
+            {/* 4. Navigation Section */}
             <div className="menu-section">
               <h3>Navigation</h3>
               
               <div className="control-group">
                 <button className="btn-menu-action" onClick={jumpToToday}>
-                  📅 Jump to Today
+                  Jump to Today
                 </button>
               </div>
 
               <div className="control-group">
                 <button className="btn-menu-action" onClick={jumpToNextAvailable}>
-                  ⏭️ Jump to Next Available Slot
+                  Jump to Next Available Slot
                 </button>
               </div>
 
               <div className="control-group">
                 <button className="btn-menu-action" onClick={jumpToNextProject}>
-                  🚀 Jump to Next Project Start
+                  Jump to Next Project Start
                 </button>
               </div>
             </div>
 
-            {/* 6. Utilities Section */}
+            {/* 5. Utilities Section */}
             <div className="menu-section">
               <h3>Utilities</h3>
               
               <div className="control-group">
                 <button className="btn-menu-action" onClick={exportToPDF}>
-                  📄 Export PDF
+                  Export PDF
                 </button>
               </div>
 
               <div className="control-group">
                 <button className="btn-menu-action" onClick={exportToCSV}>
-                  📊 Export CSV
+                  Export CSV
                 </button>
               </div>
 
               <div className="control-group">
                 <button className="btn-menu-action" onClick={printSchedule}>
-                  🖨️ Print Schedule
+                  Print Schedule
                 </button>
               </div>
 
-              <div className="control-group google-sync-section">
-                <div className="google-sync-header">
-                  <span>Google Calendar Sync</span>
-                  {googleConnected && <span className="status-badge">✓ Connected</span>}
-                </div>
-                {!googleConnected ? (
-                  <button className="btn-menu-action" onClick={() => {
-                    setShowGoogleSettings(true);
-                    setShowMenu(false);
-                  }}>
-                    Connect Google Calendar
-                  </button>
-                ) : (
-                  <button className="btn-menu-action secondary" onClick={() => {
-                    setShowGoogleSettings(true);
-                    setShowMenu(false);
-                  }}>
-                    Manage Google Sync
-                  </button>
-                )}
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={() => setShowGoogleSettings(true)}>
+                  Google Calendar Sync
+                </button>
               </div>
             </div>
           </div>
