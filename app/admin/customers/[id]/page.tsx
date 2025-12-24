@@ -174,7 +174,7 @@ export default function CustomerPortalAdminView({ params }: { params: Promise<{ 
                 className="admin-actions-btn" 
                 onClick={() => setShowActionsMenu(!showActionsMenu)}
               >
-                ⚡ Actions ▾
+                Actions ▾
               </button>
               {showActionsMenu && (
                 <div className="admin-dropdown-menu">
@@ -185,10 +185,10 @@ export default function CustomerPortalAdminView({ params }: { params: Promise<{ 
                       handleEdit();
                     }}
                   >
-                    ✏️ Edit Info
+                    Edit Info
                   </button>
                   <label className="dropdown-item">
-                    📸 Add Photos
+                    Add Photos
                     <input 
                       type="file" 
                       multiple 
@@ -201,7 +201,7 @@ export default function CustomerPortalAdminView({ params }: { params: Promise<{ 
                     />
                   </label>
                   <label className="dropdown-item">
-                    📄 Add Document
+                    Add Document
                     <input 
                       type="file" 
                       onChange={(e) => {
@@ -218,7 +218,7 @@ export default function CustomerPortalAdminView({ params }: { params: Promise<{ 
                       router.push(`/admin/professionals?customerId=${resolvedParams.id}`);
                     }}
                   >
-                    👷 Add Licensed Professional
+                    Add Licensed Professional
                   </button>
                 </div>
               )}
