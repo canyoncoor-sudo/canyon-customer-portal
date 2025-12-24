@@ -1558,3 +1558,32 @@
   padding-bottom: 12px;
   border-bottom: 2px solid #F0F0EE;
 }
+
+/* Quick Add Buttons */
+.btn-add-event,
+.btn-add-task {
+  background: #567A8D !important;
+  color: white !important;
+  font-weight: 600;
+  border: 2px solid #567A8D;
+  transition: all 0.2s ease;
+}
+
+.btn-add-event:hover {
+  background: #456778 !important;
+  border-color: #456778;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(86, 122, 141, 0.3);
+}
+
+.btn-add-task {
+  background: #712A18 !important;
+  border: 2px solid #712A18;
+}
+
+.btn-add-task:hover {
+  background: #5a2213 !important;
+  border-color: #5a2213;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(113, 42, 24, 0.3);
+}

@@ -7,7 +7,7 @@ import './calendar.css';
 interface CalendarEvent {
   id: string;
   title: string;
-  type: 'meeting' | 'crew' | 'site_visit' | 'appointment' | 'task';
+  type: 'meeting' | 'crew' | 'site_visit' | 'appointment' | 'task' | 'personal';
   start: Date;
   end: Date;
   customer_name?: string;
@@ -70,6 +70,7 @@ export default function CalendarPage() {
     site_visit: '#9A8C7A',
     appointment: '#454547',
     task: '#261312',
+    personal: '#9B59B6',
     subcontractor: '#D97706'
   });
   
@@ -868,6 +869,37 @@ export default function CalendarPage() {
                 </button>
               </div>
             </div>
+
+            {/* 6. Quick Add Section */}
+            <div className="menu-section">
+              <h3>Quick Add</h3>
+              
+              <div className="control-group">
+                <button 
+                  className="btn-menu-action btn-add-event" 
+                  onClick={() => {
+                    setSelectedDate(new Date());
+                    setShowEventForm(true);
+                    setShowMenu(false);
+                  }}
+                >
+                  + Add Event
+                </button>
+              </div>
+
+              <div className="control-group">
+                <button 
+                  className="btn-menu-action btn-add-task" 
+                  onClick={() => {
+                    setSelectedDate(new Date());
+                    setShowTaskForm(true);
+                    setShowMenu(false);
+                  }}
+                >
+                  + Add Task
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -1029,6 +1061,7 @@ export default function CalendarPage() {
                 site_visit: '#9A8C7A',
                 appointment: '#454547',
                 task: '#261312',
+                personal: '#9B59B6',
                 subcontractor: '#D97706'
               })}
             >
@@ -1150,6 +1183,7 @@ export default function CalendarPage() {
                 site_visit: '#9A8C7A',
                 appointment: '#454547',
                 task: '#261312',
+                personal: '#9B59B6',
                 subcontractor: '#D97706'
               })}
             >
@@ -1362,6 +1396,7 @@ export default function CalendarPage() {
                         <option value="site_visit">Site Visit</option>
                         <option value="appointment">Appointment</option>
                         <option value="task">Task</option>
+                        <option value="personal">Personal</option>
                         <option value="subcontractor">Subcontractor</option>
                       </select>
                     </div>
