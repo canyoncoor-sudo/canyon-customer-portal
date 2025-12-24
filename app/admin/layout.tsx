@@ -52,7 +52,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className={`admin-nav-btn ${isActive('/admin/dashboard') ? 'active' : ''}`}
             onClick={() => router.push('/admin/dashboard')}
           >
-            Overview
+            Operations
           </button>
           <button
             className={`admin-nav-btn ${isActive('/admin/calendar') ? 'active' : ''}`}

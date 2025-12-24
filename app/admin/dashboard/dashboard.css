@@ -705,3 +705,368 @@
     font-size: 14px;
   }
 }
+
+/* Operations Dashboard Styles */
+.operations-section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #261312;
+  margin: 0 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #F0F0EE;
+}
+
+/* Schedule Section */
+.schedule-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.schedule-item {
+  display: flex;
+  gap: 16px;
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  transition: all 0.2s;
+}
+
+.schedule-item:hover {
+  border-color: #567A8D;
+  box-shadow: 0 2px 8px rgba(86, 122, 141, 0.1);
+}
+
+.schedule-time {
+  font-size: 14px;
+  font-weight: 700;
+  color: #567A8D;
+  min-width: 80px;
+  padding: 4px 8px;
+  background: #F0F0EE;
+  border-radius: 4px;
+  text-align: center;
+  height: fit-content;
+}
+
+.schedule-details {
+  flex: 1;
+}
+
+.schedule-details h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #261312;
+  margin: 0 0 4px;
+}
+
+.schedule-customer {
+  font-size: 14px;
+  color: #454547;
+  margin: 0 0 8px;
+}
+
+.schedule-type {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #567A8D;
+  background: rgba(86, 122, 141, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* High Priority Section */
+.priority-list {
+  display: grid;
+  gap: 12px;
+}
+
+.priority-item {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  border-left: 4px solid #712A18;
+  transition: all 0.2s;
+}
+
+.priority-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.priority-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.priority-header h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #261312;
+  margin: 0;
+}
+
+.priority-days {
+  font-size: 12px;
+  font-weight: 700;
+  color: #712A18;
+  background: rgba(113, 42, 24, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.priority-description {
+  font-size: 14px;
+  color: #454547;
+  margin: 0 0 12px;
+}
+
+.priority-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+/* Active Work Section */
+.active-work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.active-work-item {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  transition: all 0.2s;
+}
+
+.active-work-item:hover {
+  border-color: #567A8D;
+  box-shadow: 0 2px 8px rgba(86, 122, 141, 0.1);
+}
+
+.work-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.work-header h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #261312;
+  margin: 0;
+}
+
+.work-days {
+  font-size: 12px;
+  font-weight: 700;
+  color: #567A8D;
+  background: #F0F0EE;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.work-project {
+  font-size: 14px;
+  color: #454547;
+  margin: 0 0 12px;
+}
+
+.work-status {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 12px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 32px;
+  color: #9A8C7A;
+  font-style: italic;
+  background: #F0F0EE;
+  border-radius: 8px;
+}
+
+/* Section Subtitles */
+.section-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.section-subtitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: #9A8C7A;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Clickable Items */
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  transform: translateY(-1px);
+}
+
+/* Documents Section */
+.documents-list {
+  display: grid;
+  gap: 12px;
+}
+
+.document-item {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  border-left: 4px solid #D97706;
+  transition: all 0.2s;
+}
+
+.document-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.document-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.document-header h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #261312;
+  margin: 0;
+}
+
+.document-days {
+  font-size: 12px;
+  font-weight: 700;
+  color: #D97706;
+  background: rgba(217, 119, 6, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.document-status {
+  font-size: 14px;
+  color: #454547;
+  margin: 0 0 12px;
+}
+
+.document-type {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  background: #D97706;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+/* Active Work Updates */
+.work-customer {
+  font-size: 14px;
+  color: #9A8C7A;
+  margin: 4px 0 0;
+}
+
+.work-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.work-block-reason {
+  font-size: 12px;
+  color: #712A18;
+  font-weight: 600;
+  background: rgba(113, 42, 24, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.action-btn {
+  width: 100%;
+  background: #567A8D;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.action-btn:hover {
+  background: #456678;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(86, 122, 141, 0.3);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+/* Operations Info Box */
+.operations-info {
+  max-width: 900px;
+  margin: 32px auto 0;
+  background: #F0F0EE;
+  padding: 20px 24px;
+  border-radius: 8px;
+  border-left: 4px solid #567A8D;
+}
+
+.operations-info h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #261312;
+  margin: 0 0 12px;
+}
+
+.operations-info ul {
+  margin: 0 0 16px;
+  padding-left: 20px;
+}
+
+.operations-info li {
+  font-size: 13px;
+  color: #454547;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.info-note {
+  font-size: 12px;
+  color: #9A8C7A;
+  font-style: italic;
+  margin: 0;
+  line-height: 1.5;
+}
