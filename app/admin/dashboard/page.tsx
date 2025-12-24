@@ -53,65 +53,32 @@ export default function AdminDashboard() {
         return;
       }
 
-      // TODO: Replace with actual API calls to /api/admin/operations
-      // Mock data for now - will be replaced with real data from your database
-      setTodaySchedule([
-        { id: '1', jobId: 'job1', title: 'Kitchen Remodel', time: '9:00 AM', type: 'Site Visit', customer: 'John Smith' },
-        { id: '2', jobId: 'job2', title: 'Roofing Installation', time: '1:00 PM', type: 'Work', customer: 'Jane Doe' },
-      ]);
+      // Fetch real operations data from API
+      const response = await fetch('/api/admin/operations', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
-      setTomorrowSchedule([
-        { id: '3', jobId: 'job3', title: 'Deck Addition', time: '10:00 AM', type: 'Inspection', customer: 'Bob Johnson' },
-      ]);
+      if (!response.ok) {
+        throw new Error('Failed to fetch operations data');
+      }
 
-      setDocuments([
-        { id: '1', jobId: 'job4', jobName: 'Bathroom Remodel', documentType: 'Permit', status: 'Awaiting City Approval', daysWaiting: 8 },
-        { id: '2', jobId: 'job5', jobName: 'Fence Installation', documentType: 'Insurance Certificate', status: 'Needed from Subcontractor', daysWaiting: 3 },
-      ]);
-
-      setActiveWork([
-        { 
-          id: '1', 
-          jobId: 'job6', 
-          jobName: 'Garage Slab', 
-          customer: 'Sarah Williams', 
-          status: 'invoice_pending',
-          daysInStatus: 2,
-          nextAction: 'Send Invoice'
-        },
-        { 
-          id: '2', 
-          jobId: 'job7', 
-          jobName: 'Kitchen Remodel', 
-          customer: 'Mike Brown', 
-          status: 'awaiting_schedule',
-          daysInStatus: 5,
-          nextAction: 'Schedule Job'
-        },
-        { 
-          id: '3', 
-          jobId: 'job8', 
-          jobName: 'Deck Addition', 
-          customer: 'Lisa Anderson', 
-          status: 'awaiting_response',
-          daysInStatus: 3,
-          nextAction: 'Follow Up'
-        },
-        { 
-          id: '4', 
-          jobId: 'job9', 
-          jobName: 'Bathroom Remodel', 
-          customer: 'Tom Wilson', 
-          status: 'blocked',
-          blockReason: 'Permit Pending',
-          daysInStatus: 8,
-          nextAction: 'Check Permit Status'
-        },
-      ]);
+      const data = await response.json();
+      
+      setTodaySchedule(data.todaySchedule || []);
+      setTomorrowSchedule(data.tomorrowSchedule || []);
+      setDocuments(data.documents || []);
+      setActiveWork(data.activeWork || []);
       
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch operations data:', error);
+      // Set empty arrays on error instead of fake data
+      setTodaySchedule([]);
+      setTomorrowSchedule([]);
+      setDocuments([]);
+      setActiveWork([]);
       setLoading(false);
     }
   };
