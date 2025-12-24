@@ -576,6 +576,13 @@ export default function CalendarPage() {
     <div className="calendar-container">
       <header className="calendar-header">
         <div className="header-top">
+          <button 
+            className="btn-menu-hamburger"
+            onClick={() => setShowMenu(!showMenu)}
+            title="Menu"
+          >
+            ☰
+          </button>
           <h1>Schedule</h1>
         </div>
 
