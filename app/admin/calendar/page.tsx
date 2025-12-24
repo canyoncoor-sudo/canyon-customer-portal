@@ -37,7 +37,7 @@ interface Task {
 }
 
 export default function CalendarPage() {
-  const [currentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
@@ -48,6 +48,7 @@ export default function CalendarPage() {
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'events' | 'tasks'>('events');
   const [draggedEvent, setDraggedEvent] = useState<CalendarEvent | null>(null);
+  const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
 
   // Form states
@@ -78,16 +79,7 @@ export default function CalendarPage() {
     site_visit: '#9A8C7A',
     appointment: '#454547',
     task: '#261312',
-    subcontractor: '#D97706'
-  });
-  const [showMonthPicker, setShowMonthPicker] = useState(false);
-  const [showColorPalette, setShowColorPalette] = useState(false);
-  const [eventColors, setEventColors] = useState({
-    meeting: '#567A8D',
-    crew: '#712A18',
-    site_visit: '#9A8C7A',
-    appointment: '#454547',
-    task: '#261312',
+    personal: '#9B59B6',
     subcontractor: '#D97706'
   });
   const [syncStatus, setSyncStatus] = useState('');
@@ -291,17 +283,6 @@ export default function CalendarPage() {
     ));
   };
 
-  const handleDeleteEvent = () => {
-    if (!selectedEvent) return;
-    setEvents(events.filter(e => e.id !== selectedEvent.id));
-    syncEventToGoogle(selectedEvent, 'delete');
-    syncEventToGoogle(selectedEvent, 'delete');
-    setSelectedEvent(null);
-  };
-
-  
-  
-
   const connectGoogleCalendar = async () => {
     try {
       const res = await fetch('/api/admin/calendar/google/auth');
@@ -460,41 +441,6 @@ export default function CalendarPage() {
       months.push(date);
     }
     return months;
-  };
-
-  const handleDeleteEvent = async (eventId: string) => {
-    if (!confirm('Are you sure you want to delete this event?')) {
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('admin_token');
-      if (!token) {
-        alert('Please log in to delete events');
-        return;
-      }
-
-      const response = await fetch(`/api/admin/calendar/events/${eventId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete event');
-      }
-
-      // Remove from local state
-      setEvents(events.filter(e => e.id !== eventId));
-      setSelectedEvent(null);
-      setShowEventForm(false);
-      
-      alert('Event deleted successfully');
-    } catch (error) {
-      console.error('Failed to delete event:', error);
-      alert('Failed to delete event. Please try again.');
-    }
   };
 
   const handleDeleteEvent = async (eventId: string) => {
@@ -714,6 +660,7 @@ export default function CalendarPage() {
                 site_visit: '#9A8C7A',
                 appointment: '#454547',
                 task: '#261312',
+                personal: '#9B59B6',
                 subcontractor: '#D97706'
               })}
             >
@@ -835,6 +782,7 @@ export default function CalendarPage() {
                 site_visit: '#9A8C7A',
                 appointment: '#454547',
                 task: '#261312',
+                personal: '#9B59B6',
                 subcontractor: '#D97706'
               })}
             >
@@ -1192,7 +1140,7 @@ export default function CalendarPage() {
                     )}
                     <div className="detail-actions">
                       <button className="btn-edit">Edit</button>
-                      <button className="btn-delete" onClick={handleDeleteEvent}>Delete</button>
+                      <button className="btn-delete" onClick={() => handleDeleteEvent(selectedEvent.id)}>Delete</button>
                       <button className="btn-back" onClick={() => setSelectedEvent(null)}>Back to List</button>
                     </div>
                   </div>
