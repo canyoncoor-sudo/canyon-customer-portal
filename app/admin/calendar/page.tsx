@@ -57,6 +57,26 @@ export default function CalendarPage() {
   // Google Calendar integration
   const [googleConnected, setGoogleConnected] = useState(false);
   const [showGoogleSettings, setShowGoogleSettings] = useState(false);
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
+  const [showColorPalette, setShowColorPalette] = useState(false);
+  const [eventColors, setEventColors] = useState({
+    meeting: '#567A8D',
+    crew: '#712A18',
+    site_visit: '#9A8C7A',
+    appointment: '#454547',
+    task: '#261312',
+    subcontractor: '#D97706'
+  });
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
+  const [showColorPalette, setShowColorPalette] = useState(false);
+  const [eventColors, setEventColors] = useState({
+    meeting: '#567A8D',
+    crew: '#712A18',
+    site_visit: '#9A8C7A',
+    appointment: '#454547',
+    task: '#261312',
+    subcontractor: '#D97706'
+  });
   const [syncStatus, setSyncStatus] = useState('');
 
   useEffect(() => {
@@ -394,52 +414,96 @@ export default function CalendarPage() {
     return months;
   };
 
+  const handleDeleteEvent = async (eventId: string) => {
+    if (!confirm('Are you sure you want to delete this event?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        alert('Please log in to delete events');
+        return;
+      }
+
+      const response = await fetch(`/api/admin/calendar/events/${eventId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete event');
+      }
+
+      // Remove from local state
+      setEvents(events.filter(e => e.id !== eventId));
+      setSelectedEvent(null);
+      setShowEventForm(false);
+      
+      alert('Event deleted successfully');
+    } catch (error) {
+      console.error('Failed to delete event:', error);
+      alert('Failed to delete event. Please try again.');
+    }
+  };
+
+  const handleDeleteEvent = async (eventId: string) => {
+    if (!confirm('Are you sure you want to delete this event?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        alert('Please log in to delete events');
+        return;
+      }
+
+      const response = await fetch(`/api/admin/calendar/events/${eventId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete event');
+      }
+
+      // Remove from local state
+      setEvents(events.filter(e => e.id !== eventId));
+      setSelectedEvent(null);
+      setShowEventForm(false);
+      
+      alert('Event deleted successfully');
+    } catch (error) {
+      console.error('Failed to delete event:', error);
+      alert('Failed to delete event. Please try again.');
+    }
+  };
+
   return (
     <div className="calendar-container">
       <header className="calendar-header">
         <div className="header-top">
-          <h1>Calendar & Schedule</h1>
-          <p className="header-subtitle">
-            Click any day to add events or tasks • Drag events to reschedule
-          </p>
+          <h1>Schedule</h1>
         </div>
 
-        <div className="event-legend">
-          <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#567A8D' }}></span>
-            Meetings
-          </div>
-          <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#712A18' }}></span>
-            Crew Scheduling
-          </div>
-          <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#9A8C7A' }}></span>
-            Site Visits
-          </div>
-          <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#454547' }}></span>
-            Appointments
-          </div>
-          <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#261312' }}></span>
-            Tasks
-          
-        <div className="google-calendar-section">
+        <div className="calendar-controls">
           <button 
-            className="btn-google-settings" 
-            onClick={() => setShowGoogleSettings(!showGoogleSettings)}
+            className="btn-month-picker"
+            onClick={() => setShowMonthPicker(!showMonthPicker)}
           >
-            {googleConnected ? '✓ Google Calendar Connected' : '⚙️ Connect Google Calendar'}
+            📅 {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
           </button>
-        </div>
-      
-        <div className="google-calendar-section">
+          
           <button 
-            className="btn-google-settings" 
-            onClick={() => setShowGoogleSettings(!showGoogleSettings)}
+            className="btn-color-palette"
+            onClick={() => setShowColorPalette(!showColorPalette)}
           >
-            {googleConnected ? '✓ Google Calendar Connected' : '⚙️ Connect Google Calendar'}
+            🎨 Color Palette
           </button>
         </div>
       </div>
@@ -488,6 +552,248 @@ export default function CalendarPage() {
                 </p>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Month Picker Dropdown */}
+      {showMonthPicker && (
+        <div className="month-picker-panel">
+          <div className="month-picker-content">
+            <h3>Select Month</h3>
+            <div className="month-grid">
+              {Array.from({ length: 12 }, (_, i) => {
+                const month = new Date(currentDate.getFullYear(), i, 1);
+                return (
+                  <button
+                    key={i}
+                    className="month-button"
+                    onClick={() => {
+                      setCurrentDate(month);
+                      setShowMonthPicker(false);
+                    }}
+                  >
+                    {month.toLocaleDateString('en-US', { month: 'long' })}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="year-controls">
+              <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear() - 1, currentDate.getMonth(), 1))}>
+                ← {currentDate.getFullYear() - 1}
+              </button>
+              <span>{currentDate.getFullYear()}</span>
+              <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), 1))}>
+                {currentDate.getFullYear() + 1} →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Color Palette Dropdown */}
+      {showColorPalette && (
+        <div className="color-palette-panel">
+          <div className="color-palette-content">
+            <h3>Event Color Palette</h3>
+            <p className="palette-subtitle">Customize colors for different event types</p>
+            
+            <div className="color-settings">
+              <div className="color-setting-item">
+                <label>Meetings</label>
+                <input 
+                  type="color" 
+                  value={eventColors.meeting}
+                  onChange={(e) => setEventColors({...eventColors, meeting: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.meeting}</span>
+              </div>
+              
+              <div className="color-setting-item">
+                <label>Crew Scheduling</label>
+                <input 
+                  type="color" 
+                  value={eventColors.crew}
+                  onChange={(e) => setEventColors({...eventColors, crew: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.crew}</span>
+              </div>
+              
+              <div className="color-setting-item">
+                <label>Site Visits</label>
+                <input 
+                  type="color" 
+                  value={eventColors.site_visit}
+                  onChange={(e) => setEventColors({...eventColors, site_visit: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.site_visit}</span>
+              </div>
+              
+              <div className="color-setting-item">
+                <label>Appointments</label>
+                <input 
+                  type="color" 
+                  value={eventColors.appointment}
+                  onChange={(e) => setEventColors({...eventColors, appointment: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.appointment}</span>
+              </div>
+              
+              <div className="color-setting-item">
+                <label>Tasks</label>
+                <input 
+                  type="color" 
+                  value={eventColors.task}
+                  onChange={(e) => setEventColors({...eventColors, task: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.task}</span>
+              </div>
+              
+              <div className="color-setting-item">
+                <label>Subcontractors</label>
+                <input 
+                  type="color" 
+                  value={eventColors.subcontractor}
+                  onChange={(e) => setEventColors({...eventColors, subcontractor: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.subcontractor}</span>
+              </div>
+            </div>
+            
+            <button 
+              className="btn-reset-colors"
+              onClick={() => setEventColors({
+                meeting: '#567A8D',
+                crew: '#712A18',
+                site_visit: '#9A8C7A',
+                appointment: '#454547',
+                task: '#261312',
+                subcontractor: '#D97706'
+              })}
+            >
+              Reset to Defaults
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Month Picker Dropdown */}
+      {showMonthPicker && (
+        <div className="month-picker-panel">
+          <div className="month-picker-content">
+            <h3>Select Month</h3>
+            <div className="month-grid">
+              {Array.from({ length: 12 }, (_, i) => {
+                const month = new Date(currentDate.getFullYear(), i, 1);
+                return (
+                  <button
+                    key={i}
+                    className="month-button"
+                    onClick={() => {
+                      setCurrentDate(month);
+                      setShowMonthPicker(false);
+                    }}
+                  >
+                    {month.toLocaleDateString('en-US', { month: 'long' })}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="year-controls">
+              <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear() - 1, currentDate.getMonth(), 1))}>
+                ← {currentDate.getFullYear() - 1}
+              </button>
+              <span>{currentDate.getFullYear()}</span>
+              <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), 1))}>
+                {currentDate.getFullYear() + 1} →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Color Palette Dropdown */}
+      {showColorPalette && (
+        <div className="color-palette-panel">
+          <div className="color-palette-content">
+            <h3>Event Color Palette</h3>
+            <p className="palette-subtitle">Customize colors for different event types</p>
+            
+            <div className="color-settings">
+              <div className="color-setting-item">
+                <label>Meetings</label>
+                <input 
+                  type="color" 
+                  value={eventColors.meeting}
+                  onChange={(e) => setEventColors({...eventColors, meeting: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.meeting}</span>
+              </div>
+              
+              <div className="color-setting-item">
+                <label>Crew Scheduling</label>
+                <input 
+                  type="color" 
+                  value={eventColors.crew}
+                  onChange={(e) => setEventColors({...eventColors, crew: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.crew}</span>
+              </div>
+              
+              <div className="color-setting-item">
+                <label>Site Visits</label>
+                <input 
+                  type="color" 
+                  value={eventColors.site_visit}
+                  onChange={(e) => setEventColors({...eventColors, site_visit: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.site_visit}</span>
+              </div>
+              
+              <div className="color-setting-item">
+                <label>Appointments</label>
+                <input 
+                  type="color" 
+                  value={eventColors.appointment}
+                  onChange={(e) => setEventColors({...eventColors, appointment: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.appointment}</span>
+              </div>
+              
+              <div className="color-setting-item">
+                <label>Tasks</label>
+                <input 
+                  type="color" 
+                  value={eventColors.task}
+                  onChange={(e) => setEventColors({...eventColors, task: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.task}</span>
+              </div>
+              
+              <div className="color-setting-item">
+                <label>Subcontractors</label>
+                <input 
+                  type="color" 
+                  value={eventColors.subcontractor}
+                  onChange={(e) => setEventColors({...eventColors, subcontractor: e.target.value})}
+                />
+                <span className="color-hex">{eventColors.subcontractor}</span>
+              </div>
+            </div>
+            
+            <button 
+              className="btn-reset-colors"
+              onClick={() => setEventColors({
+                meeting: '#567A8D',
+                crew: '#712A18',
+                site_visit: '#9A8C7A',
+                appointment: '#454547',
+                task: '#261312',
+                subcontractor: '#D97706'
+              })}
+            >
+              Reset to Defaults
+            </button>
           </div>
         </div>
       )}
@@ -589,6 +895,26 @@ export default function CalendarPage() {
                                   onDragStart={() => handleDragStart(event)}
                                   onClick={(e) => handleEventClick(event, e)}
                                 >
+                                  <button 
+                                    className="event-delete-btn"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteEvent(event.id);
+                                    }}
+                                    title="Delete event"
+                                  >
+                                    ×
+                                  </button>
+                                  <button 
+                                    className="event-delete-btn"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteEvent(event.id);
+                                    }}
+                                    title="Delete event"
+                                  >
+                                    ×
+                                  </button>
                                   <div className="event-time">
                                     {event.start.toLocaleTimeString('en-US', { 
                                       hour: 'numeric', 
@@ -675,6 +1001,7 @@ export default function CalendarPage() {
                         <option value="site_visit">Site Visit</option>
                         <option value="appointment">Appointment</option>
                         <option value="task">Task</option>
+                        <option value="subcontractor">Subcontractor</option>
                       </select>
                     </div>
 

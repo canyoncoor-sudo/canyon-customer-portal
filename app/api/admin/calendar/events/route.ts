@@ -109,3 +109,103 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const token = request.headers.get('Authorization')?.replace('Bearer ', '');
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const supabase = createClient();
+    
+    // Verify token
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Get event ID from URL
+    const url = new URL(request.url);
+    const eventId = url.pathname.split('/').pop();
+
+    if (!eventId) {
+      return NextResponse.json({ error: 'Event ID required' }, { status: 400 });
+    }
+
+    // Delete the event
+    const { error: deleteError } = await supabase
+      .from('calendar_events')
+      .delete()
+      .eq('id', eventId);
+
+    if (deleteError) {
+      console.error('Delete error:', deleteError);
+      return NextResponse.json(
+        { error: 'Failed to delete event', details: deleteError.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Event deleted successfully' 
+    });
+  } catch (error: any) {
+    console.error('Unexpected error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error', details: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const token = request.headers.get('Authorization')?.replace('Bearer ', '');
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const supabase = createClient();
+    
+    // Verify token
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Get event ID from URL
+    const url = new URL(request.url);
+    const eventId = url.pathname.split('/').pop();
+
+    if (!eventId) {
+      return NextResponse.json({ error: 'Event ID required' }, { status: 400 });
+    }
+
+    // Delete the event
+    const { error: deleteError } = await supabase
+      .from('calendar_events')
+      .delete()
+      .eq('id', eventId);
+
+    if (deleteError) {
+      console.error('Delete error:', deleteError);
+      return NextResponse.json(
+        { error: 'Failed to delete event', details: deleteError.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Event deleted successfully' 
+    });
+  } catch (error: any) {
+    console.error('Unexpected error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error', details: error.message },
+      { status: 500 }
+    );
+  }
+}
