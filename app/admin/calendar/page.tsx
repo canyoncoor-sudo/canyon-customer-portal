@@ -15,6 +15,11 @@ interface CalendarEvent {
   status: 'scheduled' | 'pending' | 'confirmed' | 'completed';
   notes?: string;
   assignedTo?: string;
+  // Menu system fields
+  assigned_professional_id?: string;
+  project_id?: string;
+  duration_days?: number;
+  is_multi_day?: boolean;
 }
 
 interface Task {
@@ -67,11 +72,29 @@ export default function CalendarPage() {
     task: '#261312',
     subcontractor: '#D97706'
   });
+  
+  // Menu System States
+  const [showMenu, setShowMenu] = useState(false);
+  const [viewMode, setViewMode] = useState<'month' | 'week' | 'timeline'>('month');
+  const [displayDensity, setDisplayDensity] = useState<'compact' | 'extended'>('extended');
+  const [selectedProfessionals, setSelectedProfessionals] = useState<string[]>([]);
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  const [showOnlyActive, setShowOnlyActive] = useState(false);
+  const [hideCompleted, setHideCompleted] = useState(true);
+  const [showContractorNames, setShowContractorNames] = useState(true);
+  const [showJobDuration, setShowJobDuration] = useState(true);
+  const [showMultiDayBars, setShowMultiDayBars] = useState(true);
+  const [showConflicts, setShowConflicts] = useState(true);
+  const [colorRule, setColorRule] = useState<'professional' | 'project' | 'status'>('status');
+  const [professionals, setProfessionals] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
   const [syncStatus, setSyncStatus] = useState('');
 
   useEffect(() => {
     fetchEvents();
     fetchTasks();
+    fetchProfessionals();
+    fetchProjects();
   }, []);
 
   const fetchEvents = async () => {
@@ -107,6 +130,123 @@ export default function CalendarPage() {
       console.error('Failed to fetch events:', error);
       setEvents([]); // Show empty calendar on error, no fake data
     }
+  };
+
+  const fetchProfessionals = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) return;
+      const response = await fetch('/api/admin/professionals', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setProfessionals(data.professionals || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch professionals:', error);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) return;
+      const response = await fetch('/api/admin/jobs', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setProjects(data.jobs || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch projects:', error);
+    }
+  };
+
+  const jumpToToday = () => {
+    setCurrentDate(new Date());
+    setShowMenu(false);
+  };
+
+  const jumpToNextAvailable = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    let checkDate = new Date(today);
+    for (let i = 1; i <= 365; i++) {
+      checkDate.setDate(checkDate.getDate() + 1);
+      const dayEvents = events.filter(e => {
+        const eventDate = new Date(e.start);
+        return eventDate.toDateString() === checkDate.toDateString();
+      });
+      if (dayEvents.length === 0) {
+        setCurrentDate(checkDate);
+        setShowMenu(false);
+        return;
+      }
+    }
+  };
+
+  const jumpToNextProject = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const futureEvents = events
+      .filter(e => new Date(e.start) > today)
+      .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    if (futureEvents.length > 0) {
+      setCurrentDate(new Date(futureEvents[0].start));
+      setShowMenu(false);
+    }
+  };
+
+  const exportToPDF = () => {
+    alert('PDF export functionality coming soon!');
+  };
+
+  const exportToCSV = () => {
+    const csvContent = [
+      ['Title', 'Type', 'Start', 'End', 'Customer', 'Status'].join(','),
+      ...events.map(e => [
+        e.title,
+        e.type,
+        e.start.toISOString(),
+        e.end.toISOString(),
+        e.customer_name || '',
+        e.status || ''
+      ].join(','))
+    ].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `schedule-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    setShowMenu(false);
+  };
+
+  const printSchedule = () => {
+    window.print();
+    setShowMenu(false);
+  };
+
+  const getEventColor = (event: CalendarEvent) => {
+    if (colorRule === 'professional' && event.assigned_professional_id) {
+      const prof = professionals.find(p => p.id === event.assigned_professional_id);
+      return prof?.assigned_color || eventColors[event.type as keyof typeof eventColors] || '#567A8D';
+    } else if (colorRule === 'project' && event.project_id) {
+      const hash = event.project_id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const hue = hash % 360;
+      return `hsl(${hue}, 60%, 50%)`;
+    } else if (colorRule === 'status') {
+      const statusColors = {
+        'active': '#2D7A3E',
+        'pending': '#D97706',
+        'completed': '#808080',
+        'cancelled': '#DC2626'
+      };
+      return statusColors[event.status as keyof typeof statusColors] || eventColors[event.type as keyof typeof eventColors] || '#567A8D';
+    }
+    return eventColors[event.type as keyof typeof eventColors] || '#567A8D';
   };
 
   const fetchTasks = async () => {
@@ -446,17 +586,317 @@ export default function CalendarPage() {
           >
             📅 {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
           </button>
-          
-          <button 
-            className="btn-color-palette"
-            onClick={() => setShowColorPalette(!showColorPalette)}
-          >
-            🎨 Color Palette
-          </button>
         </div>
       </header>
 
-      
+      {/* Menu Overlay */}
+      {showMenu && (
+        <div className="menu-overlay" onClick={() => setShowMenu(false)} />
+      )}
+
+      {/* Slide-out Menu Panel */}
+      {showMenu && (
+        <div className="schedule-menu-panel">
+          <div className="menu-header">
+            <h2>Schedule Controls</h2>
+            <button className="btn-close-menu" onClick={() => setShowMenu(false)}>✕</button>
+          </div>
+
+          <div className="menu-content">
+            {/* 1. View Controls Section */}
+            <div className="menu-section">
+              <h3>View Controls</h3>
+              
+              <div className="control-group">
+                <label>View Mode</label>
+                <div className="radio-group">
+                  <label className={viewMode === 'month' ? 'active' : ''}>
+                    <input 
+                      type="radio" 
+                      name="viewMode" 
+                      value="month" 
+                      checked={viewMode === 'month'}
+                      onChange={(e) => setViewMode(e.target.value as 'month' | 'week' | 'timeline')}
+                    />
+                    <span>Month</span>
+                  </label>
+                  <label className={viewMode === 'week' ? 'active' : ''}>
+                    <input 
+                      type="radio" 
+                      name="viewMode" 
+                      value="week" 
+                      checked={viewMode === 'week'}
+                      onChange={(e) => setViewMode(e.target.value as 'month' | 'week' | 'timeline')}
+                    />
+                    <span>Week</span>
+                  </label>
+                  <label className={viewMode === 'timeline' ? 'active' : ''}>
+                    <input 
+                      type="radio" 
+                      name="viewMode" 
+                      value="timeline" 
+                      checked={viewMode === 'timeline'}
+                      onChange={(e) => setViewMode(e.target.value as 'month' | 'week' | 'timeline')}
+                    />
+                    <span>Timeline</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="control-group">
+                <label>Display Density</label>
+                <div className="radio-group">
+                  <label className={displayDensity === 'compact' ? 'active' : ''}>
+                    <input 
+                      type="radio" 
+                      name="density" 
+                      value="compact" 
+                      checked={displayDensity === 'compact'}
+                      onChange={(e) => setDisplayDensity(e.target.value as 'compact' | 'extended')}
+                    />
+                    <span>Compact</span>
+                  </label>
+                  <label className={displayDensity === 'extended' ? 'active' : ''}>
+                    <input 
+                      type="radio" 
+                      name="density" 
+                      value="extended" 
+                      checked={displayDensity === 'extended'}
+                      onChange={(e) => setDisplayDensity(e.target.value as 'compact' | 'extended')}
+                    />
+                    <span>Extended</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Filters Section */}
+            <div className="menu-section">
+              <h3>Filters</h3>
+              
+              <div className="control-group">
+                <label>Licensed Professionals</label>
+                <select 
+                  multiple 
+                  className="multi-select"
+                  value={selectedProfessionals}
+                  onChange={(e) => {
+                    const values = Array.from(e.target.selectedOptions, option => option.value);
+                    setSelectedProfessionals(values);
+                  }}
+                >
+                  <option value="">All Professionals</option>
+                  {professionals.map(prof => (
+                    <option key={prof.id} value={prof.id}>
+                      {prof.full_name || prof.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="control-group">
+                <label>Projects</label>
+                <select 
+                  multiple 
+                  className="multi-select"
+                  value={selectedProjects}
+                  onChange={(e) => {
+                    const values = Array.from(e.target.selectedOptions, option => option.value);
+                    setSelectedProjects(values);
+                  }}
+                >
+                  <option value="">All Projects</option>
+                  {projects.map(proj => (
+                    <option key={proj.id} value={proj.id}>
+                      {proj.name || proj.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="control-group">
+                <label className="toggle-label">
+                  <input 
+                    type="checkbox" 
+                    checked={showOnlyActive}
+                    onChange={(e) => setShowOnlyActive(e.target.checked)}
+                  />
+                  <span>Show Only Active Jobs</span>
+                </label>
+              </div>
+
+              <div className="control-group">
+                <label className="toggle-label">
+                  <input 
+                    type="checkbox" 
+                    checked={hideCompleted}
+                    onChange={(e) => setHideCompleted(e.target.checked)}
+                  />
+                  <span>Hide Completed Jobs</span>
+                </label>
+              </div>
+            </div>
+
+            {/* 3. Display Toggles Section */}
+            <div className="menu-section">
+              <h3>Display Toggles</h3>
+              
+              <div className="control-group">
+                <label className="toggle-label">
+                  <input 
+                    type="checkbox" 
+                    checked={showContractorNames}
+                    onChange={(e) => setShowContractorNames(e.target.checked)}
+                  />
+                  <span>Show Contractor Names</span>
+                </label>
+              </div>
+
+              <div className="control-group">
+                <label className="toggle-label">
+                  <input 
+                    type="checkbox" 
+                    checked={showJobDuration}
+                    onChange={(e) => setShowJobDuration(e.target.checked)}
+                  />
+                  <span>Show Job Duration</span>
+                </label>
+              </div>
+
+              <div className="control-group">
+                <label className="toggle-label">
+                  <input 
+                    type="checkbox" 
+                    checked={showMultiDayBars}
+                    onChange={(e) => setShowMultiDayBars(e.target.checked)}
+                  />
+                  <span>Multi-Day Bars</span>
+                </label>
+              </div>
+
+              <div className="control-group">
+                <label className="toggle-label">
+                  <input 
+                    type="checkbox" 
+                    checked={showConflicts}
+                    onChange={(e) => setShowConflicts(e.target.checked)}
+                  />
+                  <span>Show Overlaps & Conflicts</span>
+                </label>
+              </div>
+            </div>
+
+            {/* 4. Color Rules Section */}
+            <div className="menu-section">
+              <h3>Color Rules</h3>
+              
+              <div className="control-group">
+                <div className="radio-group">
+                  <label className={colorRule === 'professional' ? 'active' : ''}>
+                    <input 
+                      type="radio" 
+                      name="colorRule" 
+                      value="professional" 
+                      checked={colorRule === 'professional'}
+                      onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
+                    />
+                    <span>Color by Licensed Professional</span>
+                  </label>
+                  <label className={colorRule === 'project' ? 'active' : ''}>
+                    <input 
+                      type="radio" 
+                      name="colorRule" 
+                      value="project" 
+                      checked={colorRule === 'project'}
+                      onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
+                    />
+                    <span>Color by Project</span>
+                  </label>
+                  <label className={colorRule === 'status' ? 'active' : ''}>
+                    <input 
+                      type="radio" 
+                      name="colorRule" 
+                      value="status" 
+                      checked={colorRule === 'status'}
+                      onChange={(e) => setColorRule(e.target.value as 'professional' | 'project' | 'status')}
+                    />
+                    <span>Color by Job Status</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* 5. Navigation Section */}
+            <div className="menu-section">
+              <h3>Navigation</h3>
+              
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={jumpToToday}>
+                  📅 Jump to Today
+                </button>
+              </div>
+
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={jumpToNextAvailable}>
+                  ⏭️ Jump to Next Available Slot
+                </button>
+              </div>
+
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={jumpToNextProject}>
+                  🚀 Jump to Next Project Start
+                </button>
+              </div>
+            </div>
+
+            {/* 6. Utilities Section */}
+            <div className="menu-section">
+              <h3>Utilities</h3>
+              
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={exportToPDF}>
+                  📄 Export PDF
+                </button>
+              </div>
+
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={exportToCSV}>
+                  📊 Export CSV
+                </button>
+              </div>
+
+              <div className="control-group">
+                <button className="btn-menu-action" onClick={printSchedule}>
+                  🖨️ Print Schedule
+                </button>
+              </div>
+
+              <div className="control-group google-sync-section">
+                <div className="google-sync-header">
+                  <span>Google Calendar Sync</span>
+                  {googleConnected && <span className="status-badge">✓ Connected</span>}
+                </div>
+                {!googleConnected ? (
+                  <button className="btn-menu-action" onClick={() => {
+                    setShowGoogleSettings(true);
+                    setShowMenu(false);
+                  }}>
+                    Connect Google Calendar
+                  </button>
+                ) : (
+                  <button className="btn-menu-action secondary" onClick={() => {
+                    setShowGoogleSettings(true);
+                    setShowMenu(false);
+                  }}>
+                    Manage Google Sync
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showGoogleSettings && (
         <div className="google-settings-panel">
           <div className="google-settings-content">
