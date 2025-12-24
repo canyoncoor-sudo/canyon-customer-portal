@@ -72,31 +72,30 @@ export default function CalendarPage() {
         return;
       }
 
-      // TODO: Fetch from API
-      setEvents([
-        {
-          id: '1',
-          title: 'Site Visit - Smith Residence',
-          type: 'site_visit',
-          start: new Date(2025, 11, 23, 10, 0),
-          end: new Date(2025, 11, 23, 11, 30),
-          customer_name: 'John Smith',
-          status: 'confirmed',
-          notes: 'Initial consultation for kitchen remodel'
-        },
-        {
-          id: '2',
-          title: 'Crew - Johnson Project',
-          type: 'crew',
-          start: new Date(2025, 11, 24, 8, 0),
-          end: new Date(2025, 11, 28, 17, 0),
-          customer_name: 'Jane Johnson',
-          status: 'scheduled',
-          assignedTo: 'Crew A'
+      // Fetch real events from calendar_events table (synced from Google Calendar)
+      const response = await fetch('/api/admin/calendar/events', {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      ]);
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch events');
+      }
+
+      const data = await response.json();
+      
+      // Convert date strings back to Date objects
+      const formattedEvents = data.events.map((event: any) => ({
+        ...event,
+        start: new Date(event.start),
+        end: new Date(event.end)
+      }));
+      
+      setEvents(formattedEvents);
     } catch (error) {
       console.error('Failed to fetch events:', error);
+      setEvents([]); // Show empty calendar on error, no fake data
     }
   };
 
