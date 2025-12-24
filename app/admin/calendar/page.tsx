@@ -169,37 +169,95 @@ export default function CalendarPage() {
   };
 
   const jumpToToday = () => {
-    setCurrentDate(new Date());
+    const today = new Date();
+    setCurrentDate(today);
+    setSelectedDate(today);
+    setShowDayPanel(true);
     setShowMenu(false);
   };
 
   const jumpToNextAvailable = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    
+    const availableDays: Date[] = [];
     let checkDate = new Date(today);
-    for (let i = 1; i <= 365; i++) {
-      checkDate.setDate(checkDate.getDate() + 1);
+    
+    // Find next 3 available days (days with no events)
+    for (let i = 1; i <= 365 && availableDays.length < 3; i++) {
+      checkDate = new Date(today);
+      checkDate.setDate(checkDate.getDate() + i);
+      
       const dayEvents = events.filter(e => {
         const eventDate = new Date(e.start);
-        return eventDate.toDateString() === checkDate.toDateString();
+        eventDate.setHours(0, 0, 0, 0);
+        const compareDate = new Date(checkDate);
+        compareDate.setHours(0, 0, 0, 0);
+        return eventDate.getTime() === compareDate.getTime();
       });
+      
       if (dayEvents.length === 0) {
-        setCurrentDate(checkDate);
-        setShowMenu(false);
-        return;
+        availableDays.push(new Date(checkDate));
       }
+    }
+    
+    if (availableDays.length > 0) {
+      // Navigate to first available day and show it
+      setCurrentDate(availableDays[0]);
+      setSelectedDate(availableDays[0]);
+      setShowDayPanel(true);
+      setShowMenu(false);
+      
+      // Show alert with next 3 available days
+      const dateStrings = availableDays.map(d => 
+        d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+      );
+      setTimeout(() => {
+        alert(`Next available slots:\n\n${dateStrings.join('\n')}`);
+      }, 300);
+    } else {
+      alert('No available slots found in the next year.');
     }
   };
 
   const jumpToNextProject = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const futureEvents = events
-      .filter(e => new Date(e.start) > today)
+    
+    // Find future events that are project-related (not just meetings or tasks)
+    const futureProjects = events
+      .filter(e => {
+        const eventDate = new Date(e.start);
+        return eventDate > today && (
+          e.type === 'crew' || 
+          e.type === 'site_visit' || 
+          e.title?.toLowerCase().includes('project') ||
+          e.title?.toLowerCase().includes('job') ||
+          e.customer_name // Has a customer associated
+        );
+      })
       .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
-    if (futureEvents.length > 0) {
-      setCurrentDate(new Date(futureEvents[0].start));
+    
+    if (futureProjects.length > 0) {
+      const nextProject = futureProjects[0];
+      const projectDate = new Date(nextProject.start);
+      setCurrentDate(projectDate);
+      setSelectedDate(projectDate);
+      setShowDayPanel(true);
       setShowMenu(false);
+      
+      // Show info about the project
+      setTimeout(() => {
+        const dateStr = projectDate.toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          month: 'long', 
+          day: 'numeric', 
+          year: 'numeric' 
+        });
+        alert(`Next Project Start:\n\n${nextProject.title}\n${dateStr}`);
+      }, 300);
+    } else {
+      alert('No upcoming projects found in the schedule.');
     }
   };
 
