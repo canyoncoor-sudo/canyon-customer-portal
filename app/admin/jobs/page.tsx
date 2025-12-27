@@ -311,12 +311,6 @@ export default function JobsPage() {
             <p className="header-subtitle">Manage all jobs and project intakes</p>
           </div>
         </div>
-        <button 
-          className="new-job-btn"
-          onClick={() => router.push('/admin/jobs/new')}
-        >
-          + New Job Intake
-        </button>
       </div>
 
       {(filterStatus !== 'all' || filterPriority !== 'all' || searchQuery) && (
