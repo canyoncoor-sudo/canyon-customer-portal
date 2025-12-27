@@ -117,7 +117,8 @@ export default function EditProfessional() {
           phone: officePhone || mobilePhone || formData.phone,
           email: formData.email,
           address: formData.address,
-          notes: formData.notes
+          notes: formData.notes,
+          color: formData.color
         }),
       });
 

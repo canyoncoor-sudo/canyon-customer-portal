@@ -79,9 +79,9 @@ export async function PUT(
       is_google_verified
     } = body;
 
-    // Validate required fields
-    if (!company_name || !trade || !ccb_number || !contact_name || !phone || !email) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    // Validate required fields (only essential ones)
+    if (!company_name || !trade || !contact_name || !phone) {
+      return NextResponse.json({ error: 'Missing required fields: Company Name, Trade, Contact Name, and Phone are required' }, { status: 400 });
     }
 
     // Prepare update data
