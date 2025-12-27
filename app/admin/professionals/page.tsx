@@ -8,6 +8,7 @@ interface Professional {
   id: string;
   company_name: string;
   trade: string;
+  color?: string;
   ccb_number: string;
   contact_name: string;
   phone: string;

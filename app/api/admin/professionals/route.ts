@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     // Fetch all professionals (not tied to specific jobs)
     const { data: professionals, error } = await supabaseAdmin
       .from('subcontractors')
-      .select('id, company_name, trade, ccb_number, contact_name, phone, email, created_at')
+      .select('id, company_name, trade, ccb_number, contact_name, phone, email, color, created_at')
       .is('job_id', null) // Only get master list professionals
       .order('company_name', { ascending: true });
 

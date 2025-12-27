@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
       email, 
       address, 
       notes,
+      color,
       // Google fields
       google_place_id,
       google_business_name,
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
       email,
       address,
       notes,
+      color: color || '#567A8D', // Default to Canyon blue if not provided
       status: 'Active'
     };
 

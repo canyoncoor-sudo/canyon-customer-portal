@@ -25,6 +25,7 @@ export default function NewProfessional() {
     state: 'OR',
     zip_code: '',
     notes: '',
+    color: '#567A8D', // Default Canyon blue
     // Google fields
     google_place_id: '',
     google_business_name: '',
@@ -126,6 +127,7 @@ export default function NewProfessional() {
           ...formData,
           address: `${formData.street_address}, ${formData.city}, ${formData.state} ${formData.zip_code}`.trim(),
           notes: fullNotes,
+          color: formData.color,
         }),
       });
 
@@ -265,6 +267,65 @@ export default function NewProfessional() {
                 <option value="Windows & Doors" />
               </datalist>
               <p className="field-hint" style={{fontSize: '12px', color: '#454547', marginTop: '4px'}}>Start typing or select from the list. You can enter a custom trade if needed.</p>
+            </div>
+
+            <div className="form-field">
+              <label>Calendar Color *</label>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <input
+                  type="color"
+                  name="color"
+                  value={formData.color}
+                  onChange={handleChange}
+                  style={{ 
+                    width: '60px', 
+                    height: '40px', 
+                    border: '1px solid #ddd', 
+                    borderRadius: '8px',
+                    cursor: 'pointer'
+                  }}
+                  required
+                />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span style={{ fontSize: '14px', fontWeight: 600, color: '#261312' }}>
+                    {formData.color.toUpperCase()}
+                  </span>
+                  <span style={{ fontSize: '12px', color: '#454547' }}>
+                    This color will be used on the calendar
+                  </span>
+                </div>
+              </div>
+              <div style={{ marginTop: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '12px', color: '#454547', fontWeight: 600 }}>Quick Colors:</span>
+                {[
+                  { name: 'Pink (Insulation)', color: '#FFB6D9' },
+                  { name: 'Light Green (Plumbing)', color: '#90EE90' },
+                  { name: 'Forest Green (Arborist)', color: '#228B22' },
+                  { name: 'Orange (Electrical)', color: '#FFA500' },
+                  { name: 'Brown (Carpentry)', color: '#8B4513' },
+                  { name: 'Light Blue (HVAC)', color: '#87CEEB' },
+                  { name: 'Gray (Concrete)', color: '#808080' },
+                  { name: 'Yellow (Roofing)', color: '#FFD700' },
+                  { name: 'Purple (Painting)', color: '#9370DB' },
+                  { name: 'Red (Demolition)', color: '#DC143C' },
+                ].map(preset => (
+                  <button
+                    key={preset.color}
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, color: preset.color }))}
+                    style={{
+                      background: preset.color,
+                      border: formData.color === preset.color ? '3px solid #261312' : '1px solid #ddd',
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      padding: 0,
+                    }}
+                    title={preset.name}
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="form-field">

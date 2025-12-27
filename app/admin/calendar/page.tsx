@@ -575,7 +575,16 @@ export default function CalendarPage() {
     return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
   };
 
-  const getEventTypeColor = (type: string) => {
+  const getEventTypeColor = (type: string, professionalId?: string) => {
+    // If event is assigned to a professional, use their color
+    if (professionalId) {
+      const professional = professionals.find(p => p.id === professionalId);
+      if (professional?.color) {
+        return professional.color;
+      }
+    }
+    
+    // Otherwise use event type color
     switch (type) {
       case 'meeting': return '#567A8D';
       case 'crew': return '#712A18';
@@ -1060,6 +1069,84 @@ export default function CalendarPage() {
               </div>
             </div>
             
+            {/* Professional Colors Section */}
+            <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #F0F0EE' }}>
+              <h3 style={{ marginBottom: '10px' }}>Licensed Professional Colors</h3>
+              <p className="palette-subtitle" style={{ marginBottom: '15px' }}>
+                Colors assigned to each trade. Edit in <a href="/admin/professionals" style={{ color: '#567A8D', fontWeight: 600 }}>Licensed Professionals</a>.
+              </p>
+              
+              {professionals.length === 0 && (
+                <p style={{ color: '#454547', fontStyle: 'italic', fontSize: '14px' }}>
+                  No licensed professionals yet. <a href="/admin/professionals/new" style={{ color: '#567A8D', fontWeight: 600 }}>Add one</a> to see colors here.
+                </p>
+              )}
+              
+              {professionals.length > 0 && (
+                <div className="color-settings">
+                  {professionals.map(prof => (
+                    <div key={prof.id} className="color-setting-item" style={{ opacity: 0.9 }}>
+                      <label title={`${prof.company_name} - ${prof.contact_name}`}>
+                        {prof.trade}
+                      </label>
+                      <div 
+                        style={{ 
+                          width: '36px', 
+                          height: '36px', 
+                          borderRadius: '8px', 
+                          background: prof.color || '#567A8D',
+                          border: '2px solid rgba(0,0,0,0.1)',
+                          cursor: 'default'
+                        }}
+                      />
+                      <span className="color-hex" style={{ fontSize: '12px' }}>
+                        {prof.company_name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Professional Colors Section */}
+            <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #F0F0EE' }}>
+              <h3 style={{ marginBottom: '10px' }}>Licensed Professional Colors</h3>
+              <p className="palette-subtitle" style={{ marginBottom: '15px' }}>
+                Colors assigned to each trade. Edit in <a href="/admin/professionals" style={{ color: '#567A8D', fontWeight: 600 }}>Licensed Professionals</a>.
+              </p>
+              
+              {professionals.length === 0 && (
+                <p style={{ color: '#454547', fontStyle: 'italic', fontSize: '14px' }}>
+                  No licensed professionals yet. <a href="/admin/professionals/new" style={{ color: '#567A8D', fontWeight: 600 }}>Add one</a> to see colors here.
+                </p>
+              )}
+              
+              {professionals.length > 0 && (
+                <div className="color-settings">
+                  {professionals.map(prof => (
+                    <div key={prof.id} className="color-setting-item" style={{ opacity: 0.9 }}>
+                      <label title={`${prof.company_name} - ${prof.contact_name}`}>
+                        {prof.trade}
+                      </label>
+                      <div 
+                        style={{ 
+                          width: '36px', 
+                          height: '36px', 
+                          borderRadius: '8px', 
+                          background: prof.color || '#567A8D',
+                          border: '2px solid rgba(0,0,0,0.1)',
+                          cursor: 'default'
+                        }}
+                      />
+                      <span className="color-hex" style={{ fontSize: '12px' }}>
+                        {prof.company_name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button 
               className="btn-reset-colors"
               onClick={() => setEventColors({
@@ -1292,7 +1379,7 @@ export default function CalendarPage() {
                                 <div
                                   key={event.id}
                                   className="event-item"
-                                  style={{ borderLeftColor: getEventTypeColor(event.type) }}
+                                  style={{ borderLeftColor: getEventTypeColor(event.type, event.assigned_professional_id) }}
                                   draggable
                                   onDragStart={() => handleDragStart(event)}
                                   onClick={(e) => handleEventClick(event, e)}
@@ -1484,7 +1571,7 @@ export default function CalendarPage() {
                     </div>
                     <div className="detail-field">
                       <label>Type</label>
-                      <p style={{ color: getEventTypeColor(selectedEvent.type) }}>
+                      <p style={{ color: getEventTypeColor(selectedEvent.type, selectedEvent.assigned_professional_id) }}>
                         {selectedEvent.type.replace('_', ' ')}
                       </p>
                     </div>
@@ -1548,7 +1635,7 @@ export default function CalendarPage() {
                         >
                           <div 
                             className="list-event-indicator" 
-                            style={{ background: getEventTypeColor(event.type) }}
+                            style={{ background: getEventTypeColor(event.type, event.assigned_professional_id) }}
                           />
                           <div className="list-event-content">
                             <div className="list-event-title">{event.title}</div>
