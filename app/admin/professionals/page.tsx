@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import SectionMenu from '../components/SectionMenu';
 import './professionals.css';
 
 interface Professional {
@@ -36,6 +37,12 @@ function AdminProfessionalsContent() {
   const [selectedTrade, setSelectedTrade] = useState<string | null>(null);
   const [customerId, setCustomerId] = useState<string | null>(null);
   const [customerName, setCustomerName] = useState<string>('');
+  const [showMenu, setShowMenu] = useState(false);
+  const [showViewSection, setShowViewSection] = useState(false);
+  const [showFiltersSection, setShowFiltersSection] = useState(false);
+  const [showActionsSection, setShowActionsSection] = useState(false);
+  const [filterByTrade, setFilterByTrade] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -237,6 +244,152 @@ function AdminProfessionalsContent() {
     ? professionals.filter(p => p.trade === selectedTrade)
     : professionals;
 
+  // Get unique trades for filter
+  const uniqueTrades = Array.from(new Set(professionals.map(p => p.trade))).sort();
+
+  // Apply filters
+  const filteredProfessionals = displayedProfessionals.filter(pro => {
+    // Trade filter
+    if (filterByTrade !== 'all' && pro.trade !== filterByTrade) return false;
+    
+    // Search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      return (
+        pro.company_name.toLowerCase().includes(query) ||
+        pro.contact_name.toLowerCase().includes(query) ||
+        pro.trade.toLowerCase().includes(query) ||
+        pro.phone.includes(query) ||
+        (pro.email && pro.email.toLowerCase().includes(query))
+      );
+    }
+    
+    return true;
+  });
+
+  // Menu sections
+  const menuSections = [
+    {
+      title: 'View',
+      isOpen: showViewSection,
+      onToggle: () => setShowViewSection(!showViewSection),
+      content: (
+        <div className="control-group">
+          <div className="radio-group">
+            <label className={view === 'groups' && !selectedTrade ? 'active' : ''}>
+              <input 
+                type="radio" 
+                name="viewMode" 
+                value="groups"
+                checked={view === 'groups' && !selectedTrade}
+                onChange={() => { setView('groups'); setSelectedTrade(null); }}
+              />
+              <span>By Trade Groups</span>
+            </label>
+            <label className={view === 'list' && !selectedTrade ? 'active' : ''}>
+              <input 
+                type="radio" 
+                name="viewMode" 
+                value="list"
+                checked={view === 'list' && !selectedTrade}
+                onChange={() => { setView('list'); setSelectedTrade(null); }}
+              />
+              <span>All Professionals List</span>
+            </label>
+          </div>
+        </div>
+      )
+    },
+    {
+      title: 'Filters',
+      isOpen: showFiltersSection,
+      onToggle: () => setShowFiltersSection(!showFiltersSection),
+      content: (
+        <>
+          <div className="control-group">
+            <label>Filter by Trade</label>
+            <select value={filterByTrade} onChange={(e) => setFilterByTrade(e.target.value)}>
+              <option value="all">All Trades ({professionals.length})</option>
+              {uniqueTrades.map(trade => (
+                <option key={trade} value={trade}>
+                  {trade} ({professionals.filter(p => p.trade === trade).length})
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="control-group">
+            <label>Search Professionals</label>
+            <input
+              type="text"
+              placeholder="Search by name, company, trade..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {(filterByTrade !== 'all' || searchQuery) && (
+            <div className="control-group">
+              <button 
+                className="btn-menu-action tertiary"
+                onClick={() => {
+                  setFilterByTrade('all');
+                  setSearchQuery('');
+                }}
+              >
+                Clear All Filters
+              </button>
+            </div>
+          )}
+        </>
+      )
+    },
+    {
+      title: 'Actions',
+      isOpen: showActionsSection,
+      onToggle: () => setShowActionsSection(!showActionsSection),
+      content: (
+        <>
+          <div className="control-group">
+            <button 
+              className="btn-menu-action"
+              onClick={() => {
+                setShowMenu(false);
+                router.push('/admin/professionals/new');
+              }}
+            >
+              + Add New Professional
+            </button>
+          </div>
+          
+          <div className="control-group">
+            <button 
+              className="btn-menu-action tertiary"
+              onClick={() => {
+                setShowMenu(false);
+                router.push('/admin/professionals/agreement');
+              }}
+            >
+              📄 View Agreement Template
+            </button>
+          </div>
+
+          <div className="control-group">
+            <button 
+              className="btn-menu-action tertiary"
+              onClick={() => {
+                setShowMenu(false);
+                router.push('/admin/dashboard');
+              }}
+            >
+              ← Return to Dashboard
+            </button>
+          </div>
+        </>
+      )
+    }
+  ];
+
   if (loading) {
     return (
       <div className="admin-loading">
@@ -247,12 +400,27 @@ function AdminProfessionalsContent() {
 
   return (
     <div className="admin-professionals">
+      {showMenu && <div className="menu-backdrop" onClick={() => setShowMenu(false)} />}
+      
+      <SectionMenu
+        sectionName="Licensed Professionals"
+        isOpen={showMenu}
+        onClose={() => setShowMenu(false)}
+        sections={menuSections}
+      />
+
       <header className="professionals-header">
         <div className="header-content">
-          <button onClick={handleBack} className="back-btn">
-            ← Back
-          </button>
-          <h1>Licensed Professionals</h1>
+          <div className="header-left">
+            <button 
+              className="btn-menu-hamburger"
+              onClick={() => setShowMenu(!showMenu)}
+              title="Control Center"
+            >
+              ☰
+            </button>
+            <h1>Licensed Professionals</h1>
+          </div>
           <button 
             onClick={() => router.push('/admin/professionals/new')}
             className="btn-primary"
@@ -280,6 +448,15 @@ function AdminProfessionalsContent() {
       )}
 
       <div className="professionals-content">
+        {(filterByTrade !== 'all' || searchQuery) && (
+          <div className="active-filters-banner">
+            <span>🔍 Filters Active: </span>
+            {filterByTrade !== 'all' && <span className="filter-tag">Trade: {filterByTrade}</span>}
+            {searchQuery && <span className="filter-tag">Search: "{searchQuery}"</span>}
+            <span className="results-count">({filteredProfessionals.length} result{filteredProfessionals.length !== 1 ? 's' : ''})</span>
+          </div>
+        )}
+
         <div className="view-tabs">
           <button 
             className={view === 'groups' && !selectedTrade ? 'active' : ''}
@@ -297,7 +474,11 @@ function AdminProfessionalsContent() {
 
         {view === 'groups' && !selectedTrade ? (
           <div className="trade-groups">
-            {groupByTrade().map(group => (
+            {groupByTrade().filter(group => {
+              // Apply filters to groups
+              if (filterByTrade !== 'all') return group.trade === filterByTrade;
+              return true;
+            }).map(group => (
               <div 
                 key={group.trade} 
                 className="trade-card"
@@ -327,11 +508,11 @@ function AdminProfessionalsContent() {
             {selectedTrade && (
               <div className="list-header">
                 <h2>{selectedTrade}</h2>
-                <p>{displayedProfessionals.length} professional{displayedProfessionals.length !== 1 ? 's' : ''}</p>
+                <p>{filteredProfessionals.length} professional{filteredProfessionals.length !== 1 ? 's' : ''}</p>
               </div>
             )}
             <div className="professionals-list">
-              {displayedProfessionals.map(pro => (
+              {filteredProfessionals.map(pro => (
                 <div 
                   key={pro.id} 
                   className="professional-card"
