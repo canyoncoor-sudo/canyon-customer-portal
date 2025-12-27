@@ -67,6 +67,7 @@ export async function PUT(
       email, 
       address, 
       notes,
+      color,
       // Google fields
       google_place_id,
       google_business_name,
@@ -92,7 +93,8 @@ export async function PUT(
       phone,
       email,
       address,
-      notes
+      notes,
+      color: color || '#567A8D'
     };
 
     // Add Google fields if provided
