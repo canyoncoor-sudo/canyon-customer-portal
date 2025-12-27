@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import SectionMenu from '../components/SectionMenu';
 import './dashboard.css';
 
 interface ScheduleEvent {
@@ -39,6 +40,9 @@ export default function AdminDashboard() {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [activeWork, setActiveWork] = useState<ActiveWorkItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showMenu, setShowMenu] = useState(false);
+  const [showActionsSection, setShowActionsSection] = useState(false);
+  const [showQuickLinksSection, setShowQuickLinksSection] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -133,6 +137,98 @@ export default function AdminDashboard() {
     router.push(`/admin/jobs/${jobId}/documents`);
   };
 
+  // Menu sections configuration
+  const menuSections = [
+    {
+      title: 'Quick Actions',
+      isOpen: showActionsSection,
+      onToggle: () => setShowActionsSection(!showActionsSection),
+      content: (
+        <>
+          <div className="control-group">
+            <button 
+              className="btn-menu-action"
+              onClick={() => {
+                setShowMenu(false);
+                router.push('/admin/jobs/new');
+              }}
+            >
+              + New Job Intake
+            </button>
+          </div>
+          
+          <div className="control-group">
+            <button 
+              className="btn-menu-action secondary"
+              onClick={() => {
+                setShowMenu(false);
+                router.push('/admin/calendar');
+              }}
+            >
+              📅 Open Schedule
+            </button>
+          </div>
+        </>
+      )
+    },
+    {
+      title: 'Quick Links',
+      isOpen: showQuickLinksSection,
+      onToggle: () => setShowQuickLinksSection(!showQuickLinksSection),
+      content: (
+        <>
+          <div className="control-group">
+            <button 
+              className="btn-menu-action tertiary"
+              onClick={() => {
+                setShowMenu(false);
+                router.push('/admin/jobs');
+              }}
+            >
+              📋 All Projects
+            </button>
+          </div>
+          
+          <div className="control-group">
+            <button 
+              className="btn-menu-action tertiary"
+              onClick={() => {
+                setShowMenu(false);
+                router.push('/admin/professionals');
+              }}
+            >
+              👷 Licensed Professionals
+            </button>
+          </div>
+          
+          <div className="control-group">
+            <button 
+              className="btn-menu-action tertiary"
+              onClick={() => {
+                setShowMenu(false);
+                router.push('/admin/customers');
+              }}
+            >
+              👥 Customers
+            </button>
+          </div>
+          
+          <div className="control-group">
+            <button 
+              className="btn-menu-action tertiary"
+              onClick={() => {
+                setShowMenu(false);
+                router.push('/admin/documents');
+              }}
+            >
+              📄 Documents
+            </button>
+          </div>
+        </>
+      )
+    }
+  ];
+
   if (loading) {
     return (
       <div className="admin-loading">
@@ -144,9 +240,29 @@ export default function AdminDashboard() {
 
   return (
     <div className="dashboard-content">
+      {showMenu && <div className="menu-backdrop" onClick={() => setShowMenu(false)} />}
+      
+      <SectionMenu
+        sectionName="Operations"
+        isOpen={showMenu}
+        onClose={() => setShowMenu(false)}
+        sections={menuSections}
+      />
+
       <div className="view-header">
-        <h2>Operations</h2>
-        <p>Items requiring action or awareness today</p>
+        <div className="header-left">
+          <button 
+            className="btn-menu-hamburger"
+            onClick={() => setShowMenu(!showMenu)}
+            title="Control Center"
+          >
+            ☰
+          </button>
+          <div>
+            <h2>Operations</h2>
+            <p>Items requiring action or awareness today</p>
+          </div>
+        </div>
       </div>
 
       {/* Today's Schedule - Where do I need to be / what's booked? */}

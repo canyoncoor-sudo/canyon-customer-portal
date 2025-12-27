@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import SectionMenu from '../components/SectionMenu';
 import './documents.css';
 
 interface DocumentTemplate {
@@ -15,6 +16,10 @@ interface DocumentTemplate {
 export default function DocumentsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [showMenu, setShowMenu] = useState(false);
+  const [showFiltersSection, setShowFiltersSection] = useState(false);
+  const [showActionsSection, setShowActionsSection] = useState(false);
 
   const documentTemplates: DocumentTemplate[] = [
     {
@@ -75,10 +80,92 @@ export default function DocumentsPage() {
     }
   ];
 
-  const filteredDocuments = documentTemplates.filter(doc =>
-    doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    doc.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Document categories
+  const categories = {
+    'all': 'All Documents',
+    'project': 'Project Management',
+    'legal': 'Legal & Compliance',
+    'safety': 'Safety & Quality'
+  };
+
+  // Categorize documents
+  const getCategory = (id: string) => {
+    if (['intake-form', 'proposal', 'change-order', 'closeout'].includes(id)) return 'project';
+    if (['lien-law', 'professional-agreement'].includes(id)) return 'legal';
+    if (['safety-plan', 'inspection-checklist'].includes(id)) return 'safety';
+    return 'project';
+  };
+
+  const filteredDocuments = documentTemplates
+    .filter(doc => {
+      // Category filter
+      if (filterCategory !== 'all' && getCategory(doc.id) !== filterCategory) return false;
+      // Search filter
+      return doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+             doc.description.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
+  const menuSections = [
+    {
+      title: 'Filters',
+      isOpen: showFiltersSection,
+      onToggle: () => setShowFiltersSection(!showFiltersSection),
+      content: (
+        <>
+          <div className="control-group">
+            <label>Category</label>
+            <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+              {Object.entries(categories).map(([key, label]) => (
+                <option key={key} value={key}>{label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="control-group">
+            <label>Search Documents</label>
+            <input
+              type="text"
+              placeholder="Search by name or description..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {(filterCategory !== 'all' || searchQuery) && (
+            <div className="control-group">
+              <button 
+                className="btn-menu-action tertiary"
+                onClick={() => {
+                  setFilterCategory('all');
+                  setSearchQuery('');
+                }}
+              >
+                Clear All Filters
+              </button>
+            </div>
+          )}
+        </>
+      )
+    },
+    {
+      title: 'Actions',
+      isOpen: showActionsSection,
+      onToggle: () => setShowActionsSection(!showActionsSection),
+      content: (
+        <div className="control-group">
+          <button 
+            className="btn-menu-action tertiary"
+            onClick={() => {
+              setShowMenu(false);
+              router.push('/admin/dashboard');
+            }}
+          >
+            ← Return to Dashboard
+          </button>
+        </div>
+      )
+    }
+  ];
 
   const handleDocumentClick = (doc: DocumentTemplate) => {
     router.push(doc.path);
@@ -86,10 +173,23 @@ export default function DocumentsPage() {
 
   return (
     <div className="documents-container">
+      {showMenu && <div className="menu-backdrop" onClick={() => setShowMenu(false)} />}
+      
+      <SectionMenu
+        sectionName="Documents"
+        isOpen={showMenu}
+        onClose={() => setShowMenu(false)}
+        sections={menuSections}
+      />
+
       <header className="documents-header">
         <div className="header-top">
-          <button onClick={() => router.push('/admin/dashboard')} className="back-btn">
-            ← Back to Dashboard
+          <button 
+            className="btn-menu-hamburger"
+            onClick={() => setShowMenu(!showMenu)}
+            title="Control Center"
+          >
+            ☰
           </button>
           <h1>Document Templates</h1>
         </div>
@@ -98,20 +198,16 @@ export default function DocumentsPage() {
         </p>
       </header>
 
-      <div className="documents-content">
-        <div className="search-section">
-          <input
-            type="text"
-            placeholder="Search documents..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-          <div className="search-results-count">
-            Showing {filteredDocuments.length} of {documentTemplates.length} documents
-          </div>
+      {(filterCategory !== 'all' || searchQuery) && (
+        <div className="active-filters-banner">
+          <span>🔍 Filters Active: </span>
+          {filterCategory !== 'all' && <span className="filter-tag">Category: {categories[filterCategory as keyof typeof categories]}</span>}
+          {searchQuery && <span className="filter-tag">Search: "{searchQuery}"</span>}
+          <span className="results-count">({filteredDocuments.length} result{filteredDocuments.length !== 1 ? 's' : ''})</span>
         </div>
+      )}
 
+      <div className="documents-content">
         <div className="documents-grid">
           {filteredDocuments.map(doc => (
             <div

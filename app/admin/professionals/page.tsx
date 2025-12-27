@@ -421,12 +421,6 @@ function AdminProfessionalsContent() {
             </button>
             <h1>Licensed Professionals</h1>
           </div>
-          <button 
-            onClick={() => router.push('/admin/professionals/new')}
-            className="btn-primary"
-          >
-            + Add Professional
-          </button>
         </div>
       </header>
 
@@ -456,21 +450,6 @@ function AdminProfessionalsContent() {
             <span className="results-count">({filteredProfessionals.length} result{filteredProfessionals.length !== 1 ? 's' : ''})</span>
           </div>
         )}
-
-        <div className="view-tabs">
-          <button 
-            className={view === 'groups' && !selectedTrade ? 'active' : ''}
-            onClick={() => { setView('groups'); setSelectedTrade(null); }}
-          >
-            By Trade
-          </button>
-          <button 
-            className={view === 'list' && !selectedTrade ? 'active' : ''}
-            onClick={() => { setView('list'); setSelectedTrade(null); }}
-          >
-            All Professionals
-          </button>
-        </div>
 
         {view === 'groups' && !selectedTrade ? (
           <div className="trade-groups">
