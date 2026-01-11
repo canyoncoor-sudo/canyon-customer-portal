@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import SectionMenu from '../components/SectionMenu';
+import { useAdminMenu } from '../AdminMenuContext';
 import './jobs.css';
 
 interface Job {
@@ -26,15 +26,16 @@ export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<'date' | 'customer' | 'priority'>('date');
-  const [showMenu, setShowMenu] = useState(false);
   const [showViewSection, setShowViewSection] = useState(false);
   const [showFiltersSection, setShowFiltersSection] = useState(false);
   const [showSortSection, setShowSortSection] = useState(false);
   const [showActionsSection, setShowActionsSection] = useState(false);
   const router = useRouter();
+  const { setShowMenu, setMenuSections, setSectionName } = useAdminMenu();
 
   useEffect(() => {
     fetchJobs();
+    setSectionName('Projects');
   }, []);
 
   const fetchJobs = async () => {
@@ -250,6 +251,11 @@ export default function JobsPage() {
     }
   ];
 
+  // Update menu sections whenever dependencies change
+  useEffect(() => {
+    setMenuSections(menuSections);
+  }, [viewMode, filterStatus, filterPriority, searchQuery, sortBy, showViewSection, showFiltersSection, showSortSection, showActionsSection]);
+
   const getStatusColor = (status: string) => {
     const colors: { [key: string]: string } = {
       'Lead': '#9A8C7A',
@@ -288,30 +294,6 @@ export default function JobsPage() {
 
   return (
     <div className="jobs-page">
-      {showMenu && <div className="menu-backdrop" onClick={() => setShowMenu(false)} />}
-      
-      <SectionMenu
-        sectionName="Projects"
-        isOpen={showMenu}
-        onClose={() => setShowMenu(false)}
-        sections={menuSections}
-      />
-
-      <div className="jobs-header">
-        <div className="header-left">
-          <button 
-            className="btn-menu-hamburger"
-            onClick={() => setShowMenu(!showMenu)}
-            title="Control Center"
-          >
-            ☰
-          </button>
-          <div>
-            <h1>Projects</h1>
-            <p className="header-subtitle">Manage all jobs and project intakes</p>
-          </div>
-        </div>
-      </div>
 
       {(filterStatus !== 'all' || filterPriority !== 'all' || searchQuery) && (
         <div className="active-filters-banner">

@@ -1,8 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import SectionMenu from '../components/SectionMenu';
+import { useState, useEffect } from 'react';
+import { useAdminMenu } from '../AdminMenuContext';
 import './documents.css';
 
 interface DocumentTemplate {
@@ -15,9 +15,10 @@ interface DocumentTemplate {
 
 export default function DocumentsPage() {
   const router = useRouter();
+  const { setShowMenu, setMenuSections, setSectionName } = useAdminMenu();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [showMenu, setShowMenu] = useState(false);
+
   const [showFiltersSection, setShowFiltersSection] = useState(false);
   const [showActionsSection, setShowActionsSection] = useState(false);
 
@@ -167,36 +168,18 @@ export default function DocumentsPage() {
     }
   ];
 
+  // Update menu sections
+  useEffect(() => {
+    setMenuSections(menuSections);
+  }, [filterCategory, searchQuery, showFiltersSection, showActionsSection]);
+
+
   const handleDocumentClick = (doc: DocumentTemplate) => {
     router.push(doc.path);
   };
 
   return (
     <div className="documents-container">
-      {showMenu && <div className="menu-backdrop" onClick={() => setShowMenu(false)} />}
-      
-      <SectionMenu
-        sectionName="Documents"
-        isOpen={showMenu}
-        onClose={() => setShowMenu(false)}
-        sections={menuSections}
-      />
-
-      <header className="documents-header">
-        <div className="header-top">
-          <button 
-            className="btn-menu-hamburger"
-            onClick={() => setShowMenu(!showMenu)}
-            title="Control Center"
-          >
-            ☰
-          </button>
-          <h1>Document Templates</h1>
-        </div>
-        <p className="header-subtitle">
-          Access and create project documents, forms, and agreements
-        </p>
-      </header>
 
       {(filterCategory !== 'all' || searchQuery) && (
         <div className="active-filters-banner">

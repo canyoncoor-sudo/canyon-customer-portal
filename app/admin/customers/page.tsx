@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import SectionMenu from '../components/SectionMenu';
+import { useAdminMenu } from '../AdminMenuContext';
 import './customers.css';
 
 interface Customer {
@@ -26,15 +26,17 @@ export default function CustomersPage() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterCity, setFilterCity] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [showMenu, setShowMenu] = useState(false);
+
   const [showViewSection, setShowViewSection] = useState(false);
   const [showFiltersSection, setShowFiltersSection] = useState(false);
   const [showActionsSection, setShowActionsSection] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { setShowMenu, setMenuSections, setSectionName } = useAdminMenu();
 
   useEffect(() => {
     fetchCustomers();
+    setSectionName('Customers');
   }, []);
 
   useEffect(() => {
@@ -212,6 +214,12 @@ export default function CustomersPage() {
     }
   ];
 
+  // Update menu sections whenever dependencies change
+  useEffect(() => {
+    setMenuSections(menuSections);
+  }, [viewMode, filterStatus, filterCity, searchQuery, showViewSection, showFiltersSection, showActionsSection]);
+
+
   if (loading) {
     return (
       <div className="admin-loading">
@@ -223,27 +231,6 @@ export default function CustomersPage() {
 
   return (
     <div className="customers-page">
-      {showMenu && <div className="menu-backdrop" onClick={() => setShowMenu(false)} />}
-      
-      <SectionMenu
-        sectionName="Customers"
-        isOpen={showMenu}
-        onClose={() => setShowMenu(false)}
-        sections={menuSections}
-      />
-
-      <header className="customers-header">
-        <div className="header-top">
-          <button 
-            className="btn-menu-hamburger"
-            onClick={() => setShowMenu(!showMenu)}
-            title="Control Center"
-          >
-            ☰
-          </button>
-          <h1>Customer Management</h1>
-        </div>
-      </header>
 
       {(filterStatus !== 'all' || filterCity !== 'all' || searchQuery) && (
         <div className="active-filters-banner">

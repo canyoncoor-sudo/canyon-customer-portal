@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import SectionMenu from '../components/SectionMenu';
+import { useAdminMenu } from '../AdminMenuContext';
 import './dashboard.css';
 
 interface ScheduleEvent {
@@ -40,10 +40,11 @@ export default function AdminDashboard() {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [activeWork, setActiveWork] = useState<ActiveWorkItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showMenu, setShowMenu] = useState(false);
+
   const [showActionsSection, setShowActionsSection] = useState(false);
   const [showQuickLinksSection, setShowQuickLinksSection] = useState(false);
   const router = useRouter();
+  const { setShowMenu, setMenuSections, setSectionName } = useAdminMenu();
 
   useEffect(() => {
     fetchOperationsData();
@@ -229,6 +230,12 @@ export default function AdminDashboard() {
     }
   ];
 
+  // Update menu sections
+  useEffect(() => {
+    setMenuSections(menuSections);
+  }, [showActionsSection, showQuickLinksSection]);
+
+
   if (loading) {
     return (
       <div className="admin-loading">
@@ -240,24 +247,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="dashboard-content">
-      {showMenu && <div className="menu-backdrop" onClick={() => setShowMenu(false)} />}
-      
-      <SectionMenu
-        sectionName="Operations"
-        isOpen={showMenu}
-        onClose={() => setShowMenu(false)}
-        sections={menuSections}
-      />
 
       <div className="view-header">
         <div className="header-left">
-          <button 
-            className="btn-menu-hamburger"
-            onClick={() => setShowMenu(!showMenu)}
-            title="Control Center"
-          >
-            ☰
-          </button>
           <div>
             <h2>Operations</h2>
             <p>Items requiring action or awareness today</p>

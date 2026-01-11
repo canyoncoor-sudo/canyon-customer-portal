@@ -2,12 +2,15 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { AdminMenuProvider, useAdminMenu } from './AdminMenuContext';
+import SectionMenu from './components/SectionMenu';
 import './admin.css';
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const { showMenu, setShowMenu, menuSections, sectionName } = useAdminMenu();
 
   useEffect(() => {
     setMounted(true);
@@ -32,9 +35,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="admin-layout">
+      {showMenu && <div className="menu-backdrop" onClick={() => setShowMenu(false)} />}
+      
+      <SectionMenu
+        sectionName={sectionName}
+        isOpen={showMenu}
+        onClose={() => setShowMenu(false)}
+        sections={menuSections}
+      />
+
       <header className="admin-header">
         <div className="admin-header-content">
           <div className="admin-header-left">
+            <button 
+              className="btn-menu-hamburger-global"
+              onClick={() => setShowMenu(!showMenu)}
+              title="Section Controls"
+            >
+              ☰
+            </button>
             <button onClick={() => router.back()} className="admin-back-btn" title="Go back">
               ← Back
             </button>
@@ -90,5 +109,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {children}
       </main>
     </div>
+  );
+}
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AdminMenuProvider>
+      <AdminLayoutContent>{children}</AdminLayoutContent>
+    </AdminMenuProvider>
   );
 }

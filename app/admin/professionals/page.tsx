@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import SectionMenu from '../components/SectionMenu';
+import { useAdminMenu } from '../AdminMenuContext';
 import './professionals.css';
 
 interface Professional {
@@ -37,7 +37,6 @@ function AdminProfessionalsContent() {
   const [selectedTrade, setSelectedTrade] = useState<string | null>(null);
   const [customerId, setCustomerId] = useState<string | null>(null);
   const [customerName, setCustomerName] = useState<string>('');
-  const [showMenu, setShowMenu] = useState(false);
   const [showViewSection, setShowViewSection] = useState(false);
   const [showFiltersSection, setShowFiltersSection] = useState(false);
   const [showActionsSection, setShowActionsSection] = useState(false);
@@ -45,6 +44,7 @@ function AdminProfessionalsContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { setShowMenu, setMenuSections, setSectionName } = useAdminMenu();
 
   useEffect(() => {
     const customerIdParam = searchParams.get('customerId');
@@ -53,6 +53,7 @@ function AdminProfessionalsContent() {
       fetchCustomerName(customerIdParam);
     }
     fetchProfessionals();
+    setSectionName('Licensed Professionals');
   }, []);
 
   const fetchProfessionals = async () => {
@@ -400,29 +401,6 @@ function AdminProfessionalsContent() {
 
   return (
     <div className="admin-professionals">
-      {showMenu && <div className="menu-backdrop" onClick={() => setShowMenu(false)} />}
-      
-      <SectionMenu
-        sectionName="Licensed Professionals"
-        isOpen={showMenu}
-        onClose={() => setShowMenu(false)}
-        sections={menuSections}
-      />
-
-      <header className="professionals-header">
-        <div className="header-content">
-          <div className="header-left">
-            <button 
-              className="btn-menu-hamburger"
-              onClick={() => setShowMenu(!showMenu)}
-              title="Control Center"
-            >
-              ☰
-            </button>
-            <h1>Licensed Professionals</h1>
-          </div>
-        </div>
-      </header>
 
       {customerId && customerName && (
         <div className="customer-context-banner">
