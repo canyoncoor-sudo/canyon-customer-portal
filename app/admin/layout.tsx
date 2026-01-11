@@ -47,13 +47,6 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
       <header className="admin-header">
         <div className="admin-header-content">
           <div className="admin-header-left">
-            <button 
-              className="btn-menu-hamburger-global"
-              onClick={() => setShowMenu(!showMenu)}
-              title="Section Controls"
-            >
-              ☰
-            </button>
             <button onClick={() => router.back()} className="admin-back-btn" title="Go back">
               ← Back
             </button>
@@ -67,6 +60,13 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
           </button>
         </div>
         <nav className="admin-nav">
+          <button 
+            className="btn-menu-nav"
+            onClick={() => setShowMenu(!showMenu)}
+            title={`${sectionName} Controls`}
+          >
+            ☰
+          </button>
           <button
             className={`admin-nav-btn ${isActive('/admin/dashboard') ? 'active' : ''}`}
             onClick={() => router.push('/admin/dashboard')}
