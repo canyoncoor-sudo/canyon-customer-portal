@@ -1,3 +1,4 @@
+// Calendar with database persistence - Updated Jan 11, 2026
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
