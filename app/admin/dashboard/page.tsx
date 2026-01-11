@@ -247,17 +247,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="dashboard-content">
-
-      <div className="view-header">
-        <div className="header-left">
-          <div>
-            <h2>Operations</h2>
-            <p>Items requiring action or awareness today</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Today's Schedule - Where do I need to be / what's booked? */}
+{/* Today's Schedule - Where do I need to be / what's booked? */}
       <div className="operations-section">
         <h3 className="section-title">
           Today's Schedule
