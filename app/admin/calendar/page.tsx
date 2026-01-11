@@ -653,28 +653,6 @@ export default function CalendarPage() {
 
   return (
     <div className="calendar-container">
-      <header className="calendar-header">
-        <div className="header-top">
-          <button 
-            className="btn-menu-hamburger"
-            onClick={() => setShowMenu(!showMenu)}
-            title="Menu"
-          >
-            ☰
-          </button>
-          <h1>Schedule</h1>
-        </div>
-
-        <div className="calendar-controls">
-          <button 
-            className="btn-month-picker"
-            onClick={() => setShowMonthPicker(!showMonthPicker)}
-          >
-            📅 {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-          </button>
-        </div>
-      </header>
-
       {/* Menu Overlay */}
       {showMenu && (
         <div className="schedule-menu-panel">
