@@ -384,7 +384,7 @@ export default function CalendarPage() {
     setShowTaskForm(true);
   };
 
-  const handleSaveEvent = () => {
+  const handleSaveEvent = async () => {
     if (!selectedDate || !eventForm.title) return;
 
     const [startHour, startMin] = eventForm.startTime.split(':').map(Number);
@@ -402,9 +402,37 @@ export default function CalendarPage() {
       assignedTo: eventForm.assignedTo
     };
 
-    setEvents([...events, newEvent]);
-    syncEventToGoogle(newEvent, 'create');
-    syncEventToGoogle(newEvent, 'create');
+    // Save to database first
+    try {
+      const token = localStorage.getItem('admin_token');
+      const response = await fetch('/api/admin/calendar/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newEvent)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Update local state with the saved event (with DB id)
+        const savedEvent = {
+          ...newEvent,
+          id: data.event.id
+        };
+        setEvents([...events, savedEvent]);
+        syncEventToGoogle(savedEvent, 'create');
+      } else {
+        alert('Failed to save event. Please try again.');
+        return;
+      }
+    } catch (error) {
+      console.error('Error saving event:', error);
+      alert('Failed to save event. Please try again.');
+      return;
+    }
+
     setShowEventForm(false);
     setEventForm({
       title: '',
