@@ -405,13 +405,27 @@ export default function CalendarPage() {
     // Save to database first
     try {
       const token = localStorage.getItem('admin_token');
+      
+      // Prepare data for API (convert Date objects to ISO strings)
+      const eventDataForApi = {
+        title: newEvent.title,
+        type: newEvent.type,
+        start: newEvent.start.toISOString(),
+        end: newEvent.end.toISOString(),
+        customer_name: newEvent.customer_name,
+        status: newEvent.status,
+        notes: newEvent.notes,
+        assignedTo: newEvent.assignedTo,
+        job_id: null
+      };
+      
       const response = await fetch('/api/admin/calendar/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(newEvent)
+        body: JSON.stringify(eventDataForApi)
       });
 
       if (response.ok) {
@@ -419,17 +433,19 @@ export default function CalendarPage() {
         // Update local state with the saved event (with DB id)
         const savedEvent = {
           ...newEvent,
-          id: data.event.id
+          id: data.event.id.toString()
         };
         setEvents([...events, savedEvent]);
         syncEventToGoogle(savedEvent, 'create');
       } else {
-        alert('Failed to save event. Please try again.');
+        const errorData = await response.json();
+        console.error('API Error:', errorData);
+        alert('Failed to save event: ' + (errorData.error || 'Unknown error'));
         return;
       }
     } catch (error) {
       console.error('Error saving event:', error);
-      alert('Failed to save event. Please try again.');
+      alert('Failed to save event. Please check console for details.');
       return;
     }
 
