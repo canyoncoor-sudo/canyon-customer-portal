@@ -39,10 +39,10 @@ export default function SchedulePage() {
   const [showHelpSection, setShowHelpSection] = useState(false);
   
   // View mode state
-  const [viewMode, setViewMode] = useState<'today' | 'week' | 'pipeline'>('today');
+  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month' | 'list' | 'map'>('day');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'customer' | 'project' | 'due_date' | 'assigned'>('due_date');
+  const [sortBy, setSortBy] = useState<'type' | 'customer' | 'project' | 'confirmed' | 'payment'>('type');
 
   useEffect(() => {
     loadEvents();
@@ -61,20 +61,17 @@ export default function SchedulePage() {
         onToggle: () => setShowCreateSection(!showCreateSection),
         content: (
           <>
-            <button onClick={() => router.push('/admin/documents/intake')}>
-              New Lead/Intake
+            <button onClick={() => alert('Client Meeting - Coming Soon')}>
+              Client Meeting
             </button>
-            <button onClick={() => alert('New Task - Coming Soon')}>
-              New Task
+            <button onClick={() => alert('Site Visit - Coming Soon')}>
+              Site Visit
             </button>
-            <button onClick={() => alert('New Meeting - Coming Soon')}>
-              New Meeting
+            <button onClick={() => alert('Subcontractor Meeting - Coming Soon')}>
+              Subcontractor Meeting
             </button>
-            <button onClick={() => router.push('/admin/documents')}>
-              New Document
-            </button>
-            <button onClick={() => alert('Quick Add - Coming Soon')}>
-              Quick Add
+            <button onClick={() => alert('New Customer Meeting - Coming Soon')}>
+              New Customer Meeting
             </button>
           </>
         )
@@ -86,15 +83,15 @@ export default function SchedulePage() {
         content: (
           <div className="control-group">
             <div className="radio-group">
-              <label className={viewMode === 'today' ? 'active' : ''}>
+              <label className={viewMode === 'day' ? 'active' : ''}>
                 <input 
                   type="radio" 
                   name="viewMode" 
-                  value="today"
-                  checked={viewMode === 'today'}
-                  onChange={() => setViewMode('today')}
+                  value="day"
+                  checked={viewMode === 'day'}
+                  onChange={() => setViewMode('day')}
                 />
-                <span>Today</span>
+                <span>One Day</span>
               </label>
               <label className={viewMode === 'week' ? 'active' : ''}>
                 <input 
@@ -104,25 +101,39 @@ export default function SchedulePage() {
                   checked={viewMode === 'week'}
                   onChange={() => setViewMode('week')}
                 />
-                <span>This Week</span>
+                <span>One Week</span>
               </label>
-              <label className={viewMode === 'pipeline' ? 'active' : ''}>
+              <label className={viewMode === 'month' ? 'active' : ''}>
                 <input 
                   type="radio" 
                   name="viewMode" 
-                  value="pipeline"
-                  checked={viewMode === 'pipeline'}
-                  onChange={() => setViewMode('pipeline')}
+                  value="month"
+                  checked={viewMode === 'month'}
+                  onChange={() => setViewMode('month')}
                 />
-                <span>Pipeline</span>
+                <span>One Month</span>
+              </label>
+              <label className={viewMode === 'list' ? 'active' : ''}>
+                <input 
+                  type="radio" 
+                  name="viewMode" 
+                  value="list"
+                  checked={viewMode === 'list'}
+                  onChange={() => setViewMode('list')}
+                />
+                <span>List View</span>
+              </label>
+              <label className={viewMode === 'map' ? 'active' : ''}>
+                <input 
+                  type="radio" 
+                  name="viewMode" 
+                  value="map"
+                  checked={viewMode === 'map'}
+                  onChange={() => setViewMode('map')}
+                />
+                <span>Map View</span>
               </label>
             </div>
-            
-            {viewMode === 'pipeline' && (
-              <div className="pipeline-stages" style={{ marginTop: '12px' }}>
-                <div className="stage-info">Pipeline stages: Lead → Meeting → Proposal → Approval → Active → Closeout → Waiting on Customer</div>
-              </div>
-            )}
           </div>
         )
       },
@@ -133,21 +144,10 @@ export default function SchedulePage() {
         content: (
           <>
             <div className="control-group">
-              <label>Status</label>
-              <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-                <option value="all">All Statuses</option>
-                <option value="urgent">Urgent</option>
-                <option value="waiting">Waiting</option>
-                <option value="scheduled">Scheduled</option>
-                <option value="blocked">Blocked</option>
-              </select>
-            </div>
-            
-            <div className="control-group">
               <label>Search</label>
               <input
                 type="text"
-                placeholder="By customer, project..."
+                placeholder="Search meetings..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -156,10 +156,10 @@ export default function SchedulePage() {
             <div className="control-group">
               <label>Sort By</label>
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)}>
-                <option value="customer">Customer</option>
-                <option value="project">Project</option>
-                <option value="due_date">Due Date</option>
-                <option value="assigned">Assigned To</option>
+                <option value="type">Type</option>
+                <option value="customer">Customer/Project</option>
+                <option value="confirmed">Confirmed/Pending</option>
+                <option value="payment">Paid/Unpaid</option>
               </select>
             </div>
           </>
@@ -171,13 +171,14 @@ export default function SchedulePage() {
         onToggle: () => setShowToolsSection(!showToolsSection),
         content: (
           <>
-            <button onClick={() => alert('Export Schedule - Coming Soon')}>
-              Export Schedule
+            <button onClick={() => alert('Find Next Available Slot - Coming Soon')}>
+              Find Next Available Slot
             </button>
-            <button onClick={() => alert('Print Calendar - Coming Soon')}>
-              Print Calendar
+            <button onClick={() => alert('Add Travel Buffer - Coming Soon')}>
+              Add Travel Buffer
             </button>
-            <button onClick={() => alert('Sync Calendar - Coming Soon')}>
+            <button onClick={() => alert('Google Calendar Sync Settings - Coming Soon')}>
+              Sync with Google
               Sync Calendar
             </button>
           </>
