@@ -60,6 +60,7 @@ export default function AdminDashboard() {
     fetchOperationsData();
     setSectionName('Operations');
     setShowMenu(false);
+    setMenuSections([]);
   }, []);
 
   const fetchOperationsData = async () => {

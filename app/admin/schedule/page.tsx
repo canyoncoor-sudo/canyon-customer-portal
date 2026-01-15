@@ -48,6 +48,7 @@ export default function SchedulePage() {
     loadEvents();
     setSectionName('Schedule');
     setShowMenu(false);
+    setMenuSections([]);
   }, [filter]);
 
   useEffect(() => {

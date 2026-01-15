@@ -36,6 +36,8 @@ export default function JobsPage() {
   useEffect(() => {
     fetchJobs();
     setSectionName('Projects');
+    setShowMenu(false);
+    setMenuSections([]);
   }, []);
 
   const fetchJobs = async () => {

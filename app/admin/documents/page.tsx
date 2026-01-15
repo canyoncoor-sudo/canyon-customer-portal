@@ -22,6 +22,12 @@ export default function DocumentsPage() {
   const [showFiltersSection, setShowFiltersSection] = useState(false);
   const [showActionsSection, setShowActionsSection] = useState(false);
 
+  useEffect(() => {
+    setSectionName('Documents');
+    setShowMenu(false);
+    setMenuSections([]);
+  }, []);
+
   const documentTemplates: DocumentTemplate[] = [
     {
       id: 'intake-form',
