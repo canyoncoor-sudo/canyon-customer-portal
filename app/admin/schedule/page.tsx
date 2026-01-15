@@ -62,19 +62,19 @@ export default function SchedulePage() {
         content: (
           <>
             <button onClick={() => router.push('/admin/documents/intake')}>
-              📝 New Lead/Intake
+              New Lead/Intake
             </button>
             <button onClick={() => alert('New Task - Coming Soon')}>
-              ✅ New Task
+              New Task
             </button>
             <button onClick={() => alert('New Meeting - Coming Soon')}>
-              🤝 New Meeting
+              New Meeting
             </button>
             <button onClick={() => router.push('/admin/documents')}>
-              📄 New Document
+              New Document
             </button>
             <button onClick={() => alert('Quick Add - Coming Soon')}>
-              ⚡ Quick Add
+              Quick Add
             </button>
           </>
         )
@@ -94,7 +94,7 @@ export default function SchedulePage() {
                   checked={viewMode === 'today'}
                   onChange={() => setViewMode('today')}
                 />
-                <span>📅 Today</span>
+                <span>Today</span>
               </label>
               <label className={viewMode === 'week' ? 'active' : ''}>
                 <input 
@@ -104,7 +104,7 @@ export default function SchedulePage() {
                   checked={viewMode === 'week'}
                   onChange={() => setViewMode('week')}
                 />
-                <span>📆 This Week</span>
+                <span>This Week</span>
               </label>
               <label className={viewMode === 'pipeline' ? 'active' : ''}>
                 <input 
@@ -114,7 +114,7 @@ export default function SchedulePage() {
                   checked={viewMode === 'pipeline'}
                   onChange={() => setViewMode('pipeline')}
                 />
-                <span>🔄 Pipeline</span>
+                <span>Pipeline</span>
               </label>
             </div>
             
@@ -136,10 +136,10 @@ export default function SchedulePage() {
               <label>Status</label>
               <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
                 <option value="all">All Statuses</option>
-                <option value="urgent">🔴 Urgent</option>
-                <option value="waiting">⏸️ Waiting</option>
-                <option value="scheduled">📅 Scheduled</option>
-                <option value="blocked">🚫 Blocked</option>
+                <option value="urgent">Urgent</option>
+                <option value="waiting">Waiting</option>
+                <option value="scheduled">Scheduled</option>
+                <option value="blocked">Blocked</option>
               </select>
             </div>
             
@@ -156,10 +156,10 @@ export default function SchedulePage() {
             <div className="control-group">
               <label>Sort By</label>
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)}>
-                <option value="customer">👤 Customer</option>
-                <option value="project">🏗️ Project</option>
-                <option value="due_date">📅 Due Date</option>
-                <option value="assigned">👥 Assigned To</option>
+                <option value="customer">Customer</option>
+                <option value="project">Project</option>
+                <option value="due_date">Due Date</option>
+                <option value="assigned">Assigned To</option>
               </select>
             </div>
           </>
@@ -172,13 +172,13 @@ export default function SchedulePage() {
         content: (
           <>
             <button onClick={() => alert('Export Schedule - Coming Soon')}>
-              💾 Export Schedule
+              Export Schedule
             </button>
             <button onClick={() => alert('Print Calendar - Coming Soon')}>
-              🖨️ Print Calendar
+              Print Calendar
             </button>
             <button onClick={() => alert('Sync Calendar - Coming Soon')}>
-              🔄 Sync Calendar
+              Sync Calendar
             </button>
           </>
         )
@@ -190,13 +190,13 @@ export default function SchedulePage() {
         content: (
           <>
             <button onClick={() => alert('Schedule Guide - Coming Soon')}>
-              📖 Schedule Guide
+              Schedule Guide
             </button>
             <button onClick={() => alert('Keyboard Shortcuts - Coming Soon')}>
-              ⌨️ Keyboard Shortcuts
+              Keyboard Shortcuts
             </button>
             <button onClick={() => router.push('/admin/dashboard')}>
-              ← Return to Dashboard
+              Return to Dashboard
             </button>
           </>
         )

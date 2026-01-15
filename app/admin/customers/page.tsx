@@ -98,19 +98,19 @@ export default function CustomersPage() {
         content: (
           <>
             <button onClick={() => router.push('/admin/documents/intake')}>
-              📝 New Customer Intake
+              New Customer Intake
             </button>
             <button onClick={() => router.push('/admin/schedule')}>
-              📅 View Schedule
+              View Schedule
             </button>
             <button onClick={() => router.push('/admin/documents')}>
-              📄 Create Document
+              Create Document
             </button>
             <button onClick={() => exportCustomers()}>
-              💾 Export Customer List
+              Export Customer List
             </button>
             <button onClick={() => router.push('/admin/dashboard')}>
-              ← Return to Dashboard
+              Return to Dashboard
             </button>
           </>
         )
