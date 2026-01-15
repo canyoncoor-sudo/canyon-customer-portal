@@ -24,17 +24,10 @@ export default function DocumentsPage() {
 
   const documentTemplates: DocumentTemplate[] = [
     {
-      id: 'customers',
-      name: 'Customer Profiles',
-      description: 'View all customers, their contact info, and project history',
-      color: '#567A8D',
-      path: '/admin/customers'
-    },
-    {
       id: 'intake-form',
       name: 'Customer Intake Form',
       description: 'Create new customer intake with project details and automatic site visit scheduling',
-      color: '#712A18',
+      color: '#567A8D',
       path: '/admin/documents/intake'
     },
     {
@@ -98,7 +91,7 @@ export default function DocumentsPage() {
 
   // Categorize documents
   const getCategory = (id: string) => {
-    if (['customers', 'intake-form', 'proposal', 'change-order', 'closeout'].includes(id)) return 'project';
+    if (['intake-form', 'proposal', 'change-order', 'closeout'].includes(id)) return 'project';
     if (['lien-law', 'professional-agreement'].includes(id)) return 'legal';
     if (['safety-plan', 'inspection-checklist'].includes(id)) return 'safety';
     return 'project';
