@@ -46,8 +46,6 @@ export default function CustomersPage() {
   }, [showFiltersSection, showActionsSection]);
 
   const setupMenu = () => {
-    setShowMenu(true);
-
     const menuSections = [
       {
         title: 'Filters',
