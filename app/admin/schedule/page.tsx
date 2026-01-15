@@ -49,9 +49,6 @@ export default function SchedulePage() {
 
       const data = await response.json();
       
-      console.log('Schedule API response:', data);
-      console.log('Events count:', data.events?.length || 0);
-      
       if (response.ok) {
         setEvents(data.events || []);
       } else {

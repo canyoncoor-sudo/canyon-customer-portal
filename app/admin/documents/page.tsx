@@ -24,59 +24,66 @@ export default function DocumentsPage() {
 
   const documentTemplates: DocumentTemplate[] = [
     {
+      id: 'customers',
+      name: 'Customer Profiles',
+      description: 'View all customers, their contact info, and project history',
+      color: '#567A8D',
+      path: '/admin/customers'
+    },
+    {
       id: 'intake-form',
       name: 'Customer Intake Form',
       description: 'Create new customer intake with project details and automatic site visit scheduling',
-      color: '#567A8D',
+      color: '#712A18',
       path: '/admin/documents/intake'
     },
     {
       id: 'lien-law',
       name: 'Lien Law Document',
       description: 'Oregon construction lien law notices and documentation',
-      color: '#712A18',
+      color: '#261312',
       path: '/admin/documents/lien-law'
     },
     {
       id: 'change-order',
       name: 'Change Order Form',
       description: 'Document for tracking project changes, additional work, and cost adjustments',
-      color: '#261312',
+      color: '#567A8D',
       path: '/admin/documents/change-order'
     },
     {
       id: 'professional-agreement',
       name: 'Licensed Professional Agreement',
       description: 'Subcontractor and professional services agreement template',
-      color: '#567A8D',
+      color: '#712A18',
       path: '/admin/professionals/agreement'
     },
     {
       id: 'proposal',
       name: 'Project Proposal',
       description: 'Professional proposal template with scope, timeline, and pricing',
-      color: '#712A18',
+      color: '#261312',
       path: '/admin/proposals/new'
     },
     {
       id: 'safety-plan',
       name: 'Safety Plan',
       description: 'Job site safety plan and requirements documentation',
-      color: '#261312',
+      color: '#567A8D',
       path: '/admin/documents/safety-plan'
     },
     {
       id: 'inspection-checklist',
       name: 'Inspection Checklist',
       description: 'Quality control and inspection documentation',
-      color: '#567A8D',
+      color: '#712A18',
       path: '/admin/documents/inspection'
     },
     {
       id: 'closeout',
       name: 'Project Closeout',
       description: 'Final project documentation, warranties, and completion forms',
-      color: '#712A18',
+      color: '#261312',
       path: '/admin/documents/closeout'
     }
   ];
@@ -91,7 +98,7 @@ export default function DocumentsPage() {
 
   // Categorize documents
   const getCategory = (id: string) => {
-    if (['intake-form', 'proposal', 'change-order', 'closeout'].includes(id)) return 'project';
+    if (['customers', 'intake-form', 'proposal', 'change-order', 'closeout'].includes(id)) return 'project';
     if (['lien-law', 'professional-agreement'].includes(id)) return 'legal';
     if (['safety-plan', 'inspection-checklist'].includes(id)) return 'safety';
     return 'project';
