@@ -225,6 +225,18 @@ export default function AdminDashboard() {
               📄 Documents
             </button>
           </div>
+          
+          <div className="control-group">
+            <button 
+              className="btn-menu-action tertiary"
+              onClick={() => {
+                setShowMenu(false);
+                router.push('/admin/schedule');
+              }}
+            >
+              📅 Schedule Events
+            </button>
+          </div>
         </>
       )
     }

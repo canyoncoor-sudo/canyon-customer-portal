@@ -25,10 +25,10 @@ export default function DocumentsPage() {
   const documentTemplates: DocumentTemplate[] = [
     {
       id: 'intake-form',
-      name: 'Job Intake Form',
-      description: 'Comprehensive form for new project intake with customer details, project specifications, and meeting notes',
+      name: 'Customer Intake Form',
+      description: 'Create new customer intake with project details and automatic site visit scheduling',
       color: '#567A8D',
-      path: '/admin/jobs/new'
+      path: '/admin/documents/intake'
     },
     {
       id: 'lien-law',
