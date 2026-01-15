@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAdminMenu } from '../AdminMenuContext';
 import './schedule.css';
 
 interface ScheduleEvent {
@@ -28,10 +29,182 @@ export default function SchedulePage() {
   const [filter, setFilter] = useState<'all' | 'pending' | 'accepted' | 'completed'>('all');
   const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
   const [updating, setUpdating] = useState(false);
+  
+  // Menu state
+  const { setShowMenu, setMenuSections, setSectionName } = useAdminMenu();
+  const [showCreateSection, setShowCreateSection] = useState(false);
+  const [showViewSection, setShowViewSection] = useState(false);
+  const [showFilterSection, setShowFilterSection] = useState(false);
+  const [showToolsSection, setShowToolsSection] = useState(false);
+  const [showHelpSection, setShowHelpSection] = useState(false);
+  
+  // View mode state
+  const [viewMode, setViewMode] = useState<'today' | 'week' | 'pipeline'>('today');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<'customer' | 'project' | 'due_date' | 'assigned'>('due_date');
 
   useEffect(() => {
     loadEvents();
+    setSectionName('Operations');
   }, [filter]);
+
+  useEffect(() => {
+    setupMenu();
+  }, [showCreateSection, showViewSection, showFilterSection, showToolsSection, showHelpSection, viewMode, filterStatus, sortBy]);
+
+  const setupMenu = () => {
+    const menuSections = [
+      {
+        title: 'Create',
+        isOpen: showCreateSection,
+        onToggle: () => setShowCreateSection(!showCreateSection),
+        content: (
+          <>
+            <button onClick={() => router.push('/admin/documents/intake')}>
+              📝 New Lead/Intake
+            </button>
+            <button onClick={() => alert('New Task - Coming Soon')}>
+              ✅ New Task
+            </button>
+            <button onClick={() => alert('New Meeting - Coming Soon')}>
+              🤝 New Meeting
+            </button>
+            <button onClick={() => router.push('/admin/documents')}>
+              📄 New Document
+            </button>
+            <button onClick={() => alert('Quick Add - Coming Soon')}>
+              ⚡ Quick Add
+            </button>
+          </>
+        )
+      },
+      {
+        title: 'View',
+        isOpen: showViewSection,
+        onToggle: () => setShowViewSection(!showViewSection),
+        content: (
+          <div className="control-group">
+            <div className="radio-group">
+              <label className={viewMode === 'today' ? 'active' : ''}>
+                <input 
+                  type="radio" 
+                  name="viewMode" 
+                  value="today"
+                  checked={viewMode === 'today'}
+                  onChange={() => setViewMode('today')}
+                />
+                <span>📅 Today</span>
+              </label>
+              <label className={viewMode === 'week' ? 'active' : ''}>
+                <input 
+                  type="radio" 
+                  name="viewMode" 
+                  value="week"
+                  checked={viewMode === 'week'}
+                  onChange={() => setViewMode('week')}
+                />
+                <span>📆 This Week</span>
+              </label>
+              <label className={viewMode === 'pipeline' ? 'active' : ''}>
+                <input 
+                  type="radio" 
+                  name="viewMode" 
+                  value="pipeline"
+                  checked={viewMode === 'pipeline'}
+                  onChange={() => setViewMode('pipeline')}
+                />
+                <span>🔄 Pipeline</span>
+              </label>
+            </div>
+            
+            {viewMode === 'pipeline' && (
+              <div className="pipeline-stages" style={{ marginTop: '12px' }}>
+                <div className="stage-info">Pipeline stages: Lead → Meeting → Proposal → Approval → Active → Closeout → Waiting on Customer</div>
+              </div>
+            )}
+          </div>
+        )
+      },
+      {
+        title: 'Filter & Sort',
+        isOpen: showFilterSection,
+        onToggle: () => setShowFilterSection(!showFilterSection),
+        content: (
+          <>
+            <div className="control-group">
+              <label>Status</label>
+              <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+                <option value="all">All Statuses</option>
+                <option value="urgent">🔴 Urgent</option>
+                <option value="waiting">⏸️ Waiting</option>
+                <option value="scheduled">📅 Scheduled</option>
+                <option value="blocked">🚫 Blocked</option>
+              </select>
+            </div>
+            
+            <div className="control-group">
+              <label>Search</label>
+              <input
+                type="text"
+                placeholder="By customer, project..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            
+            <div className="control-group">
+              <label>Sort By</label>
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)}>
+                <option value="customer">👤 Customer</option>
+                <option value="project">🏗️ Project</option>
+                <option value="due_date">📅 Due Date</option>
+                <option value="assigned">👥 Assigned To</option>
+              </select>
+            </div>
+          </>
+        )
+      },
+      {
+        title: 'Tools',
+        isOpen: showToolsSection,
+        onToggle: () => setShowToolsSection(!showToolsSection),
+        content: (
+          <>
+            <button onClick={() => alert('Export Schedule - Coming Soon')}>
+              💾 Export Schedule
+            </button>
+            <button onClick={() => alert('Print Calendar - Coming Soon')}>
+              🖨️ Print Calendar
+            </button>
+            <button onClick={() => alert('Sync Calendar - Coming Soon')}>
+              🔄 Sync Calendar
+            </button>
+          </>
+        )
+      },
+      {
+        title: 'Help',
+        isOpen: showHelpSection,
+        onToggle: () => setShowHelpSection(!showHelpSection),
+        content: (
+          <>
+            <button onClick={() => alert('Schedule Guide - Coming Soon')}>
+              📖 Schedule Guide
+            </button>
+            <button onClick={() => alert('Keyboard Shortcuts - Coming Soon')}>
+              ⌨️ Keyboard Shortcuts
+            </button>
+            <button onClick={() => router.push('/admin/dashboard')}>
+              ← Return to Dashboard
+            </button>
+          </>
+        )
+      }
+    ];
+
+    setMenuSections(menuSections);
+  };
 
   const loadEvents = async () => {
     setLoading(true);
@@ -135,45 +308,6 @@ export default function SchedulePage() {
 
   return (
     <div className="schedule-container">
-      <div className="schedule-header">
-        <div>
-          <h1>Schedule Events</h1>
-          <p className="subtitle">Manage site visits, meetings, and project events</p>
-        </div>
-        <button className="btn-back" onClick={() => router.push('/admin/dashboard')}>
-          ← Back to Dashboard
-        </button>
-      </div>
-
-      <div className="schedule-controls">
-        <div className="filter-tabs">
-          <button 
-            className={filter === 'all' ? 'active' : ''}
-            onClick={() => setFilter('all')}
-          >
-            All Events
-          </button>
-          <button 
-            className={filter === 'pending' ? 'active' : ''}
-            onClick={() => setFilter('pending')}
-          >
-            Pending ({events.filter(e => e.status === 'pending').length})
-          </button>
-          <button 
-            className={filter === 'accepted' ? 'active' : ''}
-            onClick={() => setFilter('accepted')}
-          >
-            Accepted
-          </button>
-          <button 
-            className={filter === 'completed' ? 'active' : ''}
-            onClick={() => setFilter('completed')}
-          >
-            Completed
-          </button>
-        </div>
-      </div>
-
       {loading ? (
         <div className="loading">Loading events...</div>
       ) : events.length === 0 ? (
