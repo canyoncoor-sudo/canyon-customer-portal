@@ -10,7 +10,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-  const { showMenu, setShowMenu, menuSections, sectionName } = useAdminMenu();
+  const [showNavMenu, setShowNavMenu] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -21,11 +21,9 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     router.push('/');
   };
 
-  const isActive = (path: string) => {
-    if (path === '/admin/dashboard') {
-      return pathname === path;
-    }
-    return pathname?.startsWith(path);
+  const navigateTo = (path: string) => {
+    setShowNavMenu(false);
+    router.push(path);
   };
 
   // Don't show header on the admin landing page
@@ -35,14 +33,40 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="admin-layout">
-      {showMenu && <div className="menu-backdrop" onClick={() => setShowMenu(false)} />}
+      {showNavMenu && <div className="menu-backdrop" onClick={() => setShowNavMenu(false)} />}
       
-      <SectionMenu
-        sectionName={sectionName}
-        isOpen={showMenu}
-        onClose={() => setShowMenu(false)}
-        sections={menuSections}
-      />
+      {showNavMenu && (
+        <div className="hamburger-menu">
+          <div className="hamburger-menu-header">
+            <h3>Navigation</h3>
+            <button className="btn-close-menu" onClick={() => setShowNavMenu(false)}>✕</button>
+          </div>
+          <nav className="hamburger-menu-nav">
+            <button onClick={() => navigateTo('/admin/dashboard')}>
+              Operations
+            </button>
+            <button onClick={() => navigateTo('/admin/calendar')}>
+              Schedule
+            </button>
+            <button onClick={() => navigateTo('/admin/jobs')}>
+              Projects
+            </button>
+            <button onClick={() => navigateTo('/admin/customers')}>
+              Customers
+            </button>
+            <button onClick={() => navigateTo('/admin/documents')}>
+              Documents
+            </button>
+            <button onClick={() => navigateTo('/admin/professionals')}>
+              Licensed Professionals
+            </button>
+            <div className="hamburger-menu-divider"></div>
+            <button onClick={handleLogout} className="logout-menu-item">
+              Logout
+            </button>
+          </nav>
+        </div>
+      )}
 
       <header className="admin-header">
         <div className="admin-header-content">
@@ -55,55 +79,14 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
               <p className="admin-header-subtitle">Manage business from one place</p>
             </div>
           </div>
-          <button onClick={handleLogout} className="admin-logout-btn">
-            Logout
-          </button>
-        </div>
-        <nav className="admin-nav">
           <button 
-            className="btn-menu-nav"
-            onClick={() => setShowMenu(!showMenu)}
-            title={`${sectionName} Controls`}
+            className="hamburger-btn"
+            onClick={() => setShowNavMenu(!showNavMenu)}
+            title="Menu"
           >
             ☰
           </button>
-          <button
-            className={`admin-nav-btn ${isActive('/admin/dashboard') ? 'active' : ''}`}
-            onClick={() => router.push('/admin/dashboard')}
-          >
-            Operations
-          </button>
-          <button
-            className={`admin-nav-btn ${isActive('/admin/calendar') ? 'active' : ''}`}
-            onClick={() => router.push('/admin/calendar')}
-          >
-            Schedule
-          </button>
-          <button
-            className={`admin-nav-btn ${isActive('/admin/jobs') ? 'active' : ''}`}
-            onClick={() => router.push('/admin/jobs')}
-          >
-            Projects
-          </button>
-          <button
-            className={`admin-nav-btn ${isActive('/admin/customers') ? 'active' : ''}`}
-            onClick={() => router.push('/admin/customers')}
-          >
-            Customers
-          </button>
-          <button
-            className={`admin-nav-btn ${isActive('/admin/documents') ? 'active' : ''}`}
-            onClick={() => router.push('/admin/documents')}
-          >
-            Documents
-          </button>
-          <button
-            className={`admin-nav-btn ${isActive('/admin/professionals') ? 'active' : ''}`}
-            onClick={() => router.push('/admin/professionals')}
-          >
-            Licensed Professionals
-          </button>
-        </nav>
+        </div>
       </header>
       <main className="admin-content">
         {children}

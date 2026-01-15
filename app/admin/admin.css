@@ -70,81 +70,133 @@
   margin: 0;
 }
 
-.admin-logout-btn {
+.hamburger-btn {
   background: #712A18;
   color: white;
   border: none;
-  padding: 10px 24px;
+  padding: 12px 20px;
   border-radius: 8px;
   font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.admin-logout-btn:hover {
-  background: #8a3420;
-}
-
-.admin-nav {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 32px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  overflow-x: auto;
-  border-top: 1px solid #f0f0f0;
-}
-
-.btn-menu-nav {
-  background: #712A18;
-  color: white;
-  border: none;
-  padding: 12px 16px;
-  font-size: 18px;
+  font-size: 24px;
   cursor: pointer;
   transition: all 0.2s;
-  border-radius: 6px;
-  margin-right: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 48px;
+  min-width: 56px;
   height: 48px;
+  line-height: 1;
 }
 
-.btn-menu-nav:hover {
+.hamburger-btn:hover {
   background: #8a3420;
   transform: scale(1.05);
 }
 
-.btn-menu-nav:active {
+.hamburger-btn:active {
   transform: scale(0.98);
 }
 
-.admin-nav-btn {
+.hamburger-menu {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 320px;
+  background: white;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.hamburger-menu-header {
+  padding: 24px;
+  border-bottom: 2px solid #F0F0EE;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #712A18;
+  color: white;
+}
+
+.hamburger-menu-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.btn-close-menu {
   background: transparent;
   border: none;
-  padding: 16px 20px;
-  font-weight: 700;
-  font-size: 14px;
-  color: #454547;
+  color: white;
+  font-size: 28px;
   cursor: pointer;
-  border-bottom: 3px solid transparent;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-close-menu:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.hamburger-menu-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+}
+
+.hamburger-menu-nav button {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 16px 24px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 15px;
+  color: #261312;
+  cursor: pointer;
   transition: all 0.2s;
-  white-space: nowrap;
+  border-left: 4px solid transparent;
 }
 
-.admin-nav-btn:hover {
-  color: #712A18;
-  background: #fafafa;
+.hamburger-menu-nav button:hover {
+  background: #F0F0EE;
+  border-left-color: #567A8D;
+  color: #567A8D;
 }
 
-.admin-nav-btn.active {
+.hamburger-menu-divider {
+  height: 1px;
+  background: #e5e5e5;
+  margin: 16px 24px;
+}
+
+.hamburger-menu-nav .logout-menu-item {
   color: #712A18;
-  border-bottom-color: #712A18;
-  background: #fafafa;
+  font-weight: 800;
+}
+
+.hamburger-menu-nav .logout-menu-item:hover {
+  background: #fff5f5;
+  border-left-color: #712A18;
 }
 
 .admin-content {
