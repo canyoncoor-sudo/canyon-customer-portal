@@ -48,16 +48,12 @@ export default function SchedulePage() {
     loadEvents();
     setSectionName('Schedule');
     setShowMenu(false);
-    setMenuSections([]);
+    setupMenu();
   }, []);
 
   useEffect(() => {
     setupMenu();
-  }, [filter]);
-
-  useEffect(() => {
-    setupMenu();
-  }, [showCreateSection, showViewSection, showFilterSection, showToolsSection, showHelpSection, viewMode, filterStatus, sortBy]);
+  }, [showCreateSection, showViewSection, showFilterSection, showToolsSection, showHelpSection, viewMode, filterStatus, sortBy, filter]);
 
   const setupMenu = () => {
     const menuSections = [

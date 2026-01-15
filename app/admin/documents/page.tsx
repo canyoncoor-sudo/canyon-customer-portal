@@ -25,7 +25,6 @@ export default function DocumentsPage() {
   useEffect(() => {
     setSectionName('Documents');
     setShowMenu(false);
-    setMenuSections([]);
   }, []);
 
   const documentTemplates: DocumentTemplate[] = [
