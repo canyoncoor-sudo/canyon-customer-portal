@@ -23,25 +23,101 @@ export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [filterCity, setFilterCity] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-
-  const [showViewSection, setShowViewSection] = useState(false);
-  const [showFiltersSection, setShowFiltersSection] = useState(false);
-  const [showActionsSection, setShowActionsSection] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [documentFilter, setDocumentFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { setShowMenu, setMenuSections, setSectionName } = useAdminMenu();
 
+  const [showFiltersSection, setShowFiltersSection] = useState(false);
+  const [showActionsSection, setShowActionsSection] = useState(false);
+
   useEffect(() => {
     fetchCustomers();
-    setSectionName('Customers');
+    setupMenu();
   }, []);
 
   useEffect(() => {
     filterCustomers();
-  }, [searchQuery, filterStatus, filterCity, customers]);
+  }, [searchQuery, customers, statusFilter, documentFilter]);
+
+  const setupMenu = () => {
+    setSectionName('Customers');
+    setShowMenu(true);
+
+    const menuSections = [
+      {
+        title: 'Filters',
+        isOpen: showFiltersSection,
+        onToggle: () => setShowFiltersSection(!showFiltersSection),
+        content: (
+          <>
+            <div className="control-group">
+              <label>Project Status</label>
+              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <option value="all">All Statuses</option>
+                <option value="lead">Lead</option>
+                <option value="quoted">Quoted</option>
+                <option value="approved">Approved</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <div className="control-group">
+              <label>Document Type</label>
+              <select value={documentFilter} onChange={(e) => setDocumentFilter(e.target.value)}>
+                <option value="all">All Documents</option>
+                <option value="has_intake">Has Intake Form</option>
+                <option value="has_proposal">Has Proposal</option>
+                <option value="has_contract">Has Contract</option>
+                <option value="has_invoice">Has Invoice</option>
+                <option value="has_permit">Has Permit</option>
+                <option value="needs_documents">Needs Documents</option>
+              </select>
+            </div>
+
+            <div className="control-group">
+              <label>Search Customer</label>
+              <input
+                type="text"
+                placeholder="Name, address, email, or phone..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </>
+        )
+      },
+      {
+        title: 'Actions',
+        isOpen: showActionsSection,
+        onToggle: () => setShowActionsSection(!showActionsSection),
+        content: (
+          <>
+            <button onClick={() => router.push('/admin/documents/intake')}>
+              📝 New Customer Intake
+            </button>
+            <button onClick={() => router.push('/admin/schedule')}>
+              📅 View Schedule
+            </button>
+            <button onClick={() => router.push('/admin/documents')}>
+              📄 Create Document
+            </button>
+            <button onClick={() => exportCustomers()}>
+              💾 Export Customer List
+            </button>
+            <button onClick={() => router.push('/admin/dashboard')}>
+              ← Return to Dashboard
+            </button>
+          </>
+        )
+      }
+    ];
+
+    setMenuSections(menuSections);
+  };
 
   const fetchCustomers = async () => {
     try {
@@ -73,19 +149,21 @@ export default function CustomersPage() {
   };
 
   const filterCustomers = () => {
-    let filtered = customers;
+    let filtered = [...customers];
 
-    // Status filter
-    if (filterStatus !== 'all') {
-      filtered = filtered.filter(c => c.status === filterStatus);
+    // Apply status filter
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(c => c.status === statusFilter);
     }
 
-    // City filter
-    if (filterCity !== 'all') {
-      filtered = filtered.filter(c => c.city === filterCity);
+    // Apply document filter (this would need backend support, for now just placeholder)
+    // You would need to fetch document info from the backend
+    if (documentFilter !== 'all') {
+      // Placeholder - in reality you'd check against customer's documents
+      // filtered = filtered.filter(c => hasDocument(c.id, documentFilter));
     }
 
-    // Search filter
+    // Apply search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(customer => 
@@ -100,125 +178,40 @@ export default function CustomersPage() {
     setFilteredCustomers(filtered);
   };
 
+  const exportCustomers = () => {
+    // Create CSV content
+    const headers = ['Name', 'Email', 'Phone', 'Address', 'City', 'State', 'ZIP', 'Project Type', 'Status', 'Created'];
+    const rows = filteredCustomers.map(c => [
+      c.customer_name || '',
+      c.customer_email || '',
+      c.customer_phone || '',
+      c.job_address || '',
+      c.city || '',
+      c.state || '',
+      c.zip_code || '',
+      c.project_type || '',
+      c.status || '',
+      new Date(c.created_at).toLocaleDateString()
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    // Download CSV
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `customers-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   const handleCustomerClick = (customerId: string) => {
     router.push(`/admin/customers/${customerId}`);
   };
-
-  // Get unique cities and statuses for filters
-  const uniqueCities = Array.from(new Set(customers.map(c => c.city).filter(Boolean))).sort();
-  const uniqueStatuses = Array.from(new Set(customers.map(c => c.status).filter(Boolean))).sort();
-
-  // Menu sections configuration
-  const menuSections = [
-    {
-      title: 'View',
-      isOpen: showViewSection,
-      onToggle: () => setShowViewSection(!showViewSection),
-      content: (
-        <div className="control-group">
-          <div className="radio-group">
-            <label className={viewMode === 'grid' ? 'active' : ''}>
-              <input 
-                type="radio" 
-                name="viewMode" 
-                value="grid"
-                checked={viewMode === 'grid'}
-                onChange={() => setViewMode('grid')}
-              />
-              <span>📱 Grid Cards</span>
-            </label>
-            <label className={viewMode === 'list' ? 'active' : ''}>
-              <input 
-                type="radio" 
-                name="viewMode" 
-                value="list"
-                checked={viewMode === 'list'}
-                onChange={() => setViewMode('list')}
-              />
-              <span>📋 List View</span>
-            </label>
-          </div>
-        </div>
-      )
-    },
-    {
-      title: 'Filters',
-      isOpen: showFiltersSection,
-      onToggle: () => setShowFiltersSection(!showFiltersSection),
-      content: (
-        <>
-          <div className="control-group">
-            <label>Status</label>
-            <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-              <option value="all">All Statuses</option>
-              {uniqueStatuses.map(status => (
-                <option key={status} value={status}>{status}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div className="control-group">
-            <label>City</label>
-            <select value={filterCity} onChange={(e) => setFilterCity(e.target.value)}>
-              <option value="all">All Cities</option>
-              {uniqueCities.map(city => (
-                <option key={city} value={city}>{city}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="control-group">
-            <label>Search Customers</label>
-            <input
-              type="text"
-              placeholder="Name, address, email, phone..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
-          {(filterStatus !== 'all' || filterCity !== 'all' || searchQuery) && (
-            <div className="control-group">
-              <button 
-                className="btn-menu-action tertiary"
-                onClick={() => {
-                  setFilterStatus('all');
-                  setFilterCity('all');
-                  setSearchQuery('');
-                }}
-              >
-                Clear All Filters
-              </button>
-            </div>
-          )}
-        </>
-      )
-    },
-    {
-      title: 'Actions',
-      isOpen: showActionsSection,
-      onToggle: () => setShowActionsSection(!showActionsSection),
-      content: (
-        <div className="control-group">
-          <button 
-            className="btn-menu-action tertiary"
-            onClick={() => {
-              setShowMenu(false);
-              router.push('/admin/dashboard');
-            }}
-          >
-            ← Return to Dashboard
-          </button>
-        </div>
-      )
-    }
-  ];
-
-  // Update menu sections whenever dependencies change
-  useEffect(() => {
-    setMenuSections(menuSections);
-  }, [viewMode, filterStatus, filterCity, searchQuery, showViewSection, showFiltersSection, showActionsSection]);
-
 
   if (loading) {
     return (
@@ -231,16 +224,10 @@ export default function CustomersPage() {
 
   return (
     <div className="customers-page">
-
-      {(filterStatus !== 'all' || filterCity !== 'all' || searchQuery) && (
-        <div className="active-filters-banner">
-          <span>🔍 Filters Active: </span>
-          {filterStatus !== 'all' && <span className="filter-tag">Status: {filterStatus}</span>}
-          {filterCity !== 'all' && <span className="filter-tag">City: {filterCity}</span>}
-          {searchQuery && <span className="filter-tag">Search: "{searchQuery}"</span>}
-          <span className="results-count">({filteredCustomers.length} result{filteredCustomers.length !== 1 ? 's' : ''})</span>
-        </div>
-      )}
+      <div className="page-header">
+        <h1>Customer Profiles</h1>
+        <p>{filteredCustomers.length} {filteredCustomers.length === 1 ? 'customer' : 'customers'} found</p>
+      </div>
 
       <main className="customers-main">
         {filteredCustomers.length === 0 ? (
