@@ -35,6 +35,7 @@ export default function CustomersPage() {
   useEffect(() => {
     fetchCustomers();
     setSectionName('Customers');
+    setShowMenu(false);
   }, []);
 
   useEffect(() => {

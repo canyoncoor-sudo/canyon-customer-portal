@@ -47,6 +47,7 @@ export default function SchedulePage() {
   useEffect(() => {
     loadEvents();
     setSectionName('Operations');
+    setShowMenu(false);
   }, [filter]);
 
   useEffect(() => {

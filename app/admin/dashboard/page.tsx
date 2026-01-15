@@ -59,6 +59,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchOperationsData();
     setSectionName('Operations');
+    setShowMenu(false);
   }, []);
 
   const fetchOperationsData = async () => {
