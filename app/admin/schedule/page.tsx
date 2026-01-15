@@ -63,17 +63,20 @@ export default function SchedulePage() {
         onToggle: () => setShowCreateSection(!showCreateSection),
         content: (
           <>
-            <button onClick={() => alert('Client Meeting - Coming Soon')}>
-              Client Meeting
+            <button onClick={() => alert('New Meeting - Coming Soon')}>
+              New Meeting
             </button>
             <button onClick={() => alert('Site Visit - Coming Soon')}>
               Site Visit
             </button>
-            <button onClick={() => alert('Subcontractor Meeting - Coming Soon')}>
-              Subcontractor Meeting
+            <button onClick={() => alert('Licensed Professional Meeting - Coming Soon')}>
+              Licensed Professional Meeting
             </button>
-            <button onClick={() => alert('New Customer Meeting - Coming Soon')}>
-              New Customer Meeting
+            <button onClick={() => alert('Client Meeting - Coming Soon')}>
+              Client Meeting
+            </button>
+            <button onClick={() => alert('Create Note/Task - Coming Soon')}>
+              Create Note/Task
             </button>
           </>
         )
@@ -115,26 +118,6 @@ export default function SchedulePage() {
                 />
                 <span>One Month</span>
               </label>
-              <label className={viewMode === 'list' ? 'active' : ''}>
-                <input 
-                  type="radio" 
-                  name="viewMode" 
-                  value="list"
-                  checked={viewMode === 'list'}
-                  onChange={() => setViewMode('list')}
-                />
-                <span>List View</span>
-              </label>
-              <label className={viewMode === 'map' ? 'active' : ''}>
-                <input 
-                  type="radio" 
-                  name="viewMode" 
-                  value="map"
-                  checked={viewMode === 'map'}
-                  onChange={() => setViewMode('map')}
-                />
-                <span>Map View</span>
-              </label>
             </div>
           </div>
         )
@@ -146,22 +129,13 @@ export default function SchedulePage() {
         content: (
           <>
             <div className="control-group">
-              <label>Search</label>
-              <input
-                type="text"
-                placeholder="Search meetings..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            
-            <div className="control-group">
-              <label>Sort By</label>
-              <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)}>
-                <option value="type">Type</option>
-                <option value="customer">Customer/Project</option>
-                <option value="confirmed">Confirmed/Pending</option>
-                <option value="payment">Paid/Unpaid</option>
+              <label>Filter by Type</label>
+              <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+                <option value="all">All Types</option>
+                <option value="meeting">Meeting</option>
+                <option value="contractor">Contractor</option>
+                <option value="client">Client</option>
+                <option value="project">Project</option>
               </select>
             </div>
           </>
@@ -173,15 +147,11 @@ export default function SchedulePage() {
         onToggle: () => setShowToolsSection(!showToolsSection),
         content: (
           <>
-            <button onClick={() => alert('Find Next Available Slot - Coming Soon')}>
-              Find Next Available Slot
-            </button>
             <button onClick={() => alert('Add Travel Buffer - Coming Soon')}>
               Add Travel Buffer
             </button>
-            <button onClick={() => alert('Google Calendar Sync Settings - Coming Soon')}>
-              Sync with Google
-              Sync Calendar
+            <button onClick={() => alert('Google Calendar Sync - Coming Soon')}>
+              Sync to Google Calendar
             </button>
           </>
         )
