@@ -55,7 +55,7 @@ function AdminProfessionalsContent() {
     fetchProfessionals();
     setSectionName('Licensed Professionals');
     setShowMenu(false);
-    setMenuSections([]);
+    setupMenu();
   }, []);
 
   const fetchProfessionals = async () => {
