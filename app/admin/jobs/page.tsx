@@ -37,6 +37,7 @@ export default function JobsPage() {
     fetchJobs();
     setSectionName('Projects');
     setShowMenu(false);
+    setMenuSections([]);
   }, []);
 
   const fetchJobs = async () => {

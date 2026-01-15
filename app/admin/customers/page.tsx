@@ -36,6 +36,10 @@ export default function CustomersPage() {
     fetchCustomers();
     setSectionName('Customers');
     setShowMenu(false);
+    setMenuSections([]);
+  }, []);
+
+  useEffect(() => {
     setupMenu();
   }, []);
 
