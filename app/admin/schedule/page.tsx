@@ -46,7 +46,7 @@ export default function SchedulePage() {
 
   useEffect(() => {
     loadEvents();
-    setSectionName('Operations');
+    setSectionName('Schedule');
     setShowMenu(false);
   }, [filter]);
 
