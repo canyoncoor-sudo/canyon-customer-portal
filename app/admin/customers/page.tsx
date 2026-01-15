@@ -34,15 +34,18 @@ export default function CustomersPage() {
 
   useEffect(() => {
     fetchCustomers();
-    setupMenu();
+    setSectionName('Customers');
   }, []);
 
   useEffect(() => {
     filterCustomers();
   }, [searchQuery, customers, statusFilter, documentFilter]);
 
+  useEffect(() => {
+    setupMenu();
+  }, [showFiltersSection, showActionsSection]);
+
   const setupMenu = () => {
-    setSectionName('Customers');
     setShowMenu(true);
 
     const menuSections = [
@@ -224,11 +227,6 @@ export default function CustomersPage() {
 
   return (
     <div className="customers-page">
-      <div className="page-header">
-        <h1>Customer Profiles</h1>
-        <p>{filteredCustomers.length} {filteredCustomers.length === 1 ? 'customer' : 'customers'} found</p>
-      </div>
-
       <main className="customers-main">
         {filteredCustomers.length === 0 ? (
           <div className="no-results">
